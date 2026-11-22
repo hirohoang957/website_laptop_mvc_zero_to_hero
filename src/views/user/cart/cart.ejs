@@ -275,7 +275,8 @@
                                                             value="<%= cartDetail.quantity %>"
                                                             data-cart-detail-id="<%= cartDetail.id %>"
                                                             data-cart-detail-price="<%= cartDetail.priceCurr %>"
-                                                            data-cart-detail-index="<%= index %>">
+                                                            data-cart-detail-index="<%= index %>"
+                                                            min="1">
                                                         <div class="input-group-btn">
                                                             <button type="button" class="btn btn-sm btn-plus rounded-circle">
                                                                 <i class="fa fa-plus small"></i>
@@ -322,9 +323,9 @@
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-muted">Tạm tính</span>
-                                <span class="fw-bold text-dark" data-cart-total-price="<%= totalPrice %>">
+                                <p class="fw-bold text-dark" data-cart-total-price="<%= totalPrice %>">
                                     <%= new Intl.NumberFormat('vi-VN', { style: "currency", currency: "VND" }).format(totalPrice) %>
-                                </span>
+                                </p>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3">

@@ -1,75 +1,358 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Register - Laptopshop</title>
-        <link href="/admin/css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="bg-primary">
-        <div id="layoutAuthentication">
-            <div id="layoutAuthentication_content">
-                <main>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-7">
-                                <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Tạo tài khoản</h3></div>
-                                    <div class="card-body">
-                                        <% errors.forEach((error) => { %>
-                                            <div class="alert alert-danger mb-3">
-                                                <%= error %>
-                                            </div>
-                                        <% }) %>
-                                        <form action="/register" method="POST">
-                                            <div class="row mb-3">
-                                                <div class="col-md-12">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        <input value="<%= oldData.fullName %>" class="form-control" id="inputFirstName" type="text" placeholder="Enter your fullname" name="fullName"/>
-                                                        <label for="inputFirstName">Nhập họ và tên</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input value="<%= oldData.email %>" class="form-control" id="inputEmail" type="email" placeholder="name@example.com" name="email"/>
-                                                <label for="inputEmail">Nhập email</label>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        <input value="<%= oldData.password %>" class="form-control" id="inputPassword" type="password" placeholder="Create a password" name="password"/>
-                                                        <label for="inputPassword">Nhập mật khẩu</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        <input value="<%= oldData.confirmPassword %>" class="form-control" id="inputPasswordConfirm" type="password" placeholder="Confirm password" name="confirmPassword"/>
-                                                        <label for="inputPasswordConfirm">Xác nhận mật khẩu</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-4 mb-0">
-                                                <div class="d-grid">
-                                                    <button class="btn btn-primary btn-block " >Tạo tài khoản</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="/login">Bạn đã có tài khoản? Đăng nhập ngay!</a></div>
-                                    </div>
-                                </div>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Đăng ký tài khoản thành viên Laptopshop" />
+    <title>Đăng ký tài khoản - Laptopshop</title>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1020px;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* Cột trái: Branding */
+        .auth-brand-side {
+            background: linear-gradient(145deg, #81c408 0%, #5a8d03 100%);
+            color: #ffffff;
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-brand-side::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-brand-side::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -50px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-logo-text {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 32px;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .brand-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(6px);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        /* Cột phải: Form */
+        .auth-form-side {
+            padding: 44px 44px;
+            background: #ffffff;
+        }
+
+        @media (max-width: 576px) {
+            .auth-form-side {
+                padding: 32px 22px;
+            }
+        }
+
+        .auth-title {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            color: #1e293b;
+            font-size: 27px;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            z-index: 5;
+            font-size: 15px;
+        }
+
+        .auth-input {
+            height: 48px;
+            padding-left: 42px;
+            padding-right: 40px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 14.5px;
+            color: #1e293b;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .auth-input:focus {
+            background-color: #ffffff;
+            border-color: #81c408;
+            box-shadow: 0 0 0 4px rgba(129, 196, 8, 0.16);
+        }
+
+        .btn-toggle-pass {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #64748b;
+            padding: 4px 8px;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .btn-toggle-pass:hover {
+            color: #1e293b;
+        }
+
+        .btn-auth-submit {
+            height: 50px;
+            border-radius: 50px;
+            background: #81c408;
+            border: none;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15.5px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 20px rgba(129, 196, 8, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .btn-auth-submit:hover {
+            background: #6da805;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(129, 196, 8, 0.4);
+        }
+
+        .auth-link {
+            color: #6da805;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .auth-link:hover {
+            color: #4f7a03;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-wrapper">
+        <div class="row g-0">
+            <!-- CỘT TRÁI: THƯƠNG HIỆU & ĐẶC QUYỀN THÀNH VIÊN -->
+            <div class="col-lg-5 auth-brand-side d-none d-lg-flex">
+                <div class="position-relative" style="z-index: 2;">
+                    <a href="/" class="brand-logo-text d-inline-flex align-items-center gap-2 mb-4">
+                        <i class="fas fa-laptop-code"></i> Laptopshop
+                    </a>
+                    <h3 class="fw-bold mb-3" style="line-height: 1.35;">
+                        Trở thành thành viên của Laptopshop
+                    </h3>
+                    <p class="small mb-0" style="color: rgba(255, 255, 255, 0.88); line-height: 1.6;">
+                        Tạo tài khoản miễn phí trong 30 giây để nhận mã giảm giá chào mừng, tích điểm đổi quà và quản lý bảo hành điện tử.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-column gap-3 position-relative my-4" style="z-index: 2;">
+                    <div class="brand-feature-item">
+                        <i class="fas fa-gift fs-5"></i>
+                        <span>Nhận ngay Voucher giảm giá cho đơn đầu tiên</span>
+                    </div>
+                    <div class="brand-feature-item">
+                        <i class="fas fa-truck-fast fs-5"></i>
+                        <span>Theo dõi trạng thái giao hàng theo thời gian thực</span>
+                    </div>
+                    <div class="brand-feature-item">
+                        <i class="fas fa-headset fs-5"></i>
+                        <span>Hỗ trợ kỹ thuật &amp; cài đặt phần mềm trọn đời</span>
+                    </div>
+                </div>
+
+                <div class="small position-relative" style="z-index: 2; color: rgba(255, 255, 255, 0.8);">
+                    &copy; 2026 Laptopshop Vietnam. All rights reserved.
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: FORM ĐĂNG KÝ -->
+            <div class="col-lg-7 auth-form-side">
+                <!-- Nút quay lại trang chủ -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <a href="/" class="text-muted text-decoration-none small fw-semibold">
+                        <i class="fas fa-arrow-left me-1"></i> Về trang chủ
+                    </a>
+                    <span class="d-lg-none fw-bold text-success fs-5">Laptopshop</span>
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="auth-title mb-1">Tạo tài khoản mới</h2>
+                    <p class="text-muted small mb-0">Điền đầy đủ thông tin bên dưới để đăng ký thành viên</p>
+                </div>
+
+                <!-- Hiển thị danh sách lỗi validation nếu có -->
+                <% if (typeof errors !== 'undefined' && errors && errors.length > 0) { %>
+                    <div class="alert alert-danger rounded-3 py-2 px-3 small mb-3" role="alert">
+                        <% errors.forEach((error) => { %>
+                            <div class="d-flex align-items-center gap-2 py-1">
+                                <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+                                <span><%= error %></span>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+
+                <form action="/register" method="POST">
+                    <!-- Họ và tên -->
+                    <div class="mb-3">
+                        <label for="inputFirstName" class="form-label fw-semibold text-dark small">
+                            Họ và tên <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-user input-icon-left"></i>
+                            <input value="<%= typeof oldData !== 'undefined' && oldData?.fullName ? oldData.fullName : '' %>"
+                                class="form-control auth-input" id="inputFirstName" type="text"
+                                placeholder="VD: Nguyễn Văn A" name="fullName" required autofocus />
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label fw-semibold text-dark small">
+                            Địa chỉ Email <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-envelope input-icon-left"></i>
+                            <input value="<%= typeof oldData !== 'undefined' && oldData?.email ? oldData.email : '' %>"
+                                class="form-control auth-input" id="inputEmail" type="email"
+                                placeholder="name@example.com" name="email" required />
+                        </div>
+                    </div>
+
+                    <!-- Mật khẩu & Xác nhận mật khẩu -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="inputPassword" class="form-label fw-semibold text-dark small">
+                                Mật khẩu <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-custom">
+                                <i class="fas fa-lock input-icon-left"></i>
+                                <input value="<%= typeof oldData !== 'undefined' && oldData?.password ? oldData.password : '' %>"
+                                    class="form-control auth-input" id="inputPassword" type="password"
+                                    placeholder="Tạo mật khẩu" name="password" required />
+                                <button type="button" class="btn-toggle-pass" data-target="inputPassword" title="Hiện/Ẩn mật khẩu">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="inputPasswordConfirm" class="form-label fw-semibold text-dark small">
+                                Xác nhận mật khẩu <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-custom">
+                                <i class="fas fa-shield-halved input-icon-left"></i>
+                                <input value="<%= typeof oldData !== 'undefined' && oldData?.confirmPassword ? oldData.confirmPassword : '' %>"
+                                    class="form-control auth-input" id="inputPasswordConfirm" type="password"
+                                    placeholder="Nhập lại mật khẩu" name="confirmPassword" required />
+                                <button type="button" class="btn-toggle-pass" data-target="inputPasswordConfirm" title="Hiện/Ẩn mật khẩu">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </main>
+
+                    <!-- Nút Submit -->
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-auth-submit">
+                            Tạo tài khoản <i class="fas fa-user-plus ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Link chuyển sang Đăng nhập -->
+                <div class="text-center pt-3 border-top">
+                    <span class="text-muted small">Bạn đã có tài khoản?</span>
+                    <a href="/login" class="auth-link small ms-1">Đăng nhập ngay!</a>
+                </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
-    </body>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+
+    <!-- Script ẩn/hiện mật khẩu cho cả 2 ô -->
+    <script>
+        document.querySelectorAll('.btn-toggle-pass').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const input = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
+                if (!input) return;
+
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                icon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        });
+    </script>
+</body>
+
 </html>

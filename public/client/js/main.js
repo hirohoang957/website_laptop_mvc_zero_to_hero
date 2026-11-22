@@ -156,7 +156,7 @@
             var newVal = parseFloat(oldValue) + 1;
             change = 1;
         } else {
-            if (oldValue > 0) {
+            if (oldValue > 1) {
                 var newVal = parseFloat(oldValue) - 1;
                 change = -1;
             } else {

@@ -120,12 +120,18 @@ const deleteProductInCart = async (cartDetailId: number, userId: number, sumCart
     }
 }
 
-const updateCartDetailBeforeCheckout = async (data: {id: string; quantity: string}[]) => {
+const updateCartDetailBeforeCheckout = async (data: {id: string; quantity: string}[], userId: number) => {
+    let sum = 0;
     data.forEach(async (item) => {
+        sum += +item.quantity;
         await prisma.cartDetail.update({
             where: {id: +item.id},
             data: {quantity: +item.quantity}
         })
+    })
+    await prisma.cart.update({
+        where: {userId: userId},
+        data: {sum: sum}
     })
 }
 
@@ -149,10 +155,10 @@ const handlePlaceOrder = async (userId: number, receiverName: string, receiverAd
                 receiverName,
                 receiverAddress,
                 receiverPhone,
-                status: "CHOXACNHAN",
+                status: "PENDING",
                 totalPrice: +totalPrice,
                 paymentMethod: paymentMethod,
-                paymentStatus: "PAYMENT_UNPAID",
+                paymentStatus: paymentMethod === "BANKING" ? "PAID" : "UNPAID",
                 userId,
                 orderDetails: {
                     create: dataOrderDetail
@@ -172,6 +178,20 @@ const handlePlaceOrder = async (userId: number, receiverName: string, receiverAd
     console.log(cart)
 }
 
+const getAllOrderById = async (userId: number) => {
+    const orders = prisma.order.findMany({
+        where: {userId: userId},
+        include: {
+            orderDetails: {
+                include: {
+                    product: true
+                }
+            }
+        }
+    })
+    return orders;
+}
+
 export {
     getProductRecommendation,
     addProductToCart,
@@ -179,5 +199,6 @@ export {
     deleteProductInCart,
     updateCartDetailBeforeCheckout,
     handlePlaceOrder,
-    getBestSellingProducts
+    getBestSellingProducts,
+    getAllOrderById
 }

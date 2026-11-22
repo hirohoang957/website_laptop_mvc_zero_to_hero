@@ -1,65 +1,322 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Login - Laptopshop</title>
-    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <meta name="description" content="Đăng nhập tài khoản Laptopshop" />
+    <title>Đăng nhập - Laptopshop</title>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 960px;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* Cột trái: Branding */
+        .auth-brand-side {
+            background: linear-gradient(145deg, #81c408 0%, #5a8d03 100%);
+            color: #ffffff;
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-brand-side::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-brand-side::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -50px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-logo-text {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 32px;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .brand-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(6px);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        /* Cột phải: Form */
+        .auth-form-side {
+            padding: 48px 44px;
+            background: #ffffff;
+        }
+
+        @media (max-width: 576px) {
+            .auth-form-side {
+                padding: 36px 24px;
+            }
+        }
+
+        .auth-title {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            color: #1e293b;
+            font-size: 28px;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            z-index: 5;
+            font-size: 15px;
+        }
+
+        .auth-input {
+            height: 50px;
+            padding-left: 44px;
+            padding-right: 44px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 14.5px;
+            color: #1e293b;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .auth-input:focus {
+            background-color: #ffffff;
+            border-color: #81c408;
+            box-shadow: 0 0 0 4px rgba(129, 196, 8, 0.16);
+        }
+
+        .btn-toggle-pass {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #64748b;
+            padding: 4px 8px;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .btn-toggle-pass:hover {
+            color: #1e293b;
+        }
+
+        .btn-auth-submit {
+            height: 50px;
+            border-radius: 50px;
+            background: #81c408;
+            border: none;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15.5px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 20px rgba(129, 196, 8, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .btn-auth-submit:hover {
+            background: #6da805;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(129, 196, 8, 0.4);
+        }
+
+        .auth-link {
+            color: #6da805;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .auth-link:hover {
+            color: #4f7a03;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
-<body class="bg-primary">
-    <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="card-header">
-                                    <h3 class="text-center font-weight-light my-4">Đăng nhập</h3>
-                                </div>
-                                <div class="card-body">
-                                    <% messages.forEach((message) => { %>
-                                        <div class="alert alert-danger mb-3">
-                                            <%= message %>
-                                        </div>
-                                    <% }) %>
-                                    <form method="POST" action="/login">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputEmail" type="email"
-                                                placeholder="name@example.com" name="email"/>
-                                            <label for="inputEmail">Nhập email</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputPassword" type="password"
-                                                placeholder="Password" name="password"/>
-                                            <label for="inputPassword">Nhập mật khẩu</label>
-                                        </div>
-                                        <div class="mt-4 mb-0">
-                                            <div class="d-grid">
-                                                <button class="btn btn-primary btn-block d-grid">Đăng nhập</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-footer text-center py-3">
-                                    <div class="small"><a href="/register">Bạn chưa có tài khoản? Đăng ký ngay!</a></div>
-                                </div>
-                            </div>
-                        </div>
+<body>
+    <div class="auth-wrapper">
+        <div class="row g-0">
+            <!-- CỘT TRÁI: THƯƠNG HIỆU & LỢI ÍCH -->
+            <div class="col-lg-5 auth-brand-side d-none d-lg-flex">
+                <div class="position-relative" style="z-index: 2;">
+                    <a href="/" class="brand-logo-text d-inline-flex align-items-center gap-2 mb-4">
+                        <i class="fas fa-laptop-code"></i> Laptopshop
+                    </a>
+                    <h3 class="fw-bold mb-3" style="line-height: 1.35;">
+                        Thế giới Laptop chính hãng dành cho bạn
+                    </h3>
+                    <p class="small mb-0" style="color: rgba(255, 255, 255, 0.88); line-height: 1.6;">
+                        Đăng nhập để theo dõi đơn hàng, lưu cấu hình yêu thích và nhận ưu đãi độc quyền dành riêng cho thành viên.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-column gap-3 position-relative my-4" style="z-index: 2;">
+                    <div class="brand-feature-item">
+                        <i class="fas fa-shield-alt fs-5"></i>
+                        <span>Cam kết chính hãng 100%, nguyên seal</span>
+                    </div>
+                    <div class="brand-feature-item">
+                        <i class="fas fa-sync-alt fs-5"></i>
+                        <span>Lỗi 1 đổi 1 trong 30 ngày đầu tiên</span>
+                    </div>
+                    <div class="brand-feature-item">
+                        <i class="fas fa-shipping-fast fs-5"></i>
+                        <span>Miễn phí giao hàng &amp; kiểm tra tận nơi</span>
                     </div>
                 </div>
-            </main>
+
+                <div class="small position-relative" style="z-index: 2; color: rgba(255, 255, 255, 0.8);">
+                    &copy; 2026 Laptopshop Vietnam. All rights reserved.
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: FORM ĐĂNG NHẬP -->
+            <div class="col-lg-7 auth-form-side">
+                <!-- Nút quay lại trang chủ -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <a href="/" class="text-muted text-decoration-none small fw-semibold">
+                        <i class="fas fa-arrow-left me-1"></i> Về trang chủ
+                    </a>
+                    <span class="d-lg-none fw-bold text-success fs-5">Laptopshop</span>
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="auth-title mb-1">Chào mừng trở lại!</h2>
+                    <p class="text-muted small mb-0">Vui lòng nhập thông tin tài khoản để tiếp tục mua sắm</p>
+                </div>
+
+                <!-- Hiển thị thông báo lỗi nếu có -->
+                <% if (typeof messages !== 'undefined' && messages && messages.length > 0) { %>
+                    <% messages.forEach((message) => { %>
+                        <div class="alert alert-danger d-flex align-items-center gap-2 rounded-3 py-2 px-3 small mb-3" role="alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span><%= message %></span>
+                        </div>
+                    <% }) %>
+                <% } %>
+
+                <form method="POST" action="/login">
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label fw-semibold text-dark small">Địa chỉ Email</label>
+                        <div class="input-group-custom">
+                            <i class="fas fa-envelope input-icon-left"></i>
+                            <input class="form-control auth-input" id="inputEmail" type="email"
+                                placeholder="name@example.com" name="email" required autofocus />
+                        </div>
+                    </div>
+
+                    <!-- Mật khẩu -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="inputPassword" class="form-label fw-semibold text-dark small mb-0">Mật khẩu</label>
+                        </div>
+                        <div class="input-group-custom">
+                            <i class="fas fa-lock input-icon-left"></i>
+                            <input class="form-control auth-input" id="inputPassword" type="password"
+                                placeholder="Nhập mật khẩu của bạn" name="password" required />
+                            <button type="button" class="btn-toggle-pass" id="togglePasswordBtn" title="Hiện/Ẩn mật khẩu">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nút Submit -->
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-auth-submit">
+                            Đăng nhập <i class="fas fa-sign-in-alt ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Link chuyển sang Đăng ký -->
+                <div class="text-center pt-3 border-top">
+                    <span class="text-muted small">Bạn chưa có tài khoản?</span>
+                    <a href="/register" class="auth-link small ms-1">Đăng ký ngay!</a>
+                </div>
+            </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
-    <script src="/admin/js/scripts.js"></script>
+
+    <!-- Script ẩn/hiện mật khẩu -->
+    <script>
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const passInput = document.getElementById('inputPassword');
+        const passIcon = document.getElementById('togglePasswordIcon');
+
+        if (toggleBtn && passInput) {
+            toggleBtn.addEventListener('click', function () {
+                const isPassword = passInput.type === 'password';
+                passInput.type = isPassword ? 'text' : 'password';
+                passIcon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        }
+    </script>
 </body>
 
 </html>

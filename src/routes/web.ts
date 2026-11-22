@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
-import {fileUploadMiddleware, productUploadMiddleware} from 'src/middleware/multer';
+import { NextFunction, Request, Response } from "express";
+import { fileUploadMiddleware, productUploadMiddleware } from 'src/middleware/multer';
 import passport from 'passport';
 import { isAdmin, isLogin } from 'src/middleware/auth';
 import { getAdminBrandPage, getAdminCategoryPage, getAdminOrderPage, getAdminProductPage, getAdminUserPage, getDashboardPage } from 'controllers/admin/dashboard.controller';
@@ -7,7 +8,7 @@ import { getAdminCreateUserPage, getAdminViewUserPage, postAdminCreateUser, post
 import { getAdminCreateCategoryPage, getAdminViewCategoryPage, postAdminCreateCategory, postAdminDeleteCategory, postAdminUpdateCategory } from 'controllers/admin/admin.category.controller';
 import { getAdminCreateBrandPage, getAdminViewBrandPage, postAdminCreateBrand, postAdminDeleteBrand, postAdminUpdateBrand } from 'controllers/admin/admin.brand.controller';
 import { getAdminCreateProductPage, getAdminViewProductPage, postAdminCreateProduct, postAdminDeleteProduct, postAdminUpdateProduct } from 'controllers/admin/admin.product.controller';
-import { getCardPage, getCheckOutPage, getDetailProductPage, getHomePage, getLoginPage, getRegisterPage, getSuccessRedirectPage, getThanksPage, postAddProductToCart, postDeleteProductInCart, postHandleCartToCheckOut, postLogout, postPlaceOrder, postRegister } from 'controllers/user/user.controller';
+import { getCardPage, getCheckOutPage, getDetailProductPage, getHomePage, getLoginPage, getOrderHistoryPage, getRegisterPage, getSuccessRedirectPage, getThanksPage, postAddProductToCart, postDeleteProductInCart, postHandleCartToCheckOut, postLogout, postPlaceOrder, postRegister } from 'controllers/user/user.controller';
 import { getAdminViewOrderPage } from 'controllers/admin/admin.order.controller';
 
 
@@ -20,16 +21,35 @@ const webRoutes = (app: Express) => {
     router.get("/register", isLogin, getRegisterPage);
     router.post("/register", postRegister);
     router.get("/login", isLogin, getLoginPage);
-    router.post('/login', passport.authenticate('local', {
-        successRedirect: '/success-redirect',
-        failureRedirect: '/login',
-        failureMessage: true
-    }));
+    router.post('/login', (req: Request, res: Response, next: NextFunction) => {
+        passport.authenticate('local', (err: any, user: any, info: any) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (!user) {
+                const session = req.session as any;
+                session.messages = [info?.message || 'Email hoặc mật khẩu không chính xác!'];
+                return req.session.save((saveErr) => {
+                    if (saveErr) return next(saveErr);
+                    return res.redirect('/login');
+                });
+            }
+
+            req.logIn(user, (loginErr) => {
+                if (loginErr) {
+                    return next(loginErr);
+                }
+                return req.session.save((saveErr) => {
+                    if (saveErr) return next(saveErr);
+                    return res.redirect('/success-redirect');
+                });
+            });
+        })(req, res, next);
+    });
     router.get("/success-redirect", getSuccessRedirectPage);
     router.post("/logout", postLogout);
-
     router.get("/detail-product/:id", getDetailProductPage);
-
     router.post("/add-product-to-cart/:id", postAddProductToCart);
     router.post("/delete-product-in-cart/:id", postDeleteProductInCart);
     router.get("/cart", getCardPage);
@@ -37,6 +57,7 @@ const webRoutes = (app: Express) => {
     router.post("/handle-cart-to-checkout", postHandleCartToCheckOut);
     router.post("/place-order", postPlaceOrder);
     router.get("/thanks", getThanksPage);
+    router.get("/order-history", getOrderHistoryPage);
 
     // admin routes
     router.get("/admin", getDashboardPage);
@@ -65,7 +86,7 @@ const webRoutes = (app: Express) => {
     router.post("/admin/handle-delete-brand/:id", postAdminDeleteBrand);
 
     router.get("/admin/create-product", getAdminCreateProductPage);
-    router.post("/admin/handle-create-product",productUploadMiddleware("images/product"), postAdminCreateProduct);
+    router.post("/admin/handle-create-product", productUploadMiddleware("images/product"), postAdminCreateProduct);
     router.get("/admin/handle-view-product/:id", getAdminViewProductPage);
     router.post("/admin/handle-update-product", productUploadMiddleware("images/product"), postAdminUpdateProduct);
     router.post("/admin/handle-delete-product/:id", postAdminDeleteProduct);

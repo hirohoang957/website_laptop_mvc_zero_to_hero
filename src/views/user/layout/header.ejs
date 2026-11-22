@@ -7,11 +7,10 @@
     }
 
     .navbar-nav .nav-link.active {
-        color: #81c408 !important; /* Màu xanh chủ đạo của template (bạn có thể đổi sang #0d6efd nếu dùng xanh dương) */
+        color: #81c408 !important;
         font-weight: 700 !important;
     }
 
-    /* Thêm gạch chân nhỏ tinh tế dưới chữ đang chọn (trên màn hình lớn) */
     @media (min-width: 1200px) {
         .navbar-nav .nav-link.active::after {
             content: "";
@@ -20,9 +19,125 @@
             left: 12px;
             right: 12px;
             height: 3px;
-            background-color: #81c408; /* Đồng bộ với màu chữ active ở trên */
+            background-color: #81c408;
             border-radius: 2px;
         }
+    }
+
+    /* Thanh tìm kiếm dạng viên thuốc liền khối (Pill Search Bar) */
+    .header-search-overlay {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border-top: 1px solid #f1f5f9;
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .pill-search-box {
+        display: flex;
+        align-items: center;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 5px 6px 5px 20px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        transition: all 0.25s ease;
+        flex-grow: 1;
+    }
+
+    .pill-search-box:focus-within {
+        border-color: #81c408;
+        box-shadow: 0 0 0 4px rgba(129, 196, 8, 0.16), 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .pill-search-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent;
+        font-size: 15px;
+        color: #1e293b;
+        width: 100%;
+        padding: 8px 12px;
+    }
+
+    .pill-search-input::placeholder {
+        color: #94a3b8;
+    }
+
+    .btn-clear-search {
+        background: #f1f5f9;
+        color: #64748b;
+        border: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        margin-right: 8px;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: all 0.2s;
+    }
+
+    .btn-clear-search:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-pill-submit {
+        border-radius: 50px;
+        padding: 10px 26px;
+        font-weight: 700;
+        font-size: 14.5px;
+        white-space: nowrap;
+        border: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-pill-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(129, 196, 8, 0.35);
+    }
+
+    .btn-close-search-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #64748b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    .btn-close-search-circle:hover {
+        background: #fee2e2;
+        border-color: #fecaca;
+        color: #dc2626;
+        transform: rotate(90deg);
+    }
+
+    .search-quick-tag {
+        display: inline-block;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        font-size: 12.5px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .search-quick-tag:hover {
+        border-color: #81c408;
+        background: rgba(129, 196, 8, 0.1);
+        color: #5a8d03;
     }
 </style>
 
@@ -44,16 +159,16 @@
                             <%= user?.username ?? "" %>
                         </a>
                     </small>
-                    <% } else { %>
-                        <small class="me-3 text-white">
-                            <i class="fas fa-headset me-2 text-secondary"></i>
-                            Hotline: 1900 1234
-                        </small>
-                        <small class="me-3 text-white">
-                            <i class="fas fa-shipping-fast me-2 text-secondary"></i>
-                            Miễn phí giao hàng toàn quốc
-                        </small>
-                        <% } %>
+                <% } else { %>
+                    <small class="me-3 text-white">
+                        <i class="fas fa-headset me-2 text-secondary"></i>
+                        Hotline: 1900 1234
+                    </small>
+                    <small class="me-3 text-white">
+                        <i class="fas fa-shipping-fast me-2 text-secondary"></i>
+                        Miễn phí giao hàng toàn quốc
+                    </small>
+                <% } %>
             </div>
             <div class="top-link pe-2">
                 <a href="#" class="text-white"><small class="text-white mx-2">Chính sách bảo hành</small>/</a>
@@ -76,46 +191,43 @@
 
             <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <!-- Danh sách các trang -->
+                <div class="navbar-nav mx-auto">
+                    <a href="/" class="nav-item nav-link <%= currentPath === '/' ? 'active' : '' %>">
+                        Trang Chủ
+                    </a>
 
-                    <div class="navbar-nav mx-auto">
-                        <a href="/" class="nav-item nav-link <%= currentPath === '/' ? 'active' : '' %>">
-                            Trang Chủ
+                    <a href="/products"
+                        class="nav-item nav-link <%= currentPath.startsWith('/product') ? 'active' : '' %>">
+                        Sản Phẩm
+                    </a>
+
+                    <a href="/brands"
+                        class="nav-item nav-link <%= currentPath.startsWith('/brands') ? 'active' : '' %>">
+                        Thương Hiệu
+                    </a>
+
+                    <a href="/promotions"
+                        class="nav-item nav-link <%= currentPath.startsWith('/promotions') ? 'active' : '' %>">
+                        Khuyến Mãi
+                    </a>
+
+                    <a href="/news"
+                        class="nav-item nav-link <%= currentPath.startsWith('/news') ? 'active' : '' %>">
+                        Tin Công Nghệ
+                    </a>
+
+                    <a href="/contact"
+                        class="nav-item nav-link <%= currentPath.startsWith('/contact') ? 'active' : '' %>">
+                        Liên Hệ
+                    </a>
+
+                    <% if (user && user.role?.name === 'ADMIN') { %>
+                        <a href="/admin"
+                            class="nav-item nav-link text-danger fw-semibold <%= currentPath.startsWith('/admin') ? 'active' : '' %>">
+                            Quản Trị
                         </a>
-
-                        <!-- Dùng startsWith('/product') để khi vào /products hay /product/12 đều sáng mục Sản Phẩm -->
-                        <a href="/products"
-                            class="nav-item nav-link <%= currentPath.startsWith('/product') ? 'active' : '' %>">
-                            Sản Phẩm
-                        </a>
-
-                        <a href="/brands"
-                            class="nav-item nav-link <%= currentPath.startsWith('/brands') ? 'active' : '' %>">
-                            Thương Hiệu
-                        </a>
-
-                        <a href="/promotions"
-                            class="nav-item nav-link <%= currentPath.startsWith('/promotions') ? 'active' : '' %>">
-                            Khuyến Mãi
-                        </a>
-
-                        <a href="/news"
-                            class="nav-item nav-link <%= currentPath.startsWith('/news') ? 'active' : '' %>">
-                            Tin Công Nghệ
-                        </a>
-
-                        <a href="/contact"
-                            class="nav-item nav-link <%= currentPath.startsWith('/contact') ? 'active' : '' %>">
-                            Liên Hệ
-                        </a>
-
-                        <% if (user && user.role?.name==='ADMIN' ) { %>
-                            <a href="/admin"
-                                class="nav-item nav-link text-danger fw-semibold <%= currentPath.startsWith('/admin') ? 'active' : '' %>">
-                                Quản Trị
-                            </a>
-                            <% } %>
-                    </div>
-                
+                    <% } %>
+                </div>
 
                 <!-- Cụm icon bên phải: Tìm kiếm + Giỏ hàng + Tài khoản -->
                 <div class="d-flex align-items-center m-3 me-0">
@@ -136,7 +248,7 @@
                                 style="top: -5px; left: 15px; height: 20px; min-width: 20px; font-size: 12px;">
                                 <%= user.sumCart ?? 0 %>
                             </span>
-                            <% } %>
+                        <% } %>
                     </a>
 
                     <!-- Tài khoản -->
@@ -171,55 +283,75 @@
                                         <i class="fas fa-history me-2 text-primary"></i>Lịch sử mua hàng
                                     </a>
                                 </li>
-                                <% if (user.role?.name==='ADMIN' ) { %>
+                                <% if (user.role?.name === 'ADMIN') { %>
                                     <li>
                                         <a class="dropdown-item py-2 text-danger" href="/admin">
                                             <i class="fas fa-tools me-2"></i>Quản trị hệ thống
                                         </a>
                                     </li>
-                                    <% } %>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <form method="post" action="/logout">
-                                                <button type="submit" class="dropdown-item py-2 text-danger">
-                                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
-                                                </button>
-                                            </form>
-                                        </li>
+                                <% } %>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form method="post" action="/logout">
+                                        <button type="submit" class="dropdown-item py-2 text-danger">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
                             </ul>
                         </div>
-                        <% } else { %>
-                            <a href="/login" class="btn btn-outline-primary rounded-pill px-3 py-1 fw-semibold">
-                                <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
-                            </a>
-                            <% } %>
+                    <% } else { %>
+                        <a href="/login" class="btn btn-outline-primary rounded-pill px-3 py-1 fw-semibold">
+                            <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                        </a>
+                    <% } %>
                 </div>
             </div>
         </nav>
     </div>
 
-    <!-- 3. POPUP THANH TÌM KIẾM PHÍA DƯỚI HEADER (Mặc định ẩn) -->
-    <div class="collapse bg-light border-top shadow-sm" id="headerSearchPopup">
-        <div class="container py-3">
+    <!-- 3. POPUP THANH TÌM KIẾM HIỆN ĐẠI (PILL SEARCH) -->
+    <div class="collapse header-search-overlay" id="headerSearchPopup">
+        <div class="container py-4">
             <form action="/products" method="get" class="row justify-content-center">
-                <div class="col-12 col-md-9 col-lg-7">
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-text bg-white border-end-0 text-primary">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" id="headerSearchInput" name="keyword"
-                            class="form-control border-start-0 border-end-0"
-                            placeholder="Nhập tên laptop, hãng, CPU, card đồ họa..."
-                            value="<%= typeof keyword !== 'undefined' ? keyword : '' %>">
-                        <button class="btn btn-primary text-white px-4 fw-semibold" type="submit">
-                            Tìm kiếm
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse"
-                            data-bs-target="#headerSearchPopup" title="Đóng">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Khung tìm kiếm viên thuốc liền khối -->
+                        <div class="pill-search-box">
+                            <i class="fas fa-search text-primary fs-5"></i>
+                            <input type="text" id="headerSearchInput" name="keyword"
+                                class="pill-search-input"
+                                placeholder="Bạn đang tìm laptop gì? (VD: MacBook Air, Asus ROG, Core i7, RTX 4060...)"
+                                autocomplete="off"
+                                value="<%= typeof keyword !== 'undefined' ? keyword : '' %>">
+                            <button type="button" id="btnClearSearch" class="btn-clear-search" title="Xóa từ khóa">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="btn btn-primary text-white btn-pill-submit" type="submit">
+                                Tìm kiếm
+                            </button>
+                        </div>
+
+                        <!-- Nút đóng popup tách rời tinh tế -->
+                        <button type="button" class="btn-close-search-circle" data-bs-toggle="collapse"
+                            data-bs-target="#headerSearchPopup" title="Đóng thanh tìm kiếm">
                             <i class="fas fa-times"></i>
                         </button>
+                    </div>
+
+                    <!-- Gợi ý từ khóa tìm kiếm nhanh -->
+                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3 ps-3">
+                        <span class="text-muted small fw-semibold me-1">
+                            <i class="fas fa-fire text-danger me-1"></i>Tìm nhiều:
+                        </span>
+                        <a href="/products?keyword=MacBook" class="search-quick-tag">MacBook</a>
+                        <a href="/products?keyword=Gaming" class="search-quick-tag">Laptop Gaming</a>
+                        <a href="/products?keyword=RTX+4060" class="search-quick-tag">RTX 4060</a>
+                        <a href="/products?keyword=ThinkPad" class="search-quick-tag">ThinkPad</a>
+                        <a href="/products?keyword=Dell+XPS" class="search-quick-tag">Dell XPS</a>
+                        <a href="/products?keyword=Core+Ultra" class="search-quick-tag">Core Ultra</a>
                     </div>
                 </div>
             </form>
@@ -227,22 +359,41 @@
     </div>
 </div>
 
-<!-- Script tự động focus vào ô tìm kiếm khi mở popup & đóng khi bấm ra ngoài -->
+<!-- Script xử lý focus, nút xóa chữ & đóng popup khi bấm ra ngoài -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const searchPopup = document.getElementById("headerSearchPopup");
         const searchInput = document.getElementById("headerSearchInput");
         const toggleBtn = document.getElementById("btnToggleSearch");
+        const clearBtn = document.getElementById("btnClearSearch");
 
         if (searchPopup && searchInput) {
+            const updateClearBtn = () => {
+                if (clearBtn) {
+                    clearBtn.style.display = searchInput.value.trim().length > 0 ? "inline-flex" : "none";
+                }
+            };
+
+            updateClearBtn();
+            searchInput.addEventListener("input", updateClearBtn);
+
+            if (clearBtn) {
+                clearBtn.addEventListener("click", function () {
+                    searchInput.value = "";
+                    updateClearBtn();
+                    searchInput.focus();
+                });
+            }
+
             // Tự động đặt con trỏ chuột vào ô input ngay khi popup mở ra
             searchPopup.addEventListener("shown.bs.collapse", function () {
                 searchInput.focus();
+                updateClearBtn();
             });
 
             // Đóng popup khi người dùng click ra ngoài vùng header
             document.addEventListener("click", function (event) {
-                const isClickInside = searchPopup.contains(event.target) || toggleBtn.contains(event.target);
+                const isClickInside = searchPopup.contains(event.target) || (toggleBtn && toggleBtn.contains(event.target));
                 if (!isClickInside && searchPopup.classList.contains("show")) {
                     const bsCollapse = bootstrap.Collapse.getInstance(searchPopup);
                     if (bsCollapse) bsCollapse.hide();

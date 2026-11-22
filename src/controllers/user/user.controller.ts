@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { getAllProducts, getProducts, getProductById } from "services/admin/admin.product.service";
-import { getAllBrands, getAllCategories } from "services/admin/admin.service";
+import { getAllBrands, getAllCategories, getAllOrders, getOrderDetailAdmin } from "services/admin/admin.service";
 import { registerNewUser } from "services/user/auth.service";
-import { addProductToCart, deleteProductInCart, getBestSellingProducts, getCartDetailByUserId, getProductRecommendation, handlePlaceOrder, updateCartDetailBeforeCheckout } from "services/user/user.service";
+import { addProductToCart, deleteProductInCart, getAllOrderById, getBestSellingProducts, getCartDetailByUserId, getProductRecommendation, handlePlaceOrder, updateCartDetailBeforeCheckout } from "services/user/user.service";
 import { AdminUserSchema, TAdminUserSchema } from "src/validation/admin.user.schema";
 
 const getHomePage = async (req: Request, res: Response) => {
@@ -18,10 +18,16 @@ const getHomePage = async (req: Request, res: Response) => {
 
 const getDetailProductPage = async (req: Request, res: Response) => {
     const {id} = req.params;
-
-    const response = await fetch(`http://127.0.0.1:5000/api/product-recommendation?id=${id}`);
-    const productsIdRecommendation = await response.json();
-    const productsRecommendation =  await getProductRecommendation(productsIdRecommendation.products);
+    let productsRecommendation = new Array();
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/product-recommendation?id=${id}`);
+        const productsIdRecommendation = await response.json();
+        productsRecommendation =  await getProductRecommendation(productsIdRecommendation.products);
+    }
+    catch (e) {
+        console.log(e);
+    }
+    
 
     const brands = await getAllBrands();
     const categories = await getAllCategories();
@@ -35,9 +41,12 @@ const getDetailProductPage = async (req: Request, res: Response) => {
 }
 
 const getLoginPage = async (req: Request, res: Response) => {
-    const {session} = req as any;
+    const { session } = req as any;
     const messages = session?.messages ?? [];
-    return res.render("user/auth/login.ejs", {messages});
+    if (session?.messages) {
+        session.messages = [];
+    }
+    return res.render("user/auth/login.ejs", { messages });
 }
 
 const getRegisterPage = async (req: Request, res: Response) => {
@@ -143,7 +152,7 @@ const postHandleCartToCheckOut = async (req: Request, res: Response) => {
     if (!user) return res.redirect("/login");
 
     const cartDetails: {id: string; quantity: string}[] = req.body?.cartDetails ?? [];
-    await updateCartDetailBeforeCheckout(cartDetails)
+    await updateCartDetailBeforeCheckout(cartDetails, user.id)
    
     return res.redirect("/checkout");
 }
@@ -163,6 +172,17 @@ const getThanksPage = async (req: Request, res: Response) => {
     return res.render("user/checkout/end.ejs");
 }
 
+const getOrderHistoryPage = async (req: Request, res: Response) => {
+    const user = req.user;
+    if (!user) return res.redirect("/login");
+
+    const orders = await getAllOrderById(user.id);
+
+    return res.render("user/checkout/history.ejs", {
+        orders,
+    });
+}
+
 export {
     getHomePage,
     getDetailProductPage,
@@ -177,5 +197,6 @@ export {
     getCheckOutPage,
     postHandleCartToCheckOut,
     postPlaceOrder,
-    getThanksPage
+    getThanksPage,
+    getOrderHistoryPage
 }

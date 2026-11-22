@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>Lịch sử mua hàng - Laptopshop</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="lịch sử mua hàng laptopshop" name="keywords">
+    <meta content="Theo dõi trạng thái và lịch sử các đơn hàng đã đặt tại Laptopshop" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet">
+
+    <style>
+        /* Thanh tab lọc trạng thái đơn hàng */
+        .order-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+        }
+
+        .order-filter-btn {
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-weight: 600;
+            font-size: 13.5px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .order-filter-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .order-filter-btn.active {
+            background: #81c408;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(129, 196, 8, 0.3);
+        }
+
+        /* Thẻ từng đơn hàng */
+        .order-history-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+        }
+
+        .order-history-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.07);
+        }
+
+        .order-card-header {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+        }
+
+        .order-card-body {
+            padding: 8px 24px;
+        }
+
+        .order-product-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .order-product-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-product-img {
+            width: 74px;
+            height: 74px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f9fafb;
+            padding: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .order-product-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .order-product-title {
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .order-product-title:hover {
+            color: #81c408;
+        }
+
+        .order-card-footer {
+            background: #fcfdfd;
+            border-top: 1px solid #f1f5f9;
+            padding: 16px 24px;
+        }
+
+        /* Star rating trong Modal */
+        .modal-star-btn {
+            font-size: 28px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: transform 0.15s ease, color 0.15s ease;
+        }
+
+        .modal-star-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .modal-star-btn.active {
+            color: #ffb524;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar start -->
+    <%- include('../layout/header') %>
+    <!-- Navbar End -->
+
+    <div class="py-4"></div>
+
+    <!-- Order History Page Start -->
+    <div class="container-fluid py-5 mt-5">
+        <div class="container py-4">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb bg-light px-3 py-2 rounded-3 mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Lịch sử mua hàng</li>
+                </ol>
+            </nav>
+
+            <!-- Tiêu đề & Nút tiếp tục mua sắm -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <h2 class="fw-bold text-dark mb-1">Lịch sử mua hàng</h2>
+                    <p class="text-muted small mb-0">
+                        Theo dõi chi tiết trạng thái xử lý và giao hàng các đơn đặt mua của bạn
+                    </p>
+                </div>
+                <a href="/products" class="btn btn-outline-primary rounded-pill px-4 py-2 fw-semibold">
+                    <i class="fas fa-laptop me-2"></i> Tiếp tục mua sắm
+                </a>
+            </div>
+
+            <% if (orders && orders.length > 0) {
+                const countByStatus = {
+                    PENDING: orders.filter(o => (o.status || 'PENDING').toUpperCase() === 'PENDING').length,
+                    PROCESSING: orders.filter(o => (o.status || '').toUpperCase() === 'PROCESSING').length,
+                    SHIPPING: orders.filter(o => (o.status || '').toUpperCase() === 'SHIPPING').length,
+                    DELIVERED: orders.filter(o => (o.status || '').toUpperCase() === 'DELIVERED').length,
+                    COMPLETED: orders.filter(o => (o.status || '').toUpperCase() === 'COMPLETED').length,
+                    CANCELLED: orders.filter(o => (o.status || '').toUpperCase() === 'CANCELLED').length
+                };
+            %>
+                <!-- Thanh lọc nhanh theo 6 trạng thái chuẩn -->
+                <div class="order-filter-bar mb-4">
+                    <button type="button" class="order-filter-btn active" data-filter="ALL">
+                        Tất cả (<%= orders.length %>)
+                    </button>
+                    <button type="button" class="order-filter-btn" data-filter="PENDING">
+                        Chờ xác nhận (<%= countByStatus.PENDING %>)
+                    </button>
+                    <button type="button" class="order-filter-btn" data-filter="PROCESSING">
+                        Đang xử lý (<%= countByStatus.PROCESSING %>)
+                    </button>
+                    <button type="button" class="order-filter-btn" data-filter="SHIPPING">
+                        Đang giao hàng (<%= countByStatus.SHIPPING %>)
+                    </button>
+                    <button type="button" class="order-filter-btn" data-filter="DELIVERED">
+                        Đã giao hàng (<%= countByStatus.DELIVERED %>)
+                    </button>
+                    <button type="button" class="order-filter-btn" data-filter="COMPLETED">
+                        Hoàn thành (<%= countByStatus.COMPLETED %>)
+                    </button>
+                    <button type="button" class="order-filter-btn" data-filter="CANCELLED">
+                        Đã hủy (<%= countByStatus.CANCELLED %>)
+                    </button>
+                </div>
+
+                <!-- Danh sách từng thẻ đơn hàng -->
+                <div class="d-flex flex-column gap-4" id="orderHistoryList">
+                    <% orders.forEach((order) => {
+                        const orderStatus = (order.status || 'PENDING').toUpperCase();
+                        const canCancel = (orderStatus === 'PENDING' || orderStatus === 'PROCESSING');
+                        const canConfirmReceived = (orderStatus === 'DELIVERED');
+                        const canReview = (orderStatus === 'COMPLETED');
+
+                        const statusMap = {
+                            PENDING: {
+                                label: 'Chờ xác nhận',
+                                bg: 'rgba(255, 181, 36, 0.16)',
+                                color: '#b45309',
+                                icon: 'fas fa-clock'
+                            },
+                            PROCESSING: {
+                                label: 'Đang xử lý',
+                                bg: 'rgba(13, 110, 253, 0.12)',
+                                color: '#0d6efd',
+                                icon: 'fas fa-box-open'
+                            },
+                            SHIPPING: {
+                                label: 'Đang giao hàng',
+                                bg: 'rgba(13, 202, 240, 0.16)',
+                                color: '#0891b2',
+                                icon: 'fas fa-shipping-fast'
+                            },
+                            DELIVERED: {
+                                label: 'Đã giao hàng',
+                                bg: 'rgba(129, 196, 8, 0.16)',
+                                color: '#4d7c0f',
+                                icon: 'fas fa-truck-loading'
+                            },
+                            COMPLETED: {
+                                label: 'Hoàn thành',
+                                bg: 'rgba(25, 135, 84, 0.14)',
+                                color: '#198754',
+                                icon: 'fas fa-check-circle'
+                            },
+                            CANCELLED: {
+                                label: 'Đã hủy',
+                                bg: 'rgba(220, 53, 69, 0.12)',
+                                color: '#dc3545',
+                                icon: 'fas fa-times-circle'
+                            }
+                        };
+                        const currentStatus = statusMap[orderStatus] || {
+                            label: orderStatus,
+                            bg: 'rgba(100, 116, 139, 0.14)',
+                            color: '#475569',
+                            icon: 'fas fa-info-circle'
+                        };
+
+                        const payStatus = (order.paymentStatus || 'UNPAID').toUpperCase();
+                        const paymentStatusMap = {
+                            UNPAID: {
+                                label: 'Chưa thanh toán',
+                                bg: 'rgba(100, 116, 139, 0.12)',
+                                color: '#475569',
+                                icon: 'fas fa-hourglass-half'
+                            },
+                            PAID: {
+                                label: 'Đã thanh toán',
+                                bg: 'rgba(25, 135, 84, 0.12)',
+                                color: '#198754',
+                                icon: 'fas fa-check'
+                            },
+                            FAILED: {
+                                label: 'Thanh toán thất bại',
+                                bg: 'rgba(220, 53, 69, 0.12)',
+                                color: '#dc3545',
+                                icon: 'fas fa-exclamation-triangle'
+                            },
+                            REFUNDED: {
+                                label: 'Đã hoàn tiền',
+                                bg: 'rgba(111, 66, 193, 0.12)',
+                                color: '#6f42c1',
+                                icon: 'fas fa-undo-alt'
+                            }
+                        };
+                        const currentPayStatus = paymentStatusMap[payStatus] || paymentStatusMap.UNPAID;
+                    %>
+                        <div class="order-history-card" data-order-status="<%= orderStatus %>">
+                            <!-- HEADER ĐƠN HÀNG -->
+                            <div class="order-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                                <div class="d-flex flex-wrap align-items-center gap-3">
+                                    <span class="fw-extrabold text-dark fs-6">
+                                        <i class="fas fa-receipt text-primary me-1"></i> Đơn hàng #ORD-<%= order.id %>
+                                    </span>
+
+                                    <% if (order.createdAt) { %>
+                                        <span class="text-muted small">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            <%= new Date(order.createdAt).toLocaleString('vi-VN', {
+                                                day: '2-digit', month: '2-digit', year: 'numeric',
+                                                hour: '2-digit', minute: '2-digit'
+                                            }) %>
+                                        </span>
+                                    <% } %>
+
+                                    <!-- Phương thức thanh toán -->
+                                    <span class="badge rounded-pill px-3 py-1 fw-semibold"
+                                        style="background-color: #f1f5f9; color: #334155;">
+                                        <i class="<%= order.paymentMethod === 'banking' ? 'fas fa-qrcode text-primary' : 'fas fa-truck text-secondary' %> me-1"></i>
+                                        <%= order.paymentMethod === 'banking' ? 'Chuyển khoản' : 'COD' %>
+                                    </span>
+                                </div>
+
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    <!-- Trạng thái thanh toán (UNPAID, PAID, FAILED, REFUNDED) -->
+                                    <span class="badge rounded-pill px-3 py-1 fw-semibold"
+                                        style="background-color: <%= currentPayStatus.bg %>; color: <%= currentPayStatus.color %>;">
+                                        <i class="<%= currentPayStatus.icon %> me-1"></i> <%= currentPayStatus.label %>
+                                    </span>
+
+                                    <!-- Trạng thái đơn hàng -->
+                                    <span class="badge rounded-pill px-3 py-2 fw-bold"
+                                        style="background-color: <%= currentStatus.bg %>; color: <%= currentStatus.color %>;">
+                                        <i class="<%= currentStatus.icon %> me-1"></i> <%= currentStatus.label %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- DANH SÁCH SẢN PHẨM TRONG ĐƠN -->
+                            <div class="order-card-body">
+                                <% order.orderDetails.forEach((orderDetail) => { %>
+                                    <div class="order-product-row">
+                                        <a href="/detail-product/<%= orderDetail.product.id %>" class="order-product-img">
+                                            <img src="/images/product/<%= orderDetail.product.thumbnail %>"
+                                                alt="<%= orderDetail.product.name %>">
+                                        </a>
+
+                                        <div class="flex-grow-1 min-w-0">
+                                            <a href="/detail-product/<%= orderDetail.product.id %>"
+                                                class="order-product-title d-block text-truncate mb-1"
+                                                title="<%= orderDetail.product.name %>">
+                                                <%= orderDetail.product.name %>
+                                            </a>
+                                            <div class="d-flex flex-wrap align-items-center gap-3 small text-muted">
+                                                <span>
+                                                    Đơn giá: <strong class="text-dark">
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: "currency", currency: "VND" }).format(orderDetail.price) %>
+                                                    </strong>
+                                                </span>
+                                                <span>&bull;</span>
+                                                <span>Số lượng: <strong class="text-dark">x<%= orderDetail.quantity %></strong></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-column align-items-end gap-2 text-nowrap">
+                                            <div class="fw-bold text-dark">
+                                                <%= new Intl.NumberFormat('vi-VN', { style: "currency", currency: "VND" }).format(orderDetail.quantity * orderDetail.price) %>
+                                            </div>
+
+                                            <!-- NÚT ĐÁNH GIÁ SẢN PHẨM: Chỉ hiện khi đơn hàng ở trạng thái COMPLETED -->
+                                            <% if (canReview) { %>
+                                                <button type="button"
+                                                    class="btn btn-warning btn-sm rounded-pill px-3 py-1 fw-semibold text-dark shadow-sm btn-open-review-modal"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#reviewProductModal"
+                                                    data-product-id="<%= orderDetail.product.id %>"
+                                                    data-product-name="<%= orderDetail.product.name %>"
+                                                    data-product-thumb="/images/product/<%= orderDetail.product.thumbnail %>">
+                                                    <i class="fas fa-star me-1"></i> Đánh giá sản phẩm
+                                                </button>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+
+                            <!-- FOOTER ĐƠN HÀNG: ĐỊA CHỈ NHẬN, TỔNG TIỀN & NÚT THAO TÁC -->
+                            <div class="order-card-footer d-flex flex-wrap justify-content-between align-items-center gap-3">
+                                <div class="small text-muted">
+                                    <% if (order.receiverName || order.receiverAddress) { %>
+                                        <div class="mb-1">
+                                            <i class="fas fa-user text-primary me-1"></i>
+                                            <strong class="text-dark"><%= order.receiverName %></strong>
+                                            <% if (order.receiverPhone) { %>
+                                                <span>(<%= order.receiverPhone %>)</span>
+                                            <% } %>
+                                        </div>
+                                        <% if (order.receiverAddress) { %>
+                                            <div>
+                                                <i class="fas fa-map-marker-alt text-primary me-1"></i>
+                                                <span><%= order.receiverAddress %></span>
+                                            </div>
+                                        <% } %>
+                                    <% } else { %>
+                                        <span><i class="fas fa-shield-alt text-primary me-1"></i> Bảo hành chính hãng tại Laptopshop</span>
+                                    <% } %>
+                                </div>
+
+                                <div class="d-flex flex-wrap align-items-center gap-3 ms-auto">
+                                    <% if (order.discountAmount && order.discountAmount > 0) { %>
+                                        <div class="text-end small me-2">
+                                            <span class="text-muted d-block">Đã giảm Voucher</span>
+                                            <strong class="text-success">
+                                                -<%= new Intl.NumberFormat('vi-VN', { style: "currency", currency: "VND" }).format(order.discountAmount) %>
+                                            </strong>
+                                        </div>
+                                    <% } %>
+
+                                    <div class="text-end me-2">
+                                        <span class="text-muted small d-block">Tổng thanh toán</span>
+                                        <span class="fw-extrabold text-danger fs-5">
+                                            <%= new Intl.NumberFormat('vi-VN', { style: "currency", currency: "VND" }).format(order.totalPrice) %>
+                                        </span>
+                                    </div>
+
+                                    <!-- NÚT XÁC NHẬN NHẬN HÀNG: Chỉ hiện khi DELIVERED (Đã giao hàng) -->
+                                    <% if (canConfirmReceived) { %>
+                                        <button type="button"
+                                            class="btn btn-primary text-white btn-sm rounded-pill px-3 py-2 fw-semibold shadow-sm btn-open-confirm-modal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmReceivedModal"
+                                            data-order-id="<%= order.id %>">
+                                            <i class="fas fa-check-circle me-1"></i> Đã nhận được hàng
+                                        </button>
+                                    <% } %>
+
+                                    <!-- NÚT HỦY ĐƠN HÀNG: Chỉ hiện khi PENDING hoặc PROCESSING -->
+                                    <% if (canCancel) { %>
+                                        <button type="button"
+                                            class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 fw-semibold btn-open-cancel-modal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#cancelOrderModal"
+                                            data-order-id="<%= order.id %>">
+                                            <i class="fas fa-times-circle me-1"></i> Hủy đơn hàng
+                                        </button>
+                                    <% } %>
+
+                                    <% if (order.orderDetails && order.orderDetails.length > 0) { %>
+                                        <a href="/detail-product/<%= order.orderDetails[0].product.id %>"
+                                            class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-semibold">
+                                            <i class="fas fa-redo-alt me-1"></i> Mua lại
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <!-- Thông báo khi lọc tab không có đơn nào -->
+                <div id="emptyFilterState" class="order-history-card text-center py-5 px-3" style="display: none;">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h5 class="fw-bold text-dark mb-1">Không có đơn hàng nào ở trạng thái này</h5>
+                    <p class="text-muted small mb-0">Bạn có thể chọn tab "Tất cả" để xem toàn bộ lịch sử mua hàng.</p>
+                </div>
+
+            <% } else { %>
+                <!-- TRẠNG THÁI CHƯA CÓ ĐƠN HÀNG NÀO -->
+                <div class="order-history-card text-center py-5 px-3">
+                    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-light"
+                        style="width: 96px; height: 96px;">
+                        <i class="fas fa-receipt fa-3x text-muted"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-2">Bạn chưa có đơn hàng nào</h4>
+                    <p class="text-muted mb-4" style="max-width: 440px; margin: 0 auto;">
+                        Hãy khám phá các dòng laptop chính hãng cấu hình mạnh, giá tốt và đặt đơn hàng đầu tiên ngay hôm nay!
+                    </p>
+                    <a href="/products" class="btn btn-primary text-white rounded-pill px-5 py-3 fw-semibold shadow-sm">
+                        <i class="fas fa-shopping-bag me-2"></i> Khám phá sản phẩm ngay
+                    </a>
+                </div>
+            <% } %>
+
+        </div>
+    </div>
+    <!-- Order History Page End -->
+
+    <!-- Modal Đánh giá sản phẩm -->
+    <div class="modal fade" id="reviewProductModal" tabindex="-1" aria-labelledby="reviewProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+                <form id="reviewProductForm" method="POST" action="">
+                    <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                        <h5 class="modal-title fw-bold text-dark" id="reviewProductModalLabel">
+                            <i class="fas fa-star text-warning me-2"></i> Đánh giá sản phẩm
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4 py-3">
+                        <!-- Thông tin laptop đang đánh giá -->
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light mb-3">
+                            <img id="reviewModalThumb" src="" alt=""
+                                style="width: 56px; height: 56px; object-fit: contain; background: #fff; border-radius: 8px; padding: 4px; border: 1px solid #e2e8f0;">
+                            <div class="fw-bold text-dark small" id="reviewModalProductName"></div>
+                        </div>
+
+                        <!-- Chọn số sao -->
+                        <div class="text-center mb-3">
+                            <label class="form-label fw-semibold text-dark small d-block mb-1">
+                                Chất lượng sản phẩm
+                            </label>
+                            <input type="hidden" name="rating" id="reviewRatingInput" value="5" required>
+                            <div class="d-inline-flex align-items-center gap-2" id="modalStarContainer">
+                                <i class="fas fa-star modal-star-btn active" data-value="1"></i>
+                                <i class="fas fa-star modal-star-btn active" data-value="2"></i>
+                                <i class="fas fa-star modal-star-btn active" data-value="3"></i>
+                                <i class="fas fa-star modal-star-btn active" data-value="4"></i>
+                                <i class="fas fa-star modal-star-btn active" data-value="5"></i>
+                            </div>
+                            <div id="ratingTextLabel" class="small fw-bold text-warning mt-1">Tuyệt vời (5/5)</div>
+                        </div>
+
+                        <!-- Nội dung nhận xét -->
+                        <div>
+                            <label for="reviewComment" class="form-label fw-semibold text-dark small">
+                                Chia sẻ cảm nhận của bạn <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control rounded-3" id="reviewComment" name="comment" rows="3"
+                                placeholder="Máy chạy mượt, màn hình đẹp, đóng gói cẩn thận..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+                        <button type="submit" class="btn btn-primary text-white rounded-pill px-4 fw-semibold">
+                            <i class="fas fa-paper-plane me-1"></i> Gửi đánh giá
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận đã nhận được hàng -->
+    <div class="modal fade" id="confirmReceivedModal" tabindex="-1" aria-labelledby="confirmReceivedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+                <form id="confirmReceivedForm" method="POST" action="">
+                    <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                        <h5 class="modal-title fw-bold text-dark" id="confirmReceivedModalLabel">
+                            <i class="fas fa-box-check text-success me-2"></i>
+                            Xác nhận đã nhận hàng <span id="confirmOrderCode" class="text-primary"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4 py-3">
+                        <p class="text-muted small mb-2">
+                            Vui lòng kiểm tra kỹ ngoại quan, tem niêm phong và phụ kiện đi kèm trước khi xác nhận.
+                        </p>
+                        <div class="p-3 rounded-3 small" style="background-color: rgba(129, 196, 8, 0.1); color: #3f6212;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Sau khi xác nhận, đơn hàng sẽ chuyển sang trạng thái <strong>Hoàn thành</strong>.
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+                        <button type="submit" class="btn btn-primary text-white rounded-pill px-4 fw-semibold">
+                            <i class="fas fa-check me-1"></i> Xác nhận đã nhận hàng
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận hủy đơn hàng -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+                <form id="cancelOrderForm" method="POST" action="">
+                    <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                        <h5 class="modal-title fw-bold text-dark" id="cancelOrderModalLabel">
+                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                            Xác nhận hủy đơn hàng <span id="cancelOrderCode" class="text-danger"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4 py-3">
+                        <p class="text-muted small mb-3">
+                            Bạn có chắc chắn muốn hủy đơn hàng này không? Thao tác này không thể hoàn tác sau khi xác nhận.
+                        </p>
+                        <label for="cancelReason" class="form-label fw-semibold small text-dark">
+                            Lý do hủy đơn (không bắt buộc)
+                        </label>
+                        <select class="form-select rounded-3" id="cancelReason" name="cancelReason">
+                            <option value="Đổi ý, không muốn mua nữa">Đổi ý, không muốn mua nữa</option>
+                            <option value="Muốn thay đổi sản phẩm / cấu hình khác">Muốn thay đổi sản phẩm / cấu hình khác</option>
+                            <option value="Cập nhật lại địa chỉ / số điện thoại nhận hàng">Cập nhật lại địa chỉ / số điện thoại nhận hàng</option>
+                            <option value="Quên áp dụng mã giảm giá (Voucher)">Quên áp dụng mã giảm giá (Voucher)</option>
+                            <option value="Lý do khác">Lý do khác</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
+                            Giữ lại đơn
+                        </button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold">
+                            Xác nhận hủy đơn
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <%- include('../layout/footer') %>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+
+    <!-- Script lọc nhanh đơn hàng & gán ID cho các Modal -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 1. Lọc đơn hàng theo tab trạng thái
+            const filterBtns = document.querySelectorAll(".order-filter-btn");
+            const orderCards = document.querySelectorAll(".order-history-card[data-order-status]");
+            const emptyState = document.getElementById("emptyFilterState");
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    filterBtns.forEach(b => b.classList.remove("active"));
+                    this.classList.add("active");
+
+                    const filterValue = this.dataset.filter;
+                    let visibleCount = 0;
+
+                    orderCards.forEach(card => {
+                        if (filterValue === "ALL" || card.dataset.orderStatus === filterValue) {
+                            card.style.display = "block";
+                            visibleCount++;
+                        } else {
+                            card.style.display = "none";
+                        }
+                    });
+
+                    if (emptyState) {
+                        emptyState.style.display = visibleCount === 0 ? "block" : "none";
+                    }
+                });
+            });
+
+            // 2. Truyền orderId vào form hủy đơn khi mở Modal
+            const cancelForm = document.getElementById("cancelOrderForm");
+            const cancelOrderCode = document.getElementById("cancelOrderCode");
+
+            document.querySelectorAll(".btn-open-cancel-modal").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const orderId = this.dataset.orderId;
+                    if (cancelForm) cancelForm.action = `/cancel-order/${orderId}`;
+                    if (cancelOrderCode) cancelOrderCode.textContent = `#ORD-${orderId}`;
+                });
+            });
+
+            // 3. Truyền orderId vào form xác nhận nhận hàng khi mở Modal
+            const confirmForm = document.getElementById("confirmReceivedForm");
+            const confirmOrderCode = document.getElementById("confirmOrderCode");
+
+            document.querySelectorAll(".btn-open-confirm-modal").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const orderId = this.dataset.orderId;
+                    if (confirmForm) confirmForm.action = `/confirm-received/${orderId}`;
+                    if (confirmOrderCode) confirmOrderCode.textContent = `#ORD-${orderId}`;
+                });
+            });
+
+            // 4. Truyền thông tin sản phẩm vào Modal đánh giá & xử lý chọn sao
+            const reviewForm = document.getElementById("reviewProductForm");
+            const reviewThumb = document.getElementById("reviewModalThumb");
+            const reviewName = document.getElementById("reviewModalProductName");
+            const ratingInput = document.getElementById("reviewRatingInput");
+            const ratingLabel = document.getElementById("ratingTextLabel");
+            const starBtns = document.querySelectorAll(".modal-star-btn");
+            const ratingDescriptions = {
+                1: "Rất tệ (1/5)",
+                2: "Không hài lòng (2/5)",
+                3: "Bình thường (3/5)",
+                4: "Hài lòng (4/5)",
+                5: "Tuyệt vời (5/5)"
+            };
+
+            function updateStars(value) {
+                if (ratingInput) ratingInput.value = value;
+                if (ratingLabel) ratingLabel.textContent = ratingDescriptions[value] || "";
+                starBtns.forEach(star => {
+                    const starVal = Number(star.dataset.value);
+                    star.classList.toggle("active", starVal <= value);
+                });
+            }
+
+            starBtns.forEach(star => {
+                star.addEventListener("click", function () {
+                    updateStars(Number(this.dataset.value));
+                });
+            });
+
+            document.querySelectorAll(".btn-open-review-modal").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const productId = this.dataset.productId;
+                    if (reviewForm) reviewForm.action = `/product/review/${productId}`;
+                    if (reviewName) reviewName.textContent = this.dataset.productName;
+                    if (reviewThumb) {
+                        reviewThumb.src = this.dataset.productThumb;
+                        reviewThumb.alt = this.dataset.productName;
+                    }
+                    updateStars(5);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

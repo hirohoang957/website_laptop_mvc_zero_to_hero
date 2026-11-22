@@ -12,8 +12,8 @@ const configPassportLocal = () => {
     }, async function verify(req, username, password, callback) {
         // reset messages error
         const { session } = req as any;
-        if (session?.message?.length) {
-            session.message = []
+        if (session?.messages?.length) {
+            session.messages = []
         }
 
         // check user exist in database
@@ -22,13 +22,13 @@ const configPassportLocal = () => {
         );
         if (!user) {
             // throw new Error(`Username: ${username} not found!!`);
-            return callback(null, false, { message: `Username/password invalid!!` });
+            return callback(null, false, { message: "Email hoặc mật khẩu không chính xác!" });
         }
         // compare password
         const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             // throw new Error(`Invalid password!!`);
-            return callback(null, false, { message: `Username/password invalid!!` });
+            return callback(null, false, { message: "Email hoặc mật khẩu không chính xác!" });
         }
 
         return callback(null, user as any);
