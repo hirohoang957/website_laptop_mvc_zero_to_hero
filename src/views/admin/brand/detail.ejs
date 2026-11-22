@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Detail Brand - Khiem</title>
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const logoFile = $("#logoFile");
+            logoFile.change(function (e) {
+                if (e.target.files && e.target.files[0]) {
+                    const imgURL = URL.createObjectURL(e.target.files[0]);
+                    $("#logoPreview").attr("src", imgURL);
+                    $("#logoPreview").css({ "display": "block" });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="sb-nav-fixed">
+    <%- include('../layout/header') %>
+
+        <div id="layoutSidenav">
+            <%- include('../layout/sidenav') %>
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Manage Brands</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin/brand">Brands</a></li>
+                            </ol>
+                            <div class="row">
+                                <div class="col-6 mx-auto">
+                                    <div>
+                                        <% errors.forEach(function(error) { %>
+                                            <div class="alert alert-danger mb-3">
+                                                <%= error %>
+                                            </div>
+                                        <% }); %>
+                                        <h5 style="padding: 10px 0;">View detail brand id <%= brand.id %></h5>
+                                        <form action="/admin/handle-update-brand" method="post"
+                                            enctype="multipart/form-data">
+                                            <div class="row">
+                                                <input name="id" type="text" value="<%= brand.id %>" style="display: none;">
+                                                <div class="mb-3 col-12">
+                                                    <label class="form-label">Brand Name <span
+                                                            class="text-danger">*</span></label>
+                                                    <input name="name" type="text" class="form-control"
+                                                        placeholder="Enter brand name" required
+                                                        value="<%= brand.name %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="logoFile" class="form-label">Logo</label>
+                                                <input class="form-control" type="file" id="logoFile"
+                                                    accept=".png, .jpg, .jpeg, .webp, .svg" name="logo">
+                                            </div>
+                                            <div class="mb-3">
+                                                <% if (brand.logo) { %>
+                                                    <img style="max-height: 250px; display: block;" alt="logo preview"
+                                                        id="logoPreview" src="/images/brand/<%= brand.logo %>" class="img-thumbnail" />
+                                                <% } else { %>
+                                                    <img style="max-height: 250px; display: none;" alt="logo preview"
+                                                        id="logoPreview" class="img-thumbnail" />
+                                                <% } %>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <button type="submit" class="btn btn-warning">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <%- include('../layout/footer') %>
+                </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+        <script src="/admin/js/scripts.js"></script>
+</body>
+
+</html>

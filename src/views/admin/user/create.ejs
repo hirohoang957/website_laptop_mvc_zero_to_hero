@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Create Users - Khiem</title>
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const avatarFile = $("#avatarFile");
+            avatarFile.change(function (e) {
+                const imgURL = URL.createObjectURL(e.target.files[0]);
+                $("#avatarPreview").attr("src", imgURL);
+                $("#avatarPreview").css({ "display": "block" });
+            })
+        });
+    </script>
+</head>
+
+<body class="sb-nav-fixed">
+    <%- include('../layout/header') %>
+
+        <div id="layoutSidenav">
+            <%- include('../layout/sidenav') %>
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Manage Users</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin/user">Users</a></li>
+                            </ol>
+                            <div class="row">
+                                <div class="col-6 mx-auto">
+                                    <div>
+                                        <% errors.forEach(function(error) { %>
+                                            <div class="alert alert-danger mb-3">
+                                                <%= error %>
+                                            </div>
+                                            <% }); %>
+                                        <h5 style="padding: 10px 0;">Create a user</h5>
+                                        <form action="/admin/handle-create-user" method="post"
+                                            enctype="multipart/form-data">
+                                            <div class="row">
+                                                <div class="mb-3 col-12">
+                                                    <label class="form-label">Email <span
+                                                            class="text-danger">*</span></label>
+                                                    <input name="email" type="text" class="form-control"
+                                                        placeholder="Enter your email" required value="<%= oldData.email %>">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="mb-3 col-6">
+                                                    <label class="form-label">Password <span
+                                                            class="text-danger">*</span></label>
+                                                    <input name="password" type="password" class="form-control"
+                                                        placeholder="Enter your password" required value="<%= oldData.password %>">
+                                                </div>
+                                                <div class="mb-3 col-6">
+                                                    <label class="form-label">Confirm Password <span
+                                                            class="text-danger">*</span></label>
+                                                    <input name="confirmPassword" type="password" class="form-control"
+                                                        placeholder="Confirm your password" required value="<%= oldData.confirmPassword %>">
+                                                    
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row">
+                                                <div class="mb-3 col-6">
+                                                    <label class="form-label">Full Name</label>
+                                                    <input name="fullName" type="text" class="form-control"
+                                                        placeholder="Enter your full name" value="<%= oldData.fullName %>">
+                                                </div>
+                                                <div class="mb-3 col-6">
+                                                    <label class="form-label">Phone</label>
+                                                    <input name="phone" type="text" class="form-control"
+                                                        placeholder="Enter your phone" value="<%= oldData.phone %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mb-3 col-6">
+                                                    <label class="form-label">Role <span
+                                                            class="text-danger">*</span></label>
+                                                    <select name="roleId" class="form-select" required>
+                                                        <% roles.forEach(function(role) { %>
+                                                            <option value="<%= role.id %>" <%= oldData.roleId==role.id ? 'selected' : '' %>>
+                                                                <%= role.name %>
+                                                            </option>
+                                                            <% }); %>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-6">
+                                                    <label class="form-label">Status <span
+                                                            class="text-danger">*</span></label>
+                                                    <select name="status" class="form-select" required>
+                                                        <option value="1" <%= oldData.status==="1" ? 'selected' : '' %>>Hoạt động</option>
+                                                        <option value="0" <%= oldData.status==="0" ? 'selected' : '' %>>Khóa</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="avatarFile" class="form-label">Avatar</label>
+                                                <input class="form-control" type="file" id="avatarFile"
+                                                    accept=".png, .jpg, .jpeg" name="avatar">
+                                            </div>
+                                            <div class="mb-3">
+                                                <img style="max-height: 200px; display: none;" alt="Avatar preview"
+                                                    id="avatarPreview" class="img-thumbnail" />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Address</label>
+                                                <textarea name="address" class="form-control" rows="2"
+                                                    placeholder="Enter address..."><%= oldData.address %></textarea>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <button type="submit" class="btn btn-primary">Create User</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                    </main>
+                    <%- include('../layout/footer') %>
+                </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+        <script src="/admin/js/scripts.js"></script>
+</body>
+
+</html>

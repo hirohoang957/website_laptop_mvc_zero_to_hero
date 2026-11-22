@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Manage Products - Khiem</title>
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    <%- include('../layout/header') %>
+
+        <div id="layoutSidenav">
+            <%- include('../layout/sidenav') %>
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Manage Products</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Products</li>
+                            </ol>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h5>Table Products</h5>
+                                    <div>
+                                        <a class="btn btn-warning" href="/admin/create-product">Create a new product</a>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Name</th>
+                                                <th>Thumbnail</th>
+                                                <th>PriceOrigin</th>
+                                                <th>PriceCurr</th>
+                                                <th>Quantity</th>
+                                                <th>Sold</th>
+                                                <th>Brand</th>
+                                                <th>Category</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% products.forEach(function(product) { %>
+                                                <tr>
+                                                    <td>
+                                                        <%= product.id %>
+                                                    </td>
+                                                    <td>
+                                                        <%= product.name %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (product.thumbnail) { %>
+                                                            <img height="80" width="80" style="object-fit: cover;"
+                                                                src="/images/product/<%= product.thumbnail %>"
+                                                                alt="<%= product.name %>" />
+                                                            <% } else { %>
+                                                                <span class="text-muted small">No image</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <%= product.priceOrigin.toLocaleString('vi-VN') %> ₫
+                                                    </td>
+                                                    <td>
+                                                        <%= product.priceCurr.toLocaleString('vi-VN') %> ₫
+                                                    </td>
+                                                    <td>
+                                                        <%= product.quantity %>
+                                                    </td>
+                                                    <td>
+                                                        <%= product.sold %>
+                                                    </td>
+                                                    <td>
+                                                        <% const brand=brands.find(brand=> brand.id === product.brandId); %>
+                                                            <%= brand ? brand.name : 'Unknown' %>
+                                                    </td>
+                                                    <td>
+                                                        <% const category=categories.find(category=> category.id === product.categoryId); %>
+                                                            <%= category ? category.name : 'Unknown' %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (product.status===1) { %>
+                                                            <span class="badge bg-success">Hoạt động</span>
+                                                            <% } else { %>
+                                                                <span class="badge bg-danger">Khóa</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <div style="display: flex; gap: 8px;">
+                                                            <a href="/admin/handle-view-product/<%= product.id %>"
+                                                                class="btn btn-primary btn-sm">View</a>
+                                                            <form action="/admin/handle-delete-product/<%= product.id %>"
+                                                                method="post"
+                                                                onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                                                <button type="submit"
+                                                                    class="btn btn-danger btn-sm">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <%- include('../layout/footer') %>
+                </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+        <script src="/admin/js/scripts.js"></script>
+</body>
+
+</html>

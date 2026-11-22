@@ -1,0 +1,253 @@
+<style>
+    /* Làm nổi bật mục menu của trang hiện tại */
+    .navbar-nav .nav-link {
+        font-weight: 500;
+        position: relative;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .navbar-nav .nav-link.active {
+        color: #81c408 !important; /* Màu xanh chủ đạo của template (bạn có thể đổi sang #0d6efd nếu dùng xanh dương) */
+        font-weight: 700 !important;
+    }
+
+    /* Thêm gạch chân nhỏ tinh tế dưới chữ đang chọn (trên màn hình lớn) */
+    @media (min-width: 1200px) {
+        .navbar-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            bottom: 4px;
+            left: 12px;
+            right: 12px;
+            height: 3px;
+            background-color: #81c408; /* Đồng bộ với màu chữ active ở trên */
+            border-radius: 2px;
+        }
+    }
+</style>
+
+<div class="container-fluid fixed-top shadow-sm bg-white px-0">
+    <!-- 1. TOPBAR -->
+    <div class="container topbar bg-primary d-none d-lg-block">
+        <div class="d-flex justify-content-between">
+            <div class="top-info ps-2">
+                <% if (user) { %>
+                    <small class="me-3">
+                        <i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                        <a href="#" class="text-white text-decoration-none">
+                            <%= user?.address || "Chưa cập nhật địa chỉ" %>
+                        </a>
+                    </small>
+                    <small class="me-3">
+                        <i class="fas fa-envelope me-2 text-secondary"></i>
+                        <a href="#" class="text-white text-decoration-none">
+                            <%= user?.username ?? "" %>
+                        </a>
+                    </small>
+                    <% } else { %>
+                        <small class="me-3 text-white">
+                            <i class="fas fa-headset me-2 text-secondary"></i>
+                            Hotline: 1900 1234
+                        </small>
+                        <small class="me-3 text-white">
+                            <i class="fas fa-shipping-fast me-2 text-secondary"></i>
+                            Miễn phí giao hàng toàn quốc
+                        </small>
+                        <% } %>
+            </div>
+            <div class="top-link pe-2">
+                <a href="#" class="text-white"><small class="text-white mx-2">Chính sách bảo hành</small>/</a>
+                <a href="#" class="text-white"><small class="text-white mx-2">Hỗ trợ kỹ thuật</small></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN NAVBAR -->
+    <div class="container px-0">
+        <nav class="navbar navbar-light bg-white navbar-expand-xl py-2">
+            <a href="/" class="navbar-brand">
+                <h1 class="text-primary display-6 mb-0">Laptopshop</h1>
+            </a>
+
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars text-primary"></span>
+            </button>
+
+            <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                <!-- Danh sách các trang -->
+
+                    <div class="navbar-nav mx-auto">
+                        <a href="/" class="nav-item nav-link <%= currentPath === '/' ? 'active' : '' %>">
+                            Trang Chủ
+                        </a>
+
+                        <!-- Dùng startsWith('/product') để khi vào /products hay /product/12 đều sáng mục Sản Phẩm -->
+                        <a href="/products"
+                            class="nav-item nav-link <%= currentPath.startsWith('/product') ? 'active' : '' %>">
+                            Sản Phẩm
+                        </a>
+
+                        <a href="/brands"
+                            class="nav-item nav-link <%= currentPath.startsWith('/brands') ? 'active' : '' %>">
+                            Thương Hiệu
+                        </a>
+
+                        <a href="/promotions"
+                            class="nav-item nav-link <%= currentPath.startsWith('/promotions') ? 'active' : '' %>">
+                            Khuyến Mãi
+                        </a>
+
+                        <a href="/news"
+                            class="nav-item nav-link <%= currentPath.startsWith('/news') ? 'active' : '' %>">
+                            Tin Công Nghệ
+                        </a>
+
+                        <a href="/contact"
+                            class="nav-item nav-link <%= currentPath.startsWith('/contact') ? 'active' : '' %>">
+                            Liên Hệ
+                        </a>
+
+                        <% if (user && user.role?.name==='ADMIN' ) { %>
+                            <a href="/admin"
+                                class="nav-item nav-link text-danger fw-semibold <%= currentPath.startsWith('/admin') ? 'active' : '' %>">
+                                Quản Trị
+                            </a>
+                            <% } %>
+                    </div>
+                
+
+                <!-- Cụm icon bên phải: Tìm kiếm + Giỏ hàng + Tài khoản -->
+                <div class="d-flex align-items-center m-3 me-0">
+                    <!-- Nút bật/tắt thanh tìm kiếm -->
+                    <button type="button" id="btnToggleSearch"
+                        class="btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                        data-bs-toggle="collapse" data-bs-target="#headerSearchPopup" aria-expanded="false"
+                        aria-controls="headerSearchPopup" title="Tìm kiếm sản phẩm">
+                        <i class="fas fa-search text-primary"></i>
+                    </button>
+
+                    <!-- Giỏ hàng -->
+                    <a href="/cart" class="position-relative me-4 my-auto" title="Giỏ hàng">
+                        <i class="fa fa-shopping-bag fa-2x"></i>
+                        <% if (user) { %>
+                            <span
+                                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark fw-bold px-1"
+                                style="top: -5px; left: 15px; height: 20px; min-width: 20px; font-size: 12px;">
+                                <%= user.sumCart ?? 0 %>
+                            </span>
+                            <% } %>
+                    </a>
+
+                    <!-- Tài khoản -->
+                    <% if (user) { %>
+                        <div class="dropdown my-auto">
+                            <a href="#" class="dropdown-toggle text-decoration-none" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end p-4 shadow" aria-labelledby="dropdownMenuLink">
+                                <li class="d-flex align-items-center flex-column" style="min-width: 260px;">
+                                    <img style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover;"
+                                        src="<%= user.avatar ? '/images/' + user.avatar : '/images/default-avatar.png' %>"
+                                        alt="Avatar" />
+                                    <div class="text-center fw-bold mt-3 mb-1">
+                                        <%= user.fullName %>
+                                    </div>
+                                    <small class="text-muted mb-2">
+                                        <%= user.username %>
+                                    </small>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="/account">
+                                        <i class="fas fa-user-cog me-2 text-primary"></i>Quản lý tài khoản
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="/order-history">
+                                        <i class="fas fa-history me-2 text-primary"></i>Lịch sử mua hàng
+                                    </a>
+                                </li>
+                                <% if (user.role?.name==='ADMIN' ) { %>
+                                    <li>
+                                        <a class="dropdown-item py-2 text-danger" href="/admin">
+                                            <i class="fas fa-tools me-2"></i>Quản trị hệ thống
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <form method="post" action="/logout">
+                                                <button type="submit" class="dropdown-item py-2 text-danger">
+                                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                                </button>
+                                            </form>
+                                        </li>
+                            </ul>
+                        </div>
+                        <% } else { %>
+                            <a href="/login" class="btn btn-outline-primary rounded-pill px-3 py-1 fw-semibold">
+                                <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                            </a>
+                            <% } %>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 3. POPUP THANH TÌM KIẾM PHÍA DƯỚI HEADER (Mặc định ẩn) -->
+    <div class="collapse bg-light border-top shadow-sm" id="headerSearchPopup">
+        <div class="container py-3">
+            <form action="/products" method="get" class="row justify-content-center">
+                <div class="col-12 col-md-9 col-lg-7">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white border-end-0 text-primary">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="headerSearchInput" name="keyword"
+                            class="form-control border-start-0 border-end-0"
+                            placeholder="Nhập tên laptop, hãng, CPU, card đồ họa..."
+                            value="<%= typeof keyword !== 'undefined' ? keyword : '' %>">
+                        <button class="btn btn-primary text-white px-4 fw-semibold" type="submit">
+                            Tìm kiếm
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse"
+                            data-bs-target="#headerSearchPopup" title="Đóng">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script tự động focus vào ô tìm kiếm khi mở popup & đóng khi bấm ra ngoài -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchPopup = document.getElementById("headerSearchPopup");
+        const searchInput = document.getElementById("headerSearchInput");
+        const toggleBtn = document.getElementById("btnToggleSearch");
+
+        if (searchPopup && searchInput) {
+            // Tự động đặt con trỏ chuột vào ô input ngay khi popup mở ra
+            searchPopup.addEventListener("shown.bs.collapse", function () {
+                searchInput.focus();
+            });
+
+            // Đóng popup khi người dùng click ra ngoài vùng header
+            document.addEventListener("click", function (event) {
+                const isClickInside = searchPopup.contains(event.target) || toggleBtn.contains(event.target);
+                if (!isClickInside && searchPopup.classList.contains("show")) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(searchPopup);
+                    if (bsCollapse) bsCollapse.hide();
+                }
+            });
+        }
+    });
+</script>

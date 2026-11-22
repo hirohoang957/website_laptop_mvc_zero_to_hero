@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Create Product - Khiem</title>
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 1. Preview 1 ảnh Thumbnail
+            const thumbnailFile = $("#thumbnailFile");
+            thumbnailFile.change(function (e) {
+                if (e.target.files && e.target.files[0]) {
+                    const imgURL = URL.createObjectURL(e.target.files[0]);
+                    $("#thumbnailPreview").attr("src", imgURL);
+                    $("#thumbnailPreview").css({ "display": "block" });
+                }
+            });
+
+            // 2. Preview nhiều ảnh con (Gallery Images)
+            const galleryFiles = $("#galleryFiles");
+            galleryFiles.change(function (e) {
+                const previewContainer = $("#galleryPreview");
+                previewContainer.empty(); // Xóa preview cũ nếu chọn lại
+
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    Array.from(files).forEach(function (file) {
+                        const imgURL = URL.createObjectURL(file);
+                        const col = $(`
+                            <div class="col-6 col-md-3 col-lg-2">
+                                <img src="${imgURL}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" alt="gallery preview" />
+                            </div>
+                        `);
+                        previewContainer.append(col);
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="sb-nav-fixed">
+    <%- include('../layout/header') %>
+
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Manage Product</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/product">Product</a></li>
+                    </ol>
+                    <div class="row">
+                        <div class="col-lg-10 col-12 mx-auto">
+                            <div>
+                                    <% errors.forEach(function(error) { %>
+                                        <div class="alert alert-danger mb-3">
+                                            <%= error %>
+                                        </div>
+                                    <% }); %>
+                                <h5 class="py-2">Create a product</h5>
+                                <form action="/admin/handle-create-product" method="post" enctype="multipart/form-data">
+                                    
+                                    <!-- 1. THÔNG TIN CƠ BẢN -->
+                                    <div class="card mb-4">
+                                        <div class="card-header fw-bold">General Information</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Product Name:</label>
+                                                    <input name="name" type="text" class="form-control" value="<%= oldData?.name%>" required>
+                                                </div>
+                                                <div class="mb-3 col-md-3">
+                                                    <label class="form-label">Brand:</label>
+                                                    <select name="brandId" class="form-select" required>
+                                                        <option value="">-- Select Brand --</option>
+                                                        <% brands.forEach(function(brand) { %>
+                                                            <option value="<%= brand.id %>" <%= String(oldData?.brandId) === String(brand.id) ? 'selected' : '' %>>
+                                                                <%= brand.name %>
+                                                            </option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-3">
+                                                    <label class="form-label">Category:</label>
+                                                    <select name="categoryId" class="form-select" required>
+                                                        <option value="">-- Select Category --</option>
+                                                        <% categories.forEach(function(category) { %>
+                                                            <option value="<%= category.id %>" <%= String(oldData?.categoryId) === String(category.id) ? 'selected' : '' %>>
+                                                                <%= category.name %>
+                                                            </option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Short Description:</label>
+                                                <input type="text" class="form-control" name="shortDesc" value="<%= oldData?.shortDesc || '' %>" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Detail Description:</label>
+                                                <textarea name="detailDesc" class="form-control" rows="10" required><%= oldData?.detailDesc || '' %></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. GIÁ & KHO HÀNG -->
+                                    <div class="card mb-4">
+                                        <div class="card-header fw-bold">Pricing & Inventory</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Original Price (VNĐ):</label>
+                                                    <input name="priceOrigin" type="number" class="form-control" value="<%= oldData?.priceOrigin || '' %>" required>
+                                                </div>
+                                                <!-- <div class="mb-3 col-md-3">
+                                                    <label class="form-label">Current Price (VNĐ):</label>
+                                                    <input name="priceCurr" type="number" class="form-control" value="<%= oldData?.priceCurr || '' %>" required>
+                                                </div> -->
+                                                <div class="mb-3 col-md-3">
+                                                    <label class="form-label">Quantity:</label>
+                                                    <input name="quantity" type="number" class="form-control" value="<%= oldData?.quantity || '' %>" required>
+                                                </div>
+                                                <div class="mb-3 col-md-3">
+                                                    <label class="form-label">Status:</label>
+                                                    <select name="status" class="form-select">
+                                                        <option value="1" <%= oldData?.status == '1' ? '' : 'selected' %>>Hoạt động</option>
+                                                        <option value="0" <%= oldData?.status == '0' ? 'selected' : '' %>>Khóa</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. CẤU HÌNH PHẦN CỨNG -->
+                                    <div class="card mb-4">
+                                        <div class="card-header fw-bold">Hardware Specifications</div>
+                                        <div class="card-body">
+                                            <!-- CPU -->
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">CPU:</label>
+                                                    <input name="cpu" type="text" class="form-control" placeholder="e.g. Intel Core i7-13700H" value="<%= oldData?.cpu || '' %>" required>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">CPU Type:</label>
+                                                    <select name="cpuType" class="form-select" required>
+                                                        <option value="">-- Select CPU Type --</option>
+                                                        <% const cpuTypes = ['Intel Core i3', 'Intel Core i5', 'Intel Core i7', 'Intel Core i9', 'Intel Core Ultra', 'AMD Ryzen 3', 'AMD Ryzen 5', 'AMD Ryzen 7', 'AMD Ryzen 9', 'Apple M1', 'Apple M2', 'Apple M3', 'Apple M4']; %>
+                                                        <% cpuTypes.forEach(function(type) { %>
+                                                            <option value="<%= type %>" <%= oldData?.cpuType === type ? 'selected' : '' %>><%= type %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- RAM (SELECT) -->
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">RAM:</label>
+                                                    <select name="ram" class="form-select" required>
+                                                        <option value="">-- Select RAM --</option>
+                                                        <% const ramOptions = [4, 8, 16, 24, 32, 64, 128, 256]; %>
+                                                        <% ramOptions.forEach(function(size) { %>
+                                                            <option value="<%= size %>" <%= String(oldData?.ram) === String(size) ? 'selected' : '' %>>
+                                                                <%= size %> GB
+                                                            </option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">RAM Type:</label>
+                                                    <select name="ramType" class="form-select" required>
+                                                        <option value="">-- Select RAM Type --</option>
+                                                        <% const ramTypes = ['DDR3','DDR4', 'DDR5', 'LPDDR4X', 'LPDDR5', 'LPDDR5X', 'Unified Memory']; %>
+                                                        <% ramTypes.forEach(function(type) { %>
+                                                            <option value="<%= type %>" <%= oldData?.ramType === type ? 'selected' : '' %>><%= type %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- STORAGE (SELECT) -->
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Storage:</label>
+                                                    <select name="storage" class="form-select" required>
+                                                        <option value="">-- Select Storage --</option>
+                                                        <% const storageOptions = [
+                                                            { value: 128, label: '128 GB' },
+                                                            { value: 256, label: '256 GB' },
+                                                            { value: 512, label: '512 GB' },
+                                                            { value: 1024, label: '1 TB (1024 GB)' },
+                                                            { value: 2048, label: '2 TB (2048 GB)' },
+                                                            { value: 4096, label: '4 TB (4096 GB)' }
+                                                        ]; %>
+                                                        <% storageOptions.forEach(function(item) { %>
+                                                            <option value="<%= item.value %>" <%= String(oldData?.storage) === String(item.value) ? 'selected' : '' %>>
+                                                                <%= item.label %>
+                                                            </option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Storage Type:</label>
+                                                    <select name="storageType" class="form-select" required>
+                                                        <option value="">-- Select Storage Type --</option>
+                                                        <% const storageTypes = ['SSD NVMe PCIe Gen 3', 'SSD NVMe PCIe Gen 4', 'SSD NVMe PCIe Gen 5', 'SSD SATA', 'SSD', 'HDD']; %>
+                                                        <% storageTypes.forEach(function(type) { %>
+                                                            <option value="<%= type %>" <%= oldData?.storageType === type ? 'selected' : '' %>><%= type %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- GPU & GPU TYPE (SELECT) -->
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">GPU:</label>
+                                                    <input name="gpu" type="text" class="form-control" placeholder="e.g. NVIDIA GeForce RTX 4060 8GB" value="<%= oldData?.gpu || '' %>" required>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">GPU Type:</label>
+                                                    <select name="gpuType" class="form-select" required>
+                                                        <option value="">-- Select GPU Type --</option>
+                                                        <% const gpuTypes = ['Onboard', 'Dedicated']; %>
+                                                        <% gpuTypes.forEach(function(type) { %>
+                                                            <option value="<%= type %>" <%= oldData?.gpuType === type ? 'selected' : '' %>><%= type %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 4. MÀN HÌNH & THIẾT KẾ -->
+                                    <div class="card mb-4">
+                                        <div class="card-header fw-bold">Display & Design</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Screen Size (inch):</label>
+                                                    <input name="screenSize" type="number" step="0.1" class="form-control" placeholder="e.g. 15.6" value="<%= oldData?.screenSize || '' %>" required>
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Resolution:</label>
+                                                    <select name="resolution" class="form-select" required>
+                                                        <option value="">-- Select Resolution --</option>
+                                                        <% const resolutionOptions = [
+                                                            '1366x768 (HD)',
+                                                            '1920x1080 (Full HD)',
+                                                            '1920x1200 (WUXGA / FHD+)',
+                                                            '2560x1440 (2K QHD)',
+                                                            '2560x1600 (2.5K WQXGA)',
+                                                            '2560x1664 (Liquid Retina)',
+                                                            '2880x1800 (2.8K OLED)',
+                                                            '3024x1964 (Liquid Retina XDR)',
+                                                            '3456x2234 (3.5K Liquid Retina XDR)',
+                                                            '3840x2160 (4K UHD)',
+                                                            '3840x2400 (4K+ WQUXGA)'
+                                                        ]; %>
+                                                        <% resolutionOptions.forEach(function(res) { %>
+                                                            <option value="<%= res %>" <%= oldData?.resolution === res ? 'selected' : '' %>>
+                                                                <%= res %>
+                                                            </option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                                <!-- OS (SELECT) -->
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Operating System (OS):</label>
+                                                    <select name="os" class="form-select" required>
+                                                        <option value="">-- Select OS --</option>
+                                                        <% const osOptions = ['Windows 11 Home', 'Windows 11 Pro', 'Windows 10 Home', 'Windows 10 Pro', 'macOS', 'Linux / Ubuntu', 'FreeDOS / No OS']; %>
+                                                        <% osOptions.forEach(function(osItem) { %>
+                                                            <option value="<%= osItem %>" <%= oldData?.os === osItem ? 'selected' : '' %>><%= osItem %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Battery:</label>
+                                                    <input name="battery" type="text" class="form-control" placeholder="e.g. 4-cell, 72Wh" value="<%= oldData?.battery || '' %>" required>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Weight (kg):</label>
+                                                    <input name="weight" type="number" step="0.01" class="form-control" placeholder="e.g. 1.85" value="<%= oldData?.weight || '' %>" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 5. HÌNH ẢNH -->
+                                    <div class="card mb-4">
+                                        <div class="card-header fw-bold">Product Images</div>
+                                        <div class="card-body">
+                                            <!-- Ảnh đại diện (Thumbnail) -->
+                                            <div class="mb-4">
+                                                <label for="thumbnailFile" class="form-label fw-semibold">Thumbnail (Ảnh đại diện chính):</label>
+                                                <input class="form-control" type="file" id="thumbnailFile" accept=".png, .jpg, .jpeg, .webp" name="thumbnail">
+                                                <img style="max-height: 250px; display: none;" alt="thumbnail preview" id="thumbnailPreview" class="img-thumbnail mt-3" />
+                                            </div>
+
+                                            <hr />
+
+                                            <!-- Nhiều ảnh con (Gallery Images) -->
+                                            <div class="mb-3">
+                                                <label for="galleryFiles" class="form-label fw-semibold">Detail Images (Chọn nhiều ảnh chi tiết - tối đa 10 ảnh):</label>
+                                                <input class="form-control" type="file" id="galleryFiles" accept=".png, .jpg, .jpeg, .webp" name="images" multiple>
+                                                <div id="galleryPreview" class="row g-3 mt-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-5">
+                                        <button type="submit" class="btn btn-primary px-4">Submit</button>
+                                        <a href="/admin/product" class="btn btn-secondary ms-2">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <%- include('../layout/footer') %>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
+</body>
+
+</html>

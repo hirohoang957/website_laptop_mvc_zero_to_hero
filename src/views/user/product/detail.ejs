@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>
+        <%= product.name %> - Laptopshop
+    </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="<%= product.name %>, laptop chính hãng" name="keywords">
+    <meta content="<%= product.shortDesc %>" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet">
+
+    <style>
+        /* Gallery ảnh sản phẩm */
+        .main-image-box {
+            background: #f9fafb;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            height: 360px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .main-image-box img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .main-image-box:hover img {
+            transform: scale(1.04);
+        }
+
+        .thumb-list {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .thumb-item {
+            width: 72px;
+            height: 72px;
+            flex-shrink: 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 6px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .thumb-item img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .thumb-item.active,
+        .thumb-item:hover {
+            border-color: #81c408;
+            box-shadow: 0 4px 10px rgba(129, 196, 8, 0.2);
+        }
+
+        /* Khối giá & cấu hình nhanh */
+        .detail-price-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+        }
+
+        .quick-spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .quick-spec-item {
+            background: #f9fafb;
+            border: 1px solid #edf2f7;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        /* Tabs mô tả & thông số */
+        .detail-tabs .nav-link {
+            font-weight: 700;
+            color: #475569;
+            padding: 12px 24px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .detail-tabs .nav-link.active {
+            color: #81c408 !important;
+            border-bottom: 3px solid #81c408 !important;
+            background: #f8fafc;
+        }
+
+        /* Sidebar */
+        .sidebar-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 17px;
+            font-weight: 800;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #f1f5f9;
+            position: relative;
+        }
+
+        .sidebar-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: #81c408;
+        }
+
+        /* Card sản phẩm tương tự (đồng bộ với trang chủ) */
+        .product-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.09);
+            border-color: #81c408;
+        }
+
+        .product-img-wrap {
+            position: relative;
+            height: 195px;
+            padding: 16px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-img-wrap img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .product-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+            height: 42px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .product-title a {
+            color: #212529;
+            text-decoration: none;
+        }
+
+        .product-title a:hover {
+            color: #81c408;
+        }
+
+        .spec-tag {
+            background: #f1f5f9;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #334155;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar start -->
+    <%- include('../layout/header') %>
+        <!-- Navbar End -->
+
+        <div class="py-4"></div>
+
+        <!-- Single Product Start -->
+        <div class="container-fluid py-5 mt-5">
+            <div class="container py-4">
+                <% const brand=brands.find(b=> b.id === product.brandId);
+                    const category = categories.find(c => c.id === product.categoryId);
+                    const discount = (product.priceOrigin && product.priceOrigin > product.priceCurr)
+                    ? Math.round(((product.priceOrigin - product.priceCurr) / product.priceOrigin) * 100)
+                    : 0;
+                    %>
+
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-4">
+                        <ol class="breadcrumb bg-light px-3 py-2 rounded-3 mb-0">
+                            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="/products" class="text-decoration-none">Sản phẩm</a>
+                            </li>
+                            <% if (brand) { %>
+                                <li class="breadcrumb-item"><a href="/products?brand=<%= brand.id %>"
+                                        class="text-decoration-none">
+                                        <%= brand.name %>
+                                    </a></li>
+                                <% } %>
+                                    <li class="breadcrumb-item active text-truncate" style="max-width: 320px;">
+                                        <%= product.name %>
+                                    </li>
+                        </ol>
+                    </nav>
+
+                    <div class="row g-4 mb-5">
+                        <!-- CỘT TRÁI: THÔNG TIN CHI TIẾT SẢN PHẨM -->
+                        <div class="col-lg-8 col-xl-9">
+                            <div class="bg-white border rounded-4 p-4 shadow-sm mb-4">
+                                <div class="row g-4">
+                                    <!-- Gallery Ảnh -->
+                                    <div class="col-lg-6">
+                                        <div class="main-image-box mb-3 position-relative">
+                                            <% if (discount> 0) { %>
+                                                <span
+                                                    class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill fs-6">
+                                                    -<%= discount %>%
+                                                </span>
+                                                <% } %>
+                                                    <img id="mainProductImage"
+                                                        src="/images/product/<%= product.thumbnail %>"
+                                                        alt="<%= product.name %>">
+                                        </div>
+
+                                        <!-- Danh sách ảnh thu nhỏ (Thumbnail + Bảng Image) -->
+                                        <div class="thumb-list">
+                                            <div class="thumb-item active"
+                                                onclick="changeMainImage('/images/product/<%= product.thumbnail %>', this)">
+                                                <img src="/images/product/<%= product.thumbnail %>" alt="Thumbnail">
+                                            </div>
+                                            <% if (product.image && product.image.length> 0) { %>
+                                                <% product.image.forEach(function(img) { %>
+                                                    <div class="thumb-item"
+                                                        onclick="changeMainImage('/images/product/<%= img.filename %>', this)">
+                                                        <img src="/images/product/<%= img.filename %>"
+                                                            alt="Detail image">
+                                                    </div>
+                                                    <% }); %>
+                                                        <% } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Thông tin mua hàng -->
+                                    <div class="col-lg-6 d-flex flex-column">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                            <% if (brand) { %>
+                                                <span class="badge px-3 py-1 rounded-pill fw-semibold"
+                                                    style="background-color: rgba(129, 196, 8, 0.14); color: #5a8d03; border: 1px solid rgba(129, 196, 8, 0.3);">
+                                                    <%= brand.name %>
+                                                </span>
+                                                <% } %>
+                                                    <% if (category) { %>
+                                                        <span class="badge px-3 py-1 rounded-pill fw-semibold"
+                                                            style="background-color: rgba(255, 181, 36, 0.18); color: #b45309; border: 1px solid rgba(255, 181, 36, 0.35);">
+                                                            <%= category.name %>
+                                                        </span>
+                                                        <% } %>
+                                                            <% if (product.quantity> 0) { %>
+                                                                <span class="badge px-3 py-1 rounded-pill fw-semibold"
+                                                                    style="background-color: rgba(25, 135, 84, 0.12); color: #198754; border: 1px solid rgba(25, 135, 84, 0.28);">
+                                                                    <i class="fas fa-check-circle me-1"></i> Còn hàng (
+                                                                    <%= product.quantity %>)
+                                                                </span>
+                                                                <% } else { %>
+                                                                    <span
+                                                                        class="badge px-3 py-1 rounded-pill fw-semibold"
+                                                                        style="background-color: rgba(220, 53, 69, 0.12); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.28);">
+                                                                        Hết hàng
+                                                                    </span>
+                                                                    <% } %>
+                                        </div>
+
+                                        <h3 class="fw-bold text-dark mb-2">
+                                            <%= product.name %>
+                                        </h3>
+
+                                        <div class="d-flex align-items-center mb-3 small text-muted">
+                                            <div class="text-secondary me-2">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <span>(Đã bán <%= product.sold ?? 0 %> sản phẩm)</span>
+                                        </div>
+
+                                        <p class="text-muted mb-3">
+                                            <%= product.shortDesc %>
+                                        </p>
+
+                                        <!-- Khối Giá -->
+                                        <div class="detail-price-box mb-3">
+                                            <div class="d-flex align-items-baseline flex-wrap gap-2">
+                                                <h3 class="fw-extrabold text-danger mb-0">
+                                                    <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                        currency: "VND" }).format(product.priceCurr) %>
+                                                </h3>
+                                                <% if (discount> 0) { %>
+                                                    <span class="text-muted text-decoration-line-through fs-6">
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                            currency: "VND" }).format(product.priceOrigin) %>
+                                                    </span>
+                                                    <span class="badge bg-danger">Tiết kiệm <%= discount %>%</span>
+                                                    <% } %>
+                                            </div>
+                                            <small class="text-success d-block mt-1">
+                                                <i class="fas fa-gift me-1"></i> Tặng Balo chống sốc + Chuột không dây &
+                                                Cài đặt miễn phí
+                                            </small>
+                                        </div>
+
+                                        <!-- Thông số tóm tắt nhanh -->
+                                        <div class="quick-spec-grid mb-4">
+                                            <div class="quick-spec-item">
+                                                <small class="text-muted d-block">Vi xử lý (CPU)</small>
+                                                <strong class="text-dark">
+                                                    <%= product.cpu %>
+                                                </strong>
+                                            </div>
+                                            <div class="quick-spec-item">
+                                                <small class="text-muted d-block">RAM & Ổ cứng</small>
+                                                <strong class="text-dark">
+                                                    <%= product.ram %>GB / <%= product.storage>= 1024 ? (product.storage
+                                                            / 1024) + 'TB' : product.storage + 'GB' %> SSD
+                                                </strong>
+                                            </div>
+                                            <div class="quick-spec-item">
+                                                <small class="text-muted d-block">Card đồ họa</small>
+                                                <strong class="text-dark">
+                                                    <%= product.gpu %>
+                                                </strong>
+                                            </div>
+                                            <div class="quick-spec-item">
+                                                <small class="text-muted d-block">Màn hình</small>
+                                                <strong class="text-dark">
+                                                    <%= product.screenSize %>" <%= product.resolution %>
+                                                </strong>
+                                            </div>
+                                        </div>
+
+                                        <!-- Form Chọn số lượng & Thêm vào giỏ hàng -->
+                                        <form method="post" action="/add-product-to-cart/<%= product.id %>"
+                                            class="mt-auto">
+                                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                                <div class="input-group quantity border rounded-pill px-2 py-1"
+                                                    style="width: 130px;">
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-minus rounded-circle bg-light border-0">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                    <input type="text" name="quantity" id="productQuantityInput"
+                                                        class="form-control form-control-sm text-center border-0 fw-bold bg-transparent"
+                                                        value="1" readonly>
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-plus rounded-circle bg-light border-0">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+
+                                                <button type="submit"
+                                                    class="btn btn-primary text-white rounded-pill px-4 py-2 fw-semibold flex-grow-1 shadow-sm"
+                                                    <%=product.quantity <=0 ? 'disabled' : '' %>>
+                                                    <i class="fa fa-shopping-bag me-2"></i> Thêm vào giỏ hàng
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TABS MÔ TẢ & THÔNG SỐ KỸ THUẬT -->
+                            <div class="bg-white border rounded-4 p-4 shadow-sm">
+                                <nav>
+                                    <div class="nav nav-tabs detail-tabs mb-4" role="tablist">
+                                        <button class="nav-link active border-0" type="button" role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">
+                                            <i class="fas fa-align-left me-2"></i>Mô tả chi tiết
+                                        </button>
+                                        <button class="nav-link border-0" type="button" role="tab" id="nav-mission-tab"
+                                            data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                            aria-controls="nav-mission" aria-selected="false">
+                                            <i class="fas fa-microchip me-2"></i>Thông số kỹ thuật
+                                        </button>
+                                    </div>
+                                </nav>
+
+                                <div class="tab-content">
+                                    <!-- Tab Mô tả -->
+                                    <div class="tab-pane fade show active" id="nav-about" role="tabpanel"
+                                        aria-labelledby="nav-about-tab">
+                                        <div class="lh-lg text-dark" style="white-space: pre-line;">
+                                            <%= product.detailDesc %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab Thông số kỹ thuật -->
+                                    <div class="tab-pane fade" id="nav-mission" role="tabpanel"
+                                        aria-labelledby="nav-mission-tab">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered align-middle mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="w-25 bg-light text-dark ps-3">Thương hiệu</th>
+                                                        <td class="ps-3">
+                                                            <%= brand ? brand.name : 'Đang cập nhật' %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Nhu cầu sử dụng</th>
+                                                        <td class="ps-3">
+                                                            <%= category ? category.name : 'Đang cập nhật' %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Bộ vi xử lý (CPU)</th>
+                                                        <td class="ps-3">
+                                                            <%= product.cpu %> (<%= product.cpuType %>)
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Bộ nhớ RAM</th>
+                                                        <td class="ps-3">
+                                                            <%= product.ram %> GB <%= product.ramType %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Ổ cứng lưu trữ</th>
+                                                        <td class="ps-3">
+                                                            <%= product.storage %> GB <%= product.storageType %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Card đồ họa (GPU)</th>
+                                                        <td class="ps-3">
+                                                            <%= product.gpu %> (<%= product.gpuType %>)
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Kích thước màn hình</th>
+                                                        <td class="ps-3">
+                                                            <%= product.screenSize %> inch
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Độ phân giải</th>
+                                                        <td class="ps-3">
+                                                            <%= product.resolution %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Hệ điều hành</th>
+                                                        <td class="ps-3">
+                                                            <%= product.os %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Dung lượng Pin</th>
+                                                        <td class="ps-3">
+                                                            <%= product.battery %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-light text-dark ps-3">Trọng lượng</th>
+                                                        <td class="ps-3">
+                                                            <%= product.weight %> kg
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CỘT PHẢI: SIDEBAR CHÍNH SÁCH, DANH MỤC & THƯƠNG HIỆU -->
+                        <div class="col-lg-4 col-xl-3">
+                            <!-- 1. Cam kết bán hàng -->
+                            <div class="sidebar-card shadow-sm mb-4">
+                                <h5 class="sidebar-title">Yên Tâm Mua Sắm</h5>
+                                <ul class="list-unstyled mb-0 d-flex flex-column gap-3 small">
+                                    <li class="d-flex align-items-start">
+                                        <i class="fas fa-check-circle text-primary fs-5 me-2 mt-1"></i>
+                                        <span>Sản phẩm mới 100%, nguyên seal, đầy đủ hóa đơn VAT.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start">
+                                        <i class="fas fa-sync-alt text-primary fs-5 me-2 mt-1"></i>
+                                        <span>Lỗi 1 đổi 1 trong 30 ngày đầu nếu có lỗi phần cứng.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start">
+                                        <i class="fas fa-shield-alt text-primary fs-5 me-2 mt-1"></i>
+                                        <span>Bảo hành chính hãng 12–24 tháng tại trung tâm ủy quyền.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start">
+                                        <i class="fas fa-shipping-fast text-primary fs-5 me-2 mt-1"></i>
+                                        <span>Miễn phí giao hàng toàn quốc, nhận hàng kiểm tra mới thanh toán.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- 2. Danh mục nhu cầu -->
+                            <div class="sidebar-card shadow-sm mb-4">
+                                <h5 class="sidebar-title">Danh Mục Laptop</h5>
+                                <ul class="list-unstyled mb-0">
+                                    <% categories.forEach(function(cat) { %>
+                                        <li class="py-2 border-bottom">
+                                            <a href="/products?category=<%= cat.id %>"
+                                                class="d-flex justify-content-between align-items-center text-decoration-none <%= cat.id === product.categoryId ? 'text-primary fw-bold' : 'text-dark' %>">
+                                                <span><i class="fas fa-laptop me-2 text-primary"></i>
+                                                    <%= cat.name %>
+                                                </span>
+                                                <i class="fas fa-chevron-right small text-muted"></i>
+                                            </a>
+                                        </li>
+                                        <% }); %>
+                                </ul>
+                            </div>
+
+                            <!-- 3. Thương hiệu -->
+                            <div class="sidebar-card shadow-sm">
+                                <h5 class="sidebar-title">Thương Hiệu</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <% brands.forEach(function(b) { %>
+                                        <a href="/products?brand=<%= b.id %>"
+                                            class="btn btn-sm rounded-pill <%= b.id === product.brandId ? 'btn-primary text-white' : 'btn-outline-secondary' %>">
+                                            <%= b.name %>
+                                        </a>
+                                        <% }); %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KHU VỰC SẢN PHẨM TƯƠNG TỰ (Gợi ý từ Python API) -->
+                    <% if (productsRecommendation && productsRecommendation.length> 0) { %>
+                        <div class="pt-4 border-top">
+                            <div class="d-flex justify-content-between align-items-end mb-4">
+                                <div>
+                                    <h3 class="fw-bold mb-1">Sản phẩm tương tự dành cho bạn</h3>
+                                    <p class="text-muted small mb-0">Gợi ý dựa trên phân khúc giá và cấu hình tương
+                                        đương</p>
+                                </div>
+                            </div>
+
+                            <div class="vesitable">
+                                <div class="owl-carousel vegetable-carousel justify-content-center">
+                                    <% productsRecommendation.forEach((item)=> {
+                                        const itemDiscount = (item.priceOrigin && item.priceOrigin > item.priceCurr)
+                                        ? Math.round(((item.priceOrigin - item.priceCurr) / item.priceOrigin) * 100)
+                                        : 0;
+                                        %>
+                                        <div class="product-card my-2">
+                                            <a href="/detail-product/<%= item.id %>" class="product-img-wrap">
+                                                <% if (itemDiscount> 0) { %>
+                                                    <span
+                                                        class="badge bg-danger position-absolute top-0 start-0 m-2 rounded-pill">-
+                                                        <%= itemDiscount %>%</span>
+                                                    <% } %>
+                                                        <img src="/images/product/<%= item.thumbnail %>"
+                                                            alt="<%= item.name %>">
+                                            </a>
+
+                                            <div class="product-body">
+                                                <h4 class="product-title">
+                                                    <a href="/detail-product/<%= item.id %>" title="<%= item.name %>">
+                                                        <%= item.name %>
+                                                    </a>
+                                                </h4>
+
+                                                <div class="d-flex flex-wrap gap-1 mb-2">
+                                                    <% if (item.cpuType) { %><span class="spec-tag">
+                                                            <%= item.cpuType %>
+                                                        </span>
+                                                        <% } %>
+                                                            <% if (item.ram) { %><span class="spec-tag">
+                                                                    <%= item.ram %>GB
+                                                                </span>
+                                                                <% } %>
+                                                                    <% if (item.storage) { %><span class="spec-tag">
+                                                                            <%= item.storage>= 1024 ? (item.storage /
+                                                                                1024) + 'TB' : item.storage + 'GB' %>
+                                                                        </span>
+                                                                        <% } %>
+                                                </div>
+
+                                                <div class="mt-auto pt-2 border-top">
+                                                    <p class="text-danger fs-5 fw-bold mb-2">
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                            currency: "VND" }).format(item.priceCurr) %>
+                                                    </p>
+                                                    <form method="post" action="/add-product-to-cart/<%= item.id %>">
+                                                        <button type="submit"
+                                                            class="btn border border-secondary rounded-pill w-100 text-primary fw-semibold btn-sm py-2">
+                                                            <i class="fa fa-shopping-bag me-1 text-primary"></i> Thêm
+                                                            vào giỏ hàng
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+        <!-- Single Product End -->
+
+        <!-- Footer Start -->
+        <%- include('../layout/footer') %>
+            <!-- Footer End -->
+
+            <!-- Back to Top -->
+            <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+                <i class="fa fa-arrow-up"></i>
+            </a>
+
+            <!-- JavaScript Libraries -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="/client/lib/easing/easing.min.js"></script>
+            <script src="/client/lib/waypoints/waypoints.min.js"></script>
+            <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+            <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+            <!-- Template Javascript -->
+            <script src="/client/js/main.js"></script>
+
+            <!-- Script đổi ảnh Gallery & giới hạn số lượng mua theo tồn kho -->
+            <script>
+                function changeMainImage(src, element) {
+                    document.getElementById("mainProductImage").src = src;
+                    document.querySelectorAll(".thumb-item").forEach(el => el.classList.remove("active"));
+                    element.classList.add("active");
+                }
+            </script>
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>Đặt hàng thành công - Laptopshop</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="đặt hàng thành công laptopshop" name="keywords">
+    <meta content="Cảm ơn bạn đã đặt hàng tại hệ thống Laptopshop" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet">
+
+    <style>
+        .thanks-card {
+            max-width: 680px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 20px;
+            padding: 44px 32px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .success-icon-circle {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            background: rgba(129, 196, 8, 0.14);
+            color: #81c408;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            box-shadow: 0 0 0 10px rgba(129, 196, 8, 0.06);
+        }
+
+        .step-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .order-info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px 22px;
+            text-align: left;
+        }
+
+        .next-step-item {
+            background: #f9fafb;
+            border: 1px solid #edf2f7;
+            border-radius: 12px;
+            padding: 14px;
+            height: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar start -->
+    <%- include('../layout/header') %>
+    <!-- Navbar End -->
+
+    <div class="py-4"></div>
+
+    <!-- Thanks Page Start -->
+    <div class="container-fluid py-5 mt-5">
+        <div class="container py-4">
+
+            <!-- Thanh tiến trình 3 bước hoàn tất -->
+            <div class="d-flex justify-content-center align-items-center gap-2 small fw-semibold mb-4 flex-wrap">
+                <span class="text-success"><span class="step-badge bg-success text-white me-1"><i class="fas fa-check"></i></span> Giỏ hàng</span>
+                <i class="fas fa-chevron-right text-muted mx-1"></i>
+                <span class="text-success"><span class="step-badge bg-success text-white me-1"><i class="fas fa-check"></i></span> Thanh toán</span>
+                <i class="fas fa-chevron-right text-muted mx-1"></i>
+                <span class="text-primary"><span class="step-badge bg-primary text-white me-1"><i class="fas fa-check"></i></span> Hoàn tất</span>
+            </div>
+
+            <!-- Khối Xác nhận trung tâm -->
+            <div class="thanks-card text-center">
+                <div class="success-icon-circle">
+                    <i class="fas fa-check"></i>
+                </div>
+
+                <span class="badge rounded-pill px-3 py-1 fw-semibold mb-2"
+                    style="background-color: rgba(25, 135, 84, 0.12); color: #198754;">
+                    ĐẶT HÀNG THÀNH CÔNG
+                </span>
+
+                <h2 class="fw-extrabold text-dark mb-2">Cảm ơn bạn đã tin chọn Laptopshop!</h2>
+                <p class="text-muted mb-4 mx-auto" style="max-width: 500px;">
+                    Đơn hàng của bạn đã được hệ thống ghi nhận. Bộ phận chăm sóc khách hàng sẽ liên hệ xác nhận và tiến hành đóng gói giao hàng trong thời gian sớm nhất.
+                </p>
+
+                <!-- Thông tin tóm tắt đơn hàng (Nếu controller có truyền biến order) -->
+                <% if (typeof order !== 'undefined' && order) { %>
+                    <div class="order-info-box mb-4">
+                        <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+                            <span class="text-muted small">Mã đơn hàng</span>
+                            <strong class="text-primary">#ORD-<%= order.id %></strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+                            <span class="text-muted small">Người nhận</span>
+                            <strong class="text-dark small"><%= order.receiverName %> - <%= order.receiverPhone %></strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+                            <span class="text-muted small">Hình thức thanh toán</span>
+                            <span class="badge rounded-pill px-2 py-1 fw-semibold"
+                                style="background-color: rgba(129, 196, 8, 0.15); color: #5a8d03;">
+                                <%= order.paymentMethod === 'banking' ? 'Chuyển khoản ngân hàng' : 'Thanh toán khi nhận hàng (COD)' %>
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">Tổng thanh toán</span>
+                            <strong class="text-danger fs-5">
+                                <%= new Intl.NumberFormat('vi-VN', { style: "currency", currency: "VND" }).format(order.totalPrice) %>
+                            </strong>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- 3 bước tiếp theo cho khách hàng -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="next-step-item">
+                            <i class="fas fa-phone-volume text-primary fs-4 mb-2"></i>
+                            <h6 class="fw-bold small mb-1">1. Xác nhận đơn</h6>
+                            <p class="text-muted mb-0" style="font-size: 12px;">Nhân viên gọi xác nhận cấu hình &amp; địa chỉ</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="next-step-item">
+                            <i class="fas fa-box-open text-primary fs-4 mb-2"></i>
+                            <h6 class="fw-bold small mb-1">2. Đóng gói &amp; Giao</h6>
+                            <p class="text-muted mb-0" style="font-size: 12px;">Chống sốc 3 lớp, giao hỏa tốc toàn quốc</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="next-step-item">
+                            <i class="fas fa-laptop-medical text-primary fs-4 mb-2"></i>
+                            <h6 class="fw-bold small mb-1">3. Kiểm tra &amp; Nhận</h6>
+                            <p class="text-muted mb-0" style="font-size: 12px;">Mở hộp kiểm tra máy hài lòng mới thanh toán</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nút hành động -->
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="/order-history" class="btn btn-primary text-white rounded-pill px-4 py-3 fw-semibold shadow-sm">
+                        <i class="fas fa-receipt me-2"></i> Xem lịch sử đơn hàng
+                    </a>
+                    <a href="/products" class="btn btn-outline-secondary rounded-pill px-4 py-3 fw-semibold">
+                        <i class="fas fa-arrow-left me-2"></i> Tiếp tục mua sắm
+                    </a>
+                </div>
+
+                <div class="mt-4 pt-3 border-top small text-muted">
+                    Cần hỗ trợ gấp về đơn hàng? Liên hệ Hotline: <strong class="text-dark">1900 6868</strong> (Miễn phí 24/7)
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Thanks Page End -->
+
+    <!-- Footer Start -->
+    <%- include('../layout/footer') %>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+</body>
+
+</html>

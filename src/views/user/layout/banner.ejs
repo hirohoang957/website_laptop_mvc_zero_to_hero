@@ -1,0 +1,212 @@
+<style>
+    .hero-laptop-banner {
+        position: relative;
+        background: linear-gradient(135deg, #f8fafc 0%, #eef5e6 100%);
+        border-bottom: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    /* Họa tiết trang trí nền nhẹ */
+    .hero-laptop-banner::before {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -120px;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(129, 196, 8, 0.16) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(129, 196, 8, 0.14);
+        color: #5a8d03;
+        font-weight: 700;
+        font-size: 13.5px;
+        padding: 7px 16px;
+        border-radius: 50px;
+        border: 1px solid rgba(129, 196, 8, 0.3);
+    }
+
+    .hero-title {
+        font-weight: 800;
+        color: #1e293b;
+        line-height: 1.2;
+    }
+
+    .hero-title span {
+        color: #81c408;
+    }
+
+    /* Thanh tìm kiếm trên Banner */
+    .hero-search-form {
+        background: #fff;
+        border: 2px solid #81c408;
+        border-radius: 50px;
+        padding: 5px;
+        box-shadow: 0 10px 25px rgba(129, 196, 8, 0.15);
+        max-width: 560px;
+    }
+
+    .hero-search-form input {
+        border: none !important;
+        box-shadow: none !important;
+        padding-left: 20px;
+        font-size: 15px;
+    }
+
+    .hero-search-form button {
+        border-radius: 50px;
+        padding: 12px 28px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* Từ khóa tìm nhanh */
+    .hero-quick-tag {
+        display: inline-block;
+        font-size: 12.5px;
+        color: #475569;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .hero-quick-tag:hover {
+        background: #81c408;
+        color: #fff;
+        border-color: #81c408;
+    }
+
+    /* Khung Carousel bên phải */
+    .hero-carousel-wrapper {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 18px 36px rgba(15, 23, 42, 0.15);
+        border: 4px solid #fff;
+    }
+
+    .hero-carousel-item {
+        height: 350px;
+        position: relative;
+    }
+
+    .hero-carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Lớp phủ mờ phía dưới ảnh để chữ luôn rõ nét */
+    .hero-carousel-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 100%);
+        padding: 28px 24px 20px;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+</style>
+
+<!-- Hero Start -->
+<div class="container-fluid py-5 mb-4 hero-header hero-laptop-banner">
+    <div class="container py-4">
+        <div class="row g-5 align-items-center">
+            <!-- CỘT TRÁI: SLOGAN & TÌM KIẾM -->
+            <div class="col-md-12 col-lg-7">
+                <div class="hero-badge mb-3">
+                    <i class="fas fa-check-circle me-2"></i> 100% Laptop Chính Hãng - Bảo Hành Uy Tín
+                </div>
+
+                <h1 class="display-4 hero-title mb-3">
+                    Công Nghệ Đỉnh Cao<br />
+                    <span>Giá Tốt Nhất Thị Trường</span>
+                </h1>
+
+                <p class="text-muted fs-6 mb-4" style="max-width: 540px;">
+                    Đa dạng các dòng Laptop Gaming, Văn phòng, Đồ họa & MacBook thế hệ mới. Hỗ trợ trả góp 0% và giao hàng hỏa tốc toàn quốc.
+                </p>
+
+                <!-- Form tìm kiếm hoạt động thật -->
+                <form action="/products" method="get" class="hero-search-form d-flex align-items-center mb-3">
+                    <input type="text" name="keyword" class="form-control bg-transparent"
+                        placeholder="Tìm tên laptop, hãng, CPU (VD: MacBook Air, RTX 4060...)"
+                        value="<%= typeof keyword !== 'undefined' ? keyword : '' %>">
+                    <button type="submit" class="btn btn-primary text-white">
+                        <i class="fas fa-search me-1"></i> Tìm kiếm
+                    </button>
+                </form>
+
+                <!-- Từ khóa tìm kiếm nhanh -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="small fw-semibold text-muted">Gợi ý:</span>
+                    <a href="/products?keyword=MacBook" class="hero-quick-tag">MacBook M3</a>
+                    <a href="/products?keyword=RTX+4060" class="hero-quick-tag">RTX 4060</a>
+                    <a href="/products?category=1" class="hero-quick-tag">Laptop Gaming</a>
+                    <a href="/products?category=3" class="hero-quick-tag">Mỏng nhẹ</a>
+                    <a href="/products?keyword=Core+i7" class="hero-quick-tag">Core i7</a>
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: SLIDER SHOWCASE -->
+            <div class="col-md-12 col-lg-5">
+                <div id="carouselId" class="carousel slide hero-carousel-wrapper" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselId" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#carouselId" data-bs-slide-to="1"></button>
+                    </div>
+
+                    <div class="carousel-inner" role="listbox">
+                        <!-- Slide 1 -->
+                        <div class="carousel-item active hero-carousel-item">
+                            <img src="/client/img/goc-pc-dep-1.jpg" alt="Laptop Gaming">
+                            <div class="hero-carousel-caption">
+                                <div>
+                                    <span class="badge bg-danger mb-1">Hiệu năng vượt trội</span>
+                                    <h5 class="text-white fw-bold mb-0">Laptop Gaming - Đồ Họa</h5>
+                                </div>
+                                <a href="/products?category=1" class="btn btn-primary btn-sm rounded-pill px-3 py-2 text-white fw-semibold">
+                                    Khám phá <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2 -->
+                        <div class="carousel-item hero-carousel-item">
+                            <img src="/client/img/goc-pc-dep-4.jpg" alt="Thiết kế đồ họa & Văn phòng">
+                            <div class="hero-carousel-caption">
+                                <div>
+                                    <span class="badge bg-secondary text-dark mb-1">Mỏng nhẹ - Chuẩn màu</span>
+                                    <h5 class="text-white fw-bold mb-0">Văn Phòng & Sáng Tạo</h5>
+                                </div>
+                                <a href="/products?category=2" class="btn btn-primary btn-sm rounded-pill px-3 py-2 text-white fw-semibold">
+                                    Khám phá <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->

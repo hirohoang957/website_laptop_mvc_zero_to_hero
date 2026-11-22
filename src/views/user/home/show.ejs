@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>Laptopshop - Hệ thống bán lẻ Laptop chính hãng</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="laptop, macbook, asus, dell, hp, lenovo, msi, laptop gaming, laptop văn phòng" name="keywords">
+    <meta content="Hệ thống bán lẻ Laptop chính hãng uy tín, giá tốt, trả góp 0%" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet">
+
+    <style>
+        /* Tiêu đề từng khu vực */
+        .section-heading {
+            position: relative;
+            padding-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .section-heading::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 65px;
+            height: 4px;
+            background: #81c408;
+            border-radius: 2px;
+        }
+
+        .section-heading.text-center::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 1. Card Nhu cầu sử dụng */
+        .demand-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            padding: 24px 18px;
+            text-align: center;
+            text-decoration: none;
+            color: #212529;
+            display: block;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .demand-card:hover {
+            transform: translateY(-6px);
+            border-color: #81c408;
+            box-shadow: 0 12px 24px rgba(129, 196, 8, 0.15);
+            color: #81c408;
+        }
+
+        .demand-icon {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: rgba(129, 196, 8, 0.12);
+            color: #81c408;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .demand-card:hover .demand-icon {
+            background: #81c408;
+            color: #fff;
+        }
+
+        /* 2. Nút lọc theo khoảng giá */
+        .price-range-pill {
+            display: inline-block;
+            padding: 10px 22px;
+            border-radius: 50px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            color: #333;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+
+        .price-range-pill:hover {
+            background: #81c408;
+            color: #fff;
+            border-color: #81c408;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(129, 196, 8, 0.25);
+        }
+
+        /* 3. Card Sản phẩm Laptop */
+        .product-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+            border-color: #81c408;
+        }
+
+        .product-img-wrap {
+            position: relative;
+            height: 210px;
+            padding: 16px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-img-wrap img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.35s ease;
+        }
+
+        .product-card:hover .product-img-wrap img {
+            transform: scale(1.06);
+        }
+
+        .product-badge-discount {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #dc3545;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .product-badge-hot {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ff7e00, #ff3d00);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .product-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .product-title {
+            font-size: 15.5px;
+            font-weight: 700;
+            line-height: 1.4;
+            height: 44px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .product-title a {
+            color: #212529;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .product-title a:hover {
+            color: #81c408;
+        }
+
+        .product-specs {
+            background: #f4f6f8;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #555;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .spec-tag {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .product-price-box {
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px dashed #eee;
+        }
+
+        .price-curr {
+            font-size: 18px;
+            font-weight: 800;
+            color: #d70018;
+            margin-bottom: 0;
+        }
+
+        .price-origin {
+            font-size: 13px;
+            color: #888;
+            text-decoration: line-through;
+            margin-left: 6px;
+        }
+
+        .btn-add-cart {
+            width: 100%;
+            margin-top: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13.5px;
+            padding: 8px 14px;
+            transition: all 0.25s;
+        }
+
+        .btn-add-cart:hover {
+            background-color: #81c408 !important;
+            color: #fff !important;
+            border-color: #81c408 !important;
+        }
+
+        .btn-add-cart:hover i {
+            color: #fff !important;
+        }
+
+        /* Nav Pills thương hiệu */
+        .brand-pills .nav-link {
+            border: 1px solid #e0e0e0;
+            background: #fff !important;
+            color: #333 !important;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+
+        .brand-pills .nav-link.active,
+        .brand-pills .nav-link:hover {
+            background: #81c408 !important;
+            color: #fff !important;
+            border-color: #81c408;
+            box-shadow: 0 4px 12px rgba(129, 196, 8, 0.3);
+        }
+
+        .brand-pills .nav-link.active span,
+        .brand-pills .nav-link:hover span {
+            color: #fff !important;
+        }
+
+        /* 4. Banner khuyến mãi giữa trang */
+        .promo-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(129, 196, 8, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        /* 5. Logo thương hiệu */
+        .brand-logo-box {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 18px 12px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 1px;
+            color: #334155;
+            text-decoration: none;
+            display: block;
+            transition: all 0.25s;
+        }
+
+        .brand-logo-box:hover {
+            border-color: #81c408;
+            color: #81c408;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Logo thương hiệu bằng ảnh thật */
+        .brand-logo-box {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 16px 14px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .brand-logo-box:hover {
+            border-color: #81c408;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-logo-box img {
+            max-height: 38px;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.25s ease;
+        }
+
+        .brand-logo-box:hover img {
+            transform: scale(1.06);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar start -->
+    <%- include('../layout/header') %>
+        <!-- Navbar End -->
+
+        <!-- Hero Banner Start -->
+        <%- include('../layout/banner') %>
+            <!-- Hero Banner End -->
+
+            <!-- KHU VỰC 1: CHỌN LAPTOP THEO NHU CẦU & MỨC GIÁ -->
+            <div class="container-fluid py-5 bg-light">
+                <div class="container py-3">
+                    <div class="text-center mb-4">
+                        <h2 class="section-heading text-center mb-2">Chọn Laptop Theo Nhu Cầu</h2>
+                        <p class="text-muted">Tìm nhanh chiếc máy phù hợp nhất với công việc và sở thích của bạn</p>
+                    </div>
+
+                    <div class="row g-4 mb-4 justify-content-center">
+                        <!-- ID 1: Gaming - Đồ họa -->
+                        <div class="col-6 col-md-4 col-lg">
+                            <a href="/products?category=1" class="demand-card">
+                                <div class="demand-icon"><i class="fas fa-gamepad"></i></div>
+                                <h6 class="fw-bold mb-1">Gaming - Đồ họa</h6>
+                                <small class="text-muted">Hiệu năng đỉnh, GPU rời</small>
+                            </a>
+                        </div>
+
+                        <!-- ID 2: Sinh viên - Văn phòng -->
+                        <div class="col-6 col-md-4 col-lg">
+                            <a href="/products?category=2" class="demand-card">
+                                <div class="demand-icon"><i class="fas fa-graduation-cap"></i></div>
+                                <h6 class="fw-bold mb-1">Sinh viên - Văn phòng</h6>
+                                <small class="text-muted">Bền bỉ, pin trâu, giá tốt</small>
+                            </a>
+                        </div>
+
+                        <!-- ID 3: Mỏng nhẹ -->
+                        <div class="col-6 col-md-4 col-lg">
+                            <a href="/products?category=3" class="demand-card">
+                                <div class="demand-icon"><i class="fas fa-feather-alt"></i></div>
+                                <h6 class="fw-bold mb-1">Mỏng nhẹ</h6>
+                                <small class="text-muted">Gọn gàng, dễ dàng di chuyển</small>
+                            </a>
+                        </div>
+
+                        <!-- ID 4: Doanh nhân -->
+                        <div class="col-6 col-md-4 col-lg">
+                            <a href="/products?category=4" class="demand-card">
+                                <div class="demand-icon"><i class="fas fa-user-tie"></i></div>
+                                <h6 class="fw-bold mb-1">Doanh nhân</h6>
+                                <small class="text-muted">Sang trọng, bảo mật cao</small>
+                            </a>
+                        </div>
+
+                        <!-- ID 5: AI -->
+                        <div class="col-6 col-md-4 col-lg">
+                            <a href="/products?category=5" class="demand-card">
+                                <div class="demand-icon"><i class="fas fa-robot"></i></div>
+                                <h6 class="fw-bold mb-1">Laptop AI</h6>
+                                <small class="text-muted">Chip AI thế hệ mới nhất</small>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Chọn nhanh theo khoảng giá -->
+                    <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 pt-2">
+                        <span class="fw-bold text-dark me-2"><i class="fas fa-tags text-primary me-1"></i> Mức giá phổ
+                            biến:</span>
+                        <a href="/products?price=duoi-15-trieu" class="price-range-pill">Dưới 15 triệu</a>
+                        <a href="/products?price=15-20-trieu" class="price-range-pill">15 - 20 triệu</a>
+                        <a href="/products?price=20-30-trieu" class="price-range-pill">20 - 30 triệu</a>
+                        <a href="/products?price=tren-30-trieu" class="price-range-pill">Trên 30 triệu</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KHU VỰC 2: SẢN PHẨM NỔI BẬT THEO HÃNG -->
+            <div class="container-fluid fruite py-5">
+                <div class="container py-4">
+                    <div class="tab-class">
+                        <div class="row g-4 align-items-center mb-4">
+                            <div class="col-lg-4 text-start">
+                                <h2 class="section-heading mb-1">Sản phẩm nổi bật</h2>
+                                <p class="text-muted small mb-0">Lựa chọn laptop cấu hình mạnh, giá ưu đãi nhất</p>
+                            </div>
+                            <div class="col-lg-8 text-lg-end">
+                                <ul
+                                    class="nav nav-pills brand-pills d-inline-flex flex-wrap justify-content-lg-end gap-2">
+                                    <!-- Tab Tất cả -->
+                                    <li class="nav-item">
+                                        <a class="nav-link py-2 px-4 rounded-pill active" data-bs-toggle="pill"
+                                            href="#tab-all">
+                                            <span>Tất cả</span>
+                                        </a>
+                                    </li>
+                                    <!-- Render 5 hãng tiêu biểu đầu tiên (MacBook, Dell, HP, Lenovo, Asus) -->
+                                    <% brands.slice(0, 5).forEach((brand)=> { %>
+                                        <li class="nav-item">
+                                            <a class="nav-link py-2 px-4 rounded-pill" data-bs-toggle="pill"
+                                                href="#tab-brand-<%= brand.id %>">
+                                                <span>
+                                                    <%= brand.name %>
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <% }); %>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tab-content">
+                            <!-- Nội dung Tab Tất cả -->
+                            <div id="tab-all" class="tab-pane fade show active p-0">
+                                <div class="row g-4">
+                                    <% products.slice(0, 8).forEach(function(product) { const
+                                        discount=(product.priceOrigin && product.priceOrigin> product.priceCurr)
+                                        ? Math.round(((product.priceOrigin - product.priceCurr) / product.priceOrigin) *
+                                        100)
+                                        : 0;
+                                        %>
+                                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                                            <div class="product-card">
+                                                <a href="/detail-product/<%= product.id %>" class="product-img-wrap">
+                                                    <% if (discount> 0) { %>
+                                                        <span class="product-badge-discount">-<%= discount %>%</span>
+                                                        <% } %>
+                                                            <img src="/images/product/<%= product.thumbnail %>"
+                                                                alt="<%= product.name %>">
+                                                </a>
+                                                <div class="product-body">
+                                                    <h3 class="product-title">
+                                                        <a href="/detail-product/<%= product.id %>"
+                                                            title="<%= product.name %>">
+                                                            <%= product.name %>
+                                                        </a>
+                                                    </h3>
+                                                    <div class="product-specs">
+                                                        <% if (product.cpuType) { %><span class="spec-tag"><i
+                                                                    class="fas fa-microchip me-1 text-primary"></i>
+                                                                <%= product.cpuType %>
+                                                            </span>
+                                                            <% } %>
+                                                                <% if (product.ram) { %><span class="spec-tag">
+                                                                        <%= product.ram %>GB RAM
+                                                                    </span>
+                                                                    <% } %>
+                                                                        <% if (product.storage) { %><span
+                                                                                class="spec-tag">
+                                                                                <%= product.storage>= 1024 ?
+                                                                                    (product.storage / 1024) + 'TB' :
+                                                                                    product.storage + 'GB' %> SSD
+                                                                            </span>
+                                                                            <% } %>
+                                                                                <% if (product.screenSize) { %><span
+                                                                                        class="spec-tag">
+                                                                                        <%= product.screenSize %>"
+                                                                                    </span>
+                                                                                    <% } %>
+                                                    </div>
+                                                    <div class="product-price-box">
+                                                        <div class="d-flex align-items-baseline flex-wrap">
+                                                            <p class="price-curr">
+                                                                <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                                    currency: "VND" }).format(product.priceCurr) %>
+                                                            </p>
+                                                            <% if (discount> 0) { %>
+                                                                <span class="price-origin">
+                                                                    <%= new Intl.NumberFormat('vi-VN', {
+                                                                        style: "currency" , currency: "VND"
+                                                                        }).format(product.priceOrigin) %>
+                                                                </span>
+                                                                <% } %>
+                                                        </div>
+                                                        <form method="post"
+                                                            action="/add-product-to-cart/<%= product.id %>">
+                                                            <button type="submit"
+                                                                class="btn border border-secondary text-primary btn-add-cart">
+                                                                <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                                                Thêm vào giỏ hàng
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                            </div>
+
+                            <!-- Nội dung từng Tab Hãng -->
+                            <% brands.slice(0, 5).forEach((brand)=> {
+                                const brandProducts = products.filter(p => p.brandId === brand.id).slice(0, 8);
+                                %>
+                                <div id="tab-brand-<%= brand.id %>" class="tab-pane fade p-0">
+                                    <% if (brandProducts.length> 0) { %>
+                                        <div class="row g-4">
+                                            <% brandProducts.forEach(function(product) { const
+                                                discount=(product.priceOrigin && product.priceOrigin> product.priceCurr)
+                                                ? Math.round(((product.priceOrigin - product.priceCurr) /
+                                                product.priceOrigin) * 100)
+                                                : 0;
+                                                %>
+                                                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                                                    <div class="product-card">
+                                                        <a href="/detail-product/<%= product.id %>"
+                                                            class="product-img-wrap">
+                                                            <% if (discount> 0) { %>
+                                                                <span class="product-badge-discount">-<%= discount %>
+                                                                        %</span>
+                                                                <% } %>
+                                                                    <img src="/images/product/<%= product.thumbnail %>"
+                                                                        alt="<%= product.name %>">
+                                                        </a>
+                                                        <div class="product-body">
+                                                            <h3 class="product-title">
+                                                                <a href="/detail-product/<%= product.id %>"
+                                                                    title="<%= product.name %>">
+                                                                    <%= product.name %>
+                                                                </a>
+                                                            </h3>
+                                                            <div class="product-specs">
+                                                                <% if (product.cpuType) { %><span class="spec-tag"><i
+                                                                            class="fas fa-microchip me-1 text-primary"></i>
+                                                                        <%= product.cpuType %>
+                                                                    </span>
+                                                                    <% } %>
+                                                                        <% if (product.ram) { %><span class="spec-tag">
+                                                                                <%= product.ram %>GB RAM
+                                                                            </span>
+                                                                            <% } %>
+                                                                                <% if (product.storage) { %><span
+                                                                                        class="spec-tag">
+                                                                                        <%= product.storage>= 1024 ?
+                                                                                            (product.storage / 1024) +
+                                                                                            'TB' : product.storage +
+                                                                                            'GB' %> SSD
+                                                                                    </span>
+                                                                                    <% } %>
+                                                                                        <% if (product.screenSize) { %>
+                                                                                            <span class="spec-tag">
+                                                                                                <%= product.screenSize
+                                                                                                    %>"
+                                                                                            </span>
+                                                                                            <% } %>
+                                                            </div>
+                                                            <div class="product-price-box">
+                                                                <div class="d-flex align-items-baseline flex-wrap">
+                                                                    <p class="price-curr">
+                                                                        <%= new Intl.NumberFormat('vi-VN', {
+                                                                            style: "currency" , currency: "VND"
+                                                                            }).format(product.priceCurr) %>
+                                                                    </p>
+                                                                    <% if (discount> 0) { %>
+                                                                        <span class="price-origin">
+                                                                            <%= new Intl.NumberFormat('vi-VN', {
+                                                                                style: "currency" , currency: "VND"
+                                                                                }).format(product.priceOrigin) %>
+                                                                        </span>
+                                                                        <% } %>
+                                                                </div>
+                                                                <form method="post"
+                                                                    action="/add-product-to-cart/<%= product.id %>">
+                                                                    <button type="submit"
+                                                                        class="btn border border-secondary text-primary btn-add-cart">
+                                                                        <i
+                                                                            class="fa fa-shopping-bag me-2 text-primary"></i>
+                                                                        Thêm vào giỏ hàng
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                        <% } else { %>
+                                            <div class="text-center py-5 bg-light rounded-3">
+                                                <i class="fas fa-laptop fa-3x text-muted mb-3"></i>
+                                                <p class="text-muted mb-0">Hiện chưa có sản phẩm thuộc thương hiệu <%=
+                                                        brand.name %>.</p>
+                                            </div>
+                                            <% } %>
+                                </div>
+                                <% }); %>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <a href="/products"
+                                class="btn btn-primary text-white rounded-pill px-5 py-3 fw-semibold shadow-sm">
+                                Xem tất cả sản phẩm <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KHU VỰC 3: BANNER KHUYẾN MÃI GIỮA TRANG -->
+            <!-- KHU VỰC 3: BANNER KHUYẾN MÃI GIỮA TRANG -->
+    <div class="container my-3">
+        <div class="promo-banner p-4 p-md-5 text-white shadow">
+            <div class="row align-items-center g-4 position-relative" style="z-index: 2;">
+                <div class="col-lg-7">
+                    <span class="badge bg-secondary text-dark fw-bold px-3 py-2 rounded-pill mb-3">
+                        <i class="fas fa-bolt me-1"></i> ƯU ĐÃI ĐẶC QUYỀN SINH VIÊN & VĂN PHÒNG
+                    </span>
+                    <h2 class="text-white fw-bold display-6 mb-3">
+                        Trợ giá đến <span class="text-primary">3.000.000đ</span> & Trả góp 0% lãi suất
+                    </h2>
+                    <p class="text-white-50 mb-4 fs-6">
+                        Tặng kèm Balo chống sốc cao cấp, Chuột không dây và gói cài đặt phần mềm, vệ sinh máy trọn đời miễn phí khi mua Laptop tại Laptopshop.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="/promotions" class="btn btn-primary text-white rounded-pill px-4 py-2 fw-semibold">
+                            Xem chi tiết ưu đãi
+                        </a>
+                        <a href="/products" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+                            Chọn máy ngay
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Khối kính mờ bên phải thay thế hộp trắng -->
+                <div class="col-lg-5">
+                    <div class="rounded-4 p-4" style="background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.14);">
+                        <div class="d-flex align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0"
+                                style="width: 50px; height: 50px; background: rgba(129, 196, 8, 0.2); color: #81c408;">
+                                <i class="fas fa-shield-alt fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">Bảo hành 1 đổi 1 trong 30 ngày</h6>
+                                <small class="text-white-50">Đổi máy mới ngay nếu có lỗi từ nhà sản xuất</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0"
+                                style="width: 50px; height: 50px; background: rgba(255, 181, 36, 0.2); color: #ffb524;">
+                                <i class="fas fa-percent fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">Trả góp 0% - Duyệt hồ sơ 5 phút</h6>
+                                <small class="text-white-50">Hỗ trợ thẻ tín dụng & CCCD, không cần trả trước</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0"
+                                style="width: 50px; height: 50px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">
+                                <i class="fas fa-gift fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">Combo quà tặng trị giá 1.500.000đ</h6>
+                                <small class="text-white-50">Balo thời trang, chuột không dây & lót chuột</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+            <!-- KHU VỰC 4: SẢN PHẨM BÁN CHẠY -->
+            <div class="container-fluid vesitable py-5">
+                <div class="container py-4">
+                    <div class="d-flex justify-content-between align-items-end mb-4">
+                        <div>
+                            <h2 class="section-heading mb-1">Sản phẩm bán chạy</h2>
+                            <p class="text-muted small mb-0">Top những mẫu laptop được khách hàng tin chọn nhiều nhất
+                            </p>
+                        </div>
+                        <a href="/products" class="text-primary fw-bold text-decoration-none d-none d-sm-inline">
+                            Xem thêm <i class="fas fa-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="owl-carousel vegetable-carousel justify-content-center">
+                        <% bestSellingProducts.forEach((product)=> {
+                            const discount = (product.priceOrigin && product.priceOrigin > product.priceCurr)
+                            ? Math.round(((product.priceOrigin - product.priceCurr) / product.priceOrigin) * 100)
+                            : 0;
+                            %>
+                            <div class="product-card my-2">
+                                <a href="/detail-product/<%= product.id %>" class="product-img-wrap">
+                                    <% if (discount> 0) { %>
+                                        <span class="product-badge-discount">-<%= discount %>%</span>
+                                        <% } %>
+                                            <span class="product-badge-hot"><i class="fas fa-fire me-1"></i>Bán
+                                                chạy</span>
+                                            <img src="/images/product/<%= product.thumbnail %>"
+                                                alt="<%= product.name %>">
+                                </a>
+
+                                <div class="product-body">
+                                    <h3 class="product-title">
+                                        <a href="/detail-product/<%= product.id %>" title="<%= product.name %>">
+                                            <%= product.name %>
+                                        </a>
+                                    </h3>
+
+                                    <div class="product-specs">
+                                        <% if (product.cpuType) { %>
+                                            <span class="spec-tag">
+                                                <%= product.cpuType %>
+                                            </span>
+                                            <% } %>
+                                                <% if (product.ram) { %>
+                                                    <span class="spec-tag">
+                                                        <%= product.ram %>GB
+                                                    </span>
+                                                    <% } %>
+                                                        <% if (product.storage) { %>
+                                                            <span class="spec-tag">
+                                                                <%= product.storage>= 1024 ? (product.storage / 1024) +
+                                                                    'TB' : product.storage + 'GB' %>
+                                                            </span>
+                                                            <% } %>
+                                    </div>
+
+                                    <div class="product-price-box">
+                                        <div class="d-flex align-items-baseline flex-wrap">
+                                            <p class="price-curr">
+                                                <%= new Intl.NumberFormat('vi-VN', { style: "currency" , currency: "VND"
+                                                    }).format(product.priceCurr) %>
+                                            </p>
+                                            <% if (discount> 0) { %>
+                                                <span class="price-origin">
+                                                    <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                        currency: "VND" }).format(product.priceOrigin) %>
+                                                </span>
+                                                <% } %>
+                                        </div>
+
+                                        <form method="post" action="/add-product-to-cart/<%= product.id %>"
+                                            class="ajax-cart-form">
+                                            <button type="submit"
+                                                class="btn border border-secondary text-primary btn-add-cart">
+                                                <i class="fa fa-shopping-bag me-2 text-primary"></i> Thêm vào giỏ hàng
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KHU VỰC 5: THƯƠNG HIỆU PHÂN PHỐI CHÍNH HÃNG -->
+            <div class="container-fluid py-5 bg-light">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <h2 class="section-heading text-center mb-2">Thương Hiệu Chính Hãng</h2>
+                        <p class="text-muted">Đối tác ủy quyền chính thức của các hãng công nghệ hàng đầu</p>
+                    </div>
+                    <!-- Chia 5 cột/hàng trên màn hình lớn (10 hãng = 2 hàng x 5 cột cực kỳ cân đối) -->
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3 justify-content-center">
+                        <% brands.forEach((brand)=> { %>
+                            <div class="col">
+                                <a href="/products?brand=<%= brand.id %>" class="brand-logo-box"
+                                    title="Xem laptop <%= brand.name %>">
+                                    <% if (brand.logo) { %>
+                                        <img src="/images/brand/<%= brand.logo %>" alt="<%= brand.name %>">
+                                        <% } else { %>
+                                            <span class="fw-bold text-dark">
+                                                <%= brand.name %>
+                                            </span>
+                                            <% } %>
+                                </a>
+                            </div>
+                            <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KHU VỰC 6: CAM KẾT DỊCH VỤ (FEATURE) -->
+
+
+                <!-- KHU VỰC 7: CON SỐ ẤN TƯỢNG / ĐỘ UY TÍN -->
+                <div class="container-fluid py-5">
+                    <div class="container">
+                        <div class="bg-light p-5 rounded-4">
+                            <div class="row g-4 justify-content-center text-center">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="bg-white rounded-3 p-4 shadow-sm h-100">
+                                        <i class="fas fa-users fa-3x text-secondary mb-3"></i>
+                                        <h5 class="text-primary fw-bold">Khách hàng hài lòng</h5>
+                                        <h2 class="fw-extrabold mb-0">99.2%</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="bg-white rounded-3 p-4 shadow-sm h-100">
+                                        <i class="fas fa-laptop fa-3x text-secondary mb-3"></i>
+                                        <h5 class="text-primary fw-bold">Laptop đã bán ra</h5>
+                                        <h2 class="fw-extrabold mb-0">15.000+</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="bg-white rounded-3 p-4 shadow-sm h-100">
+                                        <i class="fas fa-shield-alt fa-3x text-secondary mb-3"></i>
+                                        <h5 class="text-primary fw-bold">Bảo hành chính hãng</h5>
+                                        <h2 class="fw-extrabold mb-0">24 Tháng</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="bg-white rounded-3 p-4 shadow-sm h-100">
+                                        <i class="fas fa-headset fa-3x text-secondary mb-3"></i>
+                                        <h5 class="text-primary fw-bold">Hỗ trợ kỹ thuật</h5>
+                                        <h2 class="fw-extrabold mb-0">24/7</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Start -->
+                <%- include('../layout/footer') %>
+                    <!-- Footer End -->
+
+                    <!-- Back to Top -->
+                    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+
+                    <!-- Toast Thông báo thêm vào giỏ hàng -->
+                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+                        <div id="cartToast" class="toast align-items-center text-white bg-success border-0 shadow"
+                            role="alert">
+                            <div class="d-flex">
+                                <div class="toast-body fw-semibold">
+                                    <i class="fas fa-check-circle me-2"></i> Đã thêm sản phẩm vào giỏ hàng!
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                    data-bs-dismiss="toast"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript Libraries -->
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                    <script src="/client/lib/easing/easing.min.js"></script>
+                    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+                    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+                    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+                    <!-- Template Javascript -->
+                    <script src="/client/js/main.js"></script>
+</body>
+
+</html>
