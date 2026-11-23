@@ -1,11 +1,33 @@
-<footer class="py-4 bg-light mt-auto">
+<style>
+    .admin-footer {
+        background-color: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 0.83rem;
+    }
+    .admin-footer a {
+        color: #64748b;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    .admin-footer a:hover {
+        color: #2563eb;
+    }
+</style>
+
+<footer class="py-3 admin-footer mt-auto">
     <div class="container-fluid px-4">
-        <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-            <div>
-                <a href="#">Privacy Policy</a>
-                &middot;
-                <a href="#">Terms &amp; Conditions</a>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <span>&copy; <%= new Date().getFullYear() %> <strong class="text-dark">LaptopShop</strong>.</span>
+                <span class="d-none d-sm-inline">Hệ thống quản trị bán hàng.</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/" target="_blank">
+                    <i class="fas fa-store me-1"></i>Trang cửa hàng
+                </a>
+                <span class="text-muted opacity-50">|</span>
+                <span class="badge bg-light text-secondary border fw-normal">Phiên bản 1.0</span>
             </div>
         </div>
     </div>

@@ -114,6 +114,7 @@ const initDataBase = async () => {
                     quantity: 50,
                     sold: 32,
                     status: 1,
+                    hot: 1,
                     brandId: 1,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -140,6 +141,7 @@ const initDataBase = async () => {
                     quantity: 40,
                     sold: 18,
                     status: 1,
+                    hot: 1,
                     brandId: 1,
                     categoryId: 5, // Ai
                 },
@@ -166,6 +168,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 12,
                     status: 1,
+                    hot: 0,
                     brandId: 1,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -192,6 +195,7 @@ const initDataBase = async () => {
                     quantity: 25,
                     sold: 9,
                     status: 1,
+                    hot: 0,
                     brandId: 1,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -218,6 +222,7 @@ const initDataBase = async () => {
                     quantity: 10,
                     sold: 3,
                     status: 1,
+                    hot: 1,
                     brandId: 1,
                     categoryId: 4, // Doanh nhân
                 },
@@ -246,6 +251,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 7,
                     status: 1,
+                    hot: 1,
                     brandId: 2,
                     categoryId: 5, // Ai
                 },
@@ -272,6 +278,7 @@ const initDataBase = async () => {
                     quantity: 60,
                     sold: 45,
                     status: 1,
+                    hot: 1,
                     brandId: 2,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -298,6 +305,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 14,
                     status: 1,
+                    hot: 0,
                     brandId: 2,
                     categoryId: 4, // Doanh nhân
                 },
@@ -324,6 +332,7 @@ const initDataBase = async () => {
                     quantity: 35,
                     sold: 22,
                     status: 1,
+                    hot: 0,
                     brandId: 2,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -350,6 +359,7 @@ const initDataBase = async () => {
                     quantity: 15,
                     sold: 4,
                     status: 1,
+                    hot: 0,
                     brandId: 2,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -378,6 +388,7 @@ const initDataBase = async () => {
                     quantity: 55,
                     sold: 38,
                     status: 1,
+                    hot: 1,
                     brandId: 3,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -404,6 +415,7 @@ const initDataBase = async () => {
                     quantity: 25,
                     sold: 11,
                     status: 1,
+                    hot: 0,
                     brandId: 3,
                     categoryId: 5, // Ai
                 },
@@ -430,6 +442,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 15,
                     status: 1,
+                    hot: 0,
                     brandId: 3,
                     categoryId: 4, // Doanh nhân
                 },
@@ -456,6 +469,7 @@ const initDataBase = async () => {
                     quantity: 40,
                     sold: 29,
                     status: 1,
+                    hot: 1,
                     brandId: 3,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -482,6 +496,7 @@ const initDataBase = async () => {
                     quantity: 35,
                     sold: 21,
                     status: 1,
+                    hot: 0,
                     brandId: 3,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -510,6 +525,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 10,
                     status: 1,
+                    hot: 1,
                     brandId: 4,
                     categoryId: 4, // Doanh nhân
                 },
@@ -536,6 +552,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 24,
                     status: 1,
+                    hot: 1,
                     brandId: 4,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -562,6 +579,7 @@ const initDataBase = async () => {
                     quantity: 45,
                     sold: 31,
                     status: 1,
+                    hot: 0,
                     brandId: 4,
                     categoryId: 5, // Ai
                 },
@@ -588,6 +606,7 @@ const initDataBase = async () => {
                     quantity: 25,
                     sold: 13,
                     status: 1,
+                    hot: 0,
                     brandId: 4,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -614,6 +633,7 @@ const initDataBase = async () => {
                     quantity: 70,
                     sold: 58,
                     status: 1,
+                    hot: 1,
                     brandId: 4,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -642,6 +662,7 @@ const initDataBase = async () => {
                     quantity: 40,
                     sold: 27,
                     status: 1,
+                    hot: 1,
                     brandId: 5,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -668,6 +689,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 11,
                     status: 1,
+                    hot: 1,
                     brandId: 5,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -694,6 +716,7 @@ const initDataBase = async () => {
                     quantity: 25,
                     sold: 9,
                     status: 1,
+                    hot: 0,
                     brandId: 5,
                     categoryId: 5, // Ai
                 },
@@ -720,6 +743,7 @@ const initDataBase = async () => {
                     quantity: 65,
                     sold: 49,
                     status: 1,
+                    hot: 1,
                     brandId: 5,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -746,6 +770,7 @@ const initDataBase = async () => {
                     quantity: 15,
                     sold: 5,
                     status: 1,
+                    hot: 0,
                     brandId: 5,
                     categoryId: 4, // Doanh nhân
                 },
@@ -774,6 +799,7 @@ const initDataBase = async () => {
                     quantity: 50,
                     sold: 41,
                     status: 1,
+                    hot: 1,
                     brandId: 6,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -800,6 +826,7 @@ const initDataBase = async () => {
                     quantity: 35,
                     sold: 19,
                     status: 1,
+                    hot: 0,
                     brandId: 6,
                     categoryId: 5, // Ai
                 },
@@ -826,6 +853,7 @@ const initDataBase = async () => {
                     quantity: 60,
                     sold: 37,
                     status: 1,
+                    hot: 0,
                     brandId: 6,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -852,6 +880,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 8,
                     status: 1,
+                    hot: 0,
                     brandId: 6,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -878,6 +907,7 @@ const initDataBase = async () => {
                     quantity: 25,
                     sold: 10,
                     status: 1,
+                    hot: 0,
                     brandId: 6,
                     categoryId: 4, // Doanh nhân
                 },
@@ -906,6 +936,7 @@ const initDataBase = async () => {
                     quantity: 40,
                     sold: 33,
                     status: 1,
+                    hot: 1,
                     brandId: 7,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -932,6 +963,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 9,
                     status: 1,
+                    hot: 0,
                     brandId: 7,
                     categoryId: 5, // Ai
                 },
@@ -958,6 +990,7 @@ const initDataBase = async () => {
                     quantity: 65,
                     sold: 51,
                     status: 1,
+                    hot: 1,
                     brandId: 7,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -984,6 +1017,7 @@ const initDataBase = async () => {
                     quantity: 15,
                     sold: 6,
                     status: 1,
+                    hot: 0,
                     brandId: 7,
                     categoryId: 4, // Doanh nhân
                 },
@@ -1010,6 +1044,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 8,
                     status: 1,
+                    hot: 0,
                     brandId: 7,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -1038,6 +1073,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 16,
                     status: 1,
+                    hot: 1,
                     brandId: 8,
                     categoryId: 5, // Ai
                 },
@@ -1064,6 +1100,7 @@ const initDataBase = async () => {
                     quantity: 20,
                     sold: 11,
                     status: 1,
+                    hot: 0,
                     brandId: 8,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -1090,6 +1127,7 @@ const initDataBase = async () => {
                     quantity: 35,
                     sold: 20,
                     status: 1,
+                    hot: 0,
                     brandId: 8,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -1116,6 +1154,7 @@ const initDataBase = async () => {
                     quantity: 10,
                     sold: 3,
                     status: 1,
+                    hot: 0,
                     brandId: 8,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -1142,6 +1181,7 @@ const initDataBase = async () => {
                     quantity: 15,
                     sold: 5,
                     status: 1,
+                    hot: 0,
                     brandId: 8,
                     categoryId: 4, // Doanh nhân
                 },
@@ -1170,6 +1210,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 17,
                     status: 1,
+                    hot: 1,
                     brandId: 9,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -1196,6 +1237,7 @@ const initDataBase = async () => {
                     quantity: 25,
                     sold: 12,
                     status: 1,
+                    hot: 0,
                     brandId: 9,
                     categoryId: 5, // Ai
                 },
@@ -1222,6 +1264,7 @@ const initDataBase = async () => {
                     quantity: 15,
                     sold: 6,
                     status: 1,
+                    hot: 0,
                     brandId: 9,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -1248,6 +1291,7 @@ const initDataBase = async () => {
                     quantity: 18,
                     sold: 9,
                     status: 1,
+                    hot: 0,
                     brandId: 9,
                     categoryId: 4, // Doanh nhân
                 },
@@ -1274,6 +1318,7 @@ const initDataBase = async () => {
                     quantity: 30,
                     sold: 19,
                     status: 1,
+                    hot: 0,
                     brandId: 9,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -1302,6 +1347,7 @@ const initDataBase = async () => {
                     quantity: 12,
                     sold: 5,
                     status: 1,
+                    hot: 1,
                     brandId: 10,
                     categoryId: 1, // Gaming - Đồ họa
                 },
@@ -1328,6 +1374,7 @@ const initDataBase = async () => {
                     quantity: 8,
                     sold: 2,
                     status: 1,
+                    hot: 1,
                     brandId: 10,
                     categoryId: 5, // Ai
                 },
@@ -1354,6 +1401,7 @@ const initDataBase = async () => {
                     quantity: 15,
                     sold: 7,
                     status: 1,
+                    hot: 0,
                     brandId: 10,
                     categoryId: 2, // Sinh viên - Văn phòng
                 },
@@ -1380,6 +1428,7 @@ const initDataBase = async () => {
                     quantity: 12,
                     sold: 6,
                     status: 1,
+                    hot: 0,
                     brandId: 10,
                     categoryId: 3, // Mỏng nhẹ
                 },
@@ -1406,6 +1455,7 @@ const initDataBase = async () => {
                     quantity: 10,
                     sold: 2,
                     status: 1,
+                    hot: 0,
                     brandId: 10,
                     categoryId: 4, // Doanh nhân
                 },

@@ -1,85 +1,608 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Manage Orders - Khiem</title>
-        <link href="/admin/css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <%- include('../layout/header') %>
-        
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Trang quản lý đơn hàng hệ thống" />
+    <meta name="author" content="Khiem" />
+    <title>Quản lý đơn hàng - Trang quản trị</title>
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .table-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 700;
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .badge-soft-warning {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+
+        .badge-soft-info {
+            background-color: #cff4fc;
+            color: #055160;
+        }
+
+        .badge-soft-primary {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+
+        .badge-soft-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .badge-soft-danger {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .badge-soft-secondary {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+
+        .badge-soft-purple {
+            background-color: #e0cffc;
+            color: #3d0a91;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed bg-light">
+    <%- include('../layout/header') %>
+
         <div id="layoutSidenav">
             <%- include('../layout/sidenav') %>
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Manage Orders</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Orders</li>
-                        </ol>
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5>Table Orders</h5>
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4 pb-5">
+                            <!-- Tiêu đề & Breadcrumb -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-3 gap-3">
+                                <div>
+                                    <h2 class="fw-bold text-dark mb-1">Quản lý đơn hàng</h2>
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb mb-0 small">
+                                            <li class="breadcrumb-item"><a href="/admin"
+                                                    class="text-decoration-none">Bảng điều khiển</a></li>
+                                            <li class="breadcrumb-item active" aria-current="page">Đơn hàng</li>
+                                        </ol>
+                                    </nav>
                                 </div>
-                                <hr />
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Id</th>
-                                                <th>User</th>
-                                                <th>Total price</th>
-                                                <th>Status</th>
-                                                <th>Payment method</th>
-                                                <th>Payment status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% orders.forEach(function(order) { %>
-                                                <tr>
-                                                    <td>
-                                                        <%= order.id %>
-                                                    </td>
-                                                    <td>
-                                                        <%= order?.user?.fullName ?? "" %>
-                                                    </td>
-                                                    <td>
-                                                        <%= order.totalPrice.toLocaleString('vi-VN') %> ₫
-                                                    </td>
-                                                    <td>
-                                                        <%= order.status %> 
-                                                    </td>
-                                                    <td>
-                                                        <%= order.paymentMethod %> 
-                                                    </td>
-                                                    <td>
-                                                        <%= order.paymentStatus %>
-                                                    </td>
-                                                    <td>
-                                                        <div style="display: flex; gap: 8px;">
-                                                            <a href="/admin/handle-view-order/<%= order.id %>"
-                                                                class="btn btn-primary btn-sm">View</a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <% }); %>
-                                        </tbody>
-                                    </table>
+                            </div>
+
+                            <% const totalOrders=orders ? orders.length : 0; const pendingOrders=orders ?
+                                orders.filter(o=> (o.status || '').toUpperCase() === 'PENDING').length : 0;
+                                const shippingOrders = orders ? orders.filter(o => ['PROCESSING',
+                                'SHIPPING'].includes((o.status || '').toUpperCase())).length : 0;
+                                const completedOrders = orders ? orders.filter(o => ['DELIVERED',
+                                'COMPLETED'].includes((o.status || '').toUpperCase())).length : 0;
+                                %>
+
+                                <!-- Thẻ thống kê nhanh -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="card stat-card shadow-sm h-100">
+                                            <div class="card-body d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <div class="text-muted small fw-semibold mb-1">Tổng đơn hàng</div>
+                                                    <h4 class="fw-bold mb-0 text-dark">
+                                                        <%= totalOrders %>
+                                                    </h4>
+                                                </div>
+                                                <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                                    <i class="fas fa-shopping-bag"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="card stat-card shadow-sm h-100">
+                                            <div class="card-body d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <div class="text-muted small fw-semibold mb-1">Chờ xác nhận</div>
+                                                    <h4 class="fw-bold mb-0 text-warning">
+                                                        <%= pendingOrders %>
+                                                    </h4>
+                                                </div>
+                                                <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                                    <i class="fas fa-clock"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="card stat-card shadow-sm h-100">
+                                            <div class="card-body d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <div class="text-muted small fw-semibold mb-1">Đang xử lý & Giao
+                                                        hàng</div>
+                                                    <h4 class="fw-bold mb-0 text-info">
+                                                        <%= shippingOrders %>
+                                                    </h4>
+                                                </div>
+                                                <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                                    <i class="fas fa-truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="card stat-card shadow-sm h-100">
+                                            <div class="card-body d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <div class="text-muted small fw-semibold mb-1">Đã giao / Hoàn thành
+                                                    </div>
+                                                    <h4 class="fw-bold mb-0 text-success">
+                                                        <%= completedOrders %>
+                                                    </h4>
+                                                </div>
+                                                <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bảng danh sách đơn hàng -->
+                                <div class="card table-card shadow-sm">
+                                    <!-- Thanh tìm kiếm & Lọc đa điều kiện -->
+                                    <div class="card-header bg-white py-3 border-bottom">
+                                        <div class="row g-2 align-items-center">
+                                            <div class="col-lg-4 col-md-6">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-light border-end-0 text-muted">
+                                                        <i class="fas fa-search"></i>
+                                                    </span>
+                                                    <input type="text" id="searchOrderInput"
+                                                        class="form-control border-start-0 bg-light"
+                                                        placeholder="Tìm mã đơn, tên khách, người nhận, SĐT...">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-md-6">
+                                                <select id="filterOrderStatus" class="form-select form-select-sm">
+                                                    <option value="ALL">Tất cả trạng thái đơn</option>
+                                                    <option value="PENDING">Chờ xác nhận (PENDING)</option>
+                                                    <option value="PROCESSING">Đang xử lý / đóng gói</option>
+                                                    <option value="SHIPPING">Đang giao hàng</option>
+                                                    <option value="DELIVERED">Đã giao hàng</option>
+                                                    <option value="COMPLETED">Hoàn thành</option>
+                                                    <option value="CANCELLED">Đã hủy</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-3 col-md-6">
+                                                <select id="filterPaymentStatus" class="form-select form-select-sm">
+                                                    <option value="ALL">Tất cả thanh toán</option>
+                                                    <option value="UNPAID">Chưa thanh toán</option>
+                                                    <option value="PAID">Đã thanh toán</option>
+                                                    <option value="FAILED">Thanh toán thất bại</option>
+                                                    <option value="REFUNDED">Đã hoàn tiền</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-2 col-md-6 text-lg-end">
+                                                <button type="button" id="btnResetOrderFilter"
+                                                    class="btn btn-outline-secondary btn-sm w-100">
+                                                    <i class="fas fa-rotate-left me-1"></i>Đặt lại
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-0" id="ordersAdminTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="ps-4" style="width: 90px;">Mã đơn</th>
+                                                        <th>Khách hàng & Người nhận</th>
+                                                        <th>Ngày đặt</th>
+                                                        <th class="text-end">Tổng thanh toán</th>
+                                                        <th class="text-center">Phương thức</th>
+                                                        <th class="text-center">Thanh toán</th>
+                                                        <th class="text-center">Trạng thái đơn</th>
+                                                        <th class="text-end pe-4" style="width: 130px;">Thao tác</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (orders && orders.length> 0) { %>
+                                                        <% orders.forEach(function(order) { %>
+                                                            <% const statusKey=(order.status || 'PENDING'
+                                                                ).toUpperCase(); const payStatusKey=(order.paymentStatus
+                                                                || 'UNPAID' ).toUpperCase(); const
+                                                                payMethodKey=(order.paymentMethod || '' ).toUpperCase();
+                                                                const customerName=order?.user?.fullName ||
+                                                                order?.user?.username || 'Khách hàng' ; %>
+                                                                <tr class="order-row"
+                                                                    data-search="<%= `#${order.id} ${order.id} ${customerName} ${order.receiverName || ''} ${order.receiverPhone || ''}`.toLowerCase() %>"
+                                                                    data-status="<%= statusKey %>"
+                                                                    data-payment="<%= payStatusKey %>">
+
+                                                                    <!-- Mã đơn -->
+                                                                    <td class="ps-4 fw-bold text-primary">
+                                                                        <a href="/admin/handle-view-order/<%= order.id %>"
+                                                                            class="text-decoration-none">
+                                                                            #<%= order.id %>
+                                                                        </a>
+                                                                    </td>
+
+                                                                    <!-- Khách đặt & Người nhận -->
+                                                                    <td>
+                                                                        <div class="fw-bold text-dark">
+                                                                            <%= customerName %>
+                                                                        </div>
+                                                                        <div class="small text-muted">
+                                                                            <i class="fas fa-user-tag me-1"></i>Nhận:
+                                                                            <%= order.receiverName || customerName %>
+                                                                                <% if (order.receiverPhone) { %>
+                                                                                    • <i
+                                                                                        class="fas fa-phone-alt ms-1 me-1"></i>
+                                                                                    <%= order.receiverPhone %>
+                                                                                        <% } %>
+                                                                        </div>
+                                                                    </td>
+
+                                                                    <!-- Ngày đặt -->
+                                                                    <td class="small text-muted text-nowrap">
+                                                                        <% if (order.createdAt) { %>
+                                                                            <div>
+                                                                                <%= new
+                                                                                    Date(order.createdAt).toLocaleDateString('vi-VN')
+                                                                                    %>
+                                                                            </div>
+                                                                            <div style="font-size: 0.78rem;">
+                                                                                <%= new
+                                                                                    Date(order.createdAt).toLocaleTimeString('vi-VN',
+                                                                                    { hour: '2-digit' ,
+                                                                                    minute: '2-digit' }) %>
+                                                                            </div>
+                                                                            <% } else { %>
+                                                                                —
+                                                                                <% } %>
+                                                                    </td>
+
+                                                                    <!-- Tổng tiền & Giảm giá -->
+                                                                    <td class="text-end text-nowrap">
+                                                                        <div class="fw-bold text-dark">
+                                                                            <%= order.totalPrice.toLocaleString('vi-VN')
+                                                                                %> ₫
+                                                                        </div>
+                                                                        <% if (order.discountAmount &&
+                                                                            order.discountAmount> 0) { %>
+                                                                            <div class="small text-success"
+                                                                                style="font-size: 0.78rem;">
+                                                                                <i class="fas fa-ticket-alt me-1"></i>-
+                                                                                <%= order.discountAmount.toLocaleString('vi-VN')
+                                                                                    %> ₫
+                                                                            </div>
+                                                                            <% } %>
+                                                                    </td>
+
+                                                                    <!-- Phương thức thanh toán -->
+                                                                    <td class="text-center text-nowrap">
+                                                                        <% if (payMethodKey==='COD' ) { %>
+                                                                            <span
+                                                                                class="badge badge-soft-secondary px-2 py-1 rounded-pill fw-semibold">
+                                                                                <i
+                                                                                    class="fas fa-money-bill-wave me-1"></i>COD
+                                                                            </span>
+                                                                            <% } else { %>
+                                                                                <span
+                                                                                    class="badge badge-soft-primary px-2 py-1 rounded-pill fw-semibold">
+                                                                                    <i
+                                                                                        class="fas fa-university me-1"></i>
+                                                                                    <%= order.paymentMethod
+                                                                                        || 'Chuyển khoản' %>
+                                                                                </span>
+                                                                                <% } %>
+                                                                    </td>
+
+                                                                    <!-- Trạng thái thanh toán -->
+                                                                    <td class="text-center text-nowrap">
+                                                                        <% if (payStatusKey==='PAID' ||
+                                                                            payStatusKey==='SUCCED' ||
+                                                                            payStatusKey==='SUCCEEDED' ) { %>
+                                                                            <span
+                                                                                class="badge badge-soft-success px-2 py-1 rounded-pill fw-semibold">
+                                                                                <i
+                                                                                    class="fas fa-check-circle me-1"></i>Đã
+                                                                                thanh toán
+                                                                            </span>
+                                                                            <% } else if (payStatusKey==='FAILED' ) { %>
+                                                                                <span
+                                                                                    class="badge badge-soft-danger px-2 py-1 rounded-pill fw-semibold">
+                                                                                    <i
+                                                                                        class="fas fa-times-circle me-1"></i>Thất
+                                                                                    bại
+                                                                                </span>
+                                                                                <% } else if (payStatusKey==='REFUNDED'
+                                                                                    ) { %>
+                                                                                    <span
+                                                                                        class="badge badge-soft-purple px-2 py-1 rounded-pill fw-semibold">
+                                                                                        <i
+                                                                                            class="fas fa-undo-alt me-1"></i>Đã
+                                                                                        hoàn tiền
+                                                                                    </span>
+                                                                                    <% } else { %>
+                                                                                        <span
+                                                                                            class="badge badge-soft-warning px-2 py-1 rounded-pill fw-semibold">
+                                                                                            <i
+                                                                                                class="fas fa-hourglass-half me-1"></i>Chưa
+                                                                                            thanh toán
+                                                                                        </span>
+                                                                                        <% } %>
+                                                                    </td>
+
+                                                                    <!-- Trạng thái đơn hàng -->
+                                                                    <td class="text-center text-nowrap">
+                                                                        <% if (statusKey==='PENDING' ) { %>
+                                                                            <span
+                                                                                class="badge badge-soft-warning px-3 py-1 rounded-pill fw-semibold">
+                                                                                <i class="fas fa-clock me-1"></i>Chờ xác
+                                                                                nhận
+                                                                            </span>
+                                                                            <% } else if (statusKey==='PROCESSING' ) {
+                                                                                %>
+                                                                                <span
+                                                                                    class="badge badge-soft-info px-3 py-1 rounded-pill fw-semibold">
+                                                                                    <i
+                                                                                        class="fas fa-box-open me-1"></i>Đang
+                                                                                    xử lý
+                                                                                </span>
+                                                                                <% } else if (statusKey==='SHIPPING' ) {
+                                                                                    %>
+                                                                                    <span
+                                                                                        class="badge badge-soft-primary px-3 py-1 rounded-pill fw-semibold">
+                                                                                        <i
+                                                                                            class="fas fa-shipping-fast me-1"></i>Đang
+                                                                                        giao hàng
+                                                                                    </span>
+                                                                                    <% } else if
+                                                                                        (statusKey==='DELIVERED' ) { %>
+                                                                                        <span
+                                                                                            class="badge badge-soft-info px-3 py-1 rounded-pill fw-semibold">
+                                                                                            <i
+                                                                                                class="fas fa-box-check me-1"></i>Đã
+                                                                                            giao hàng
+                                                                                        </span>
+                                                                                        <% } else if
+                                                                                            (statusKey==='COMPLETED' ) {
+                                                                                            %>
+                                                                                            <span
+                                                                                                class="badge badge-soft-success px-3 py-1 rounded-pill fw-semibold">
+                                                                                                <i
+                                                                                                    class="fas fa-check-double me-1"></i>Hoàn
+                                                                                                thành
+                                                                                            </span>
+                                                                                            <% } else if
+                                                                                                (statusKey==='CANCELLED'
+                                                                                                ) { %>
+                                                                                                <span
+                                                                                                    class="badge badge-soft-danger px-3 py-1 rounded-pill fw-semibold">
+                                                                                                    <i
+                                                                                                        class="fas fa-ban me-1"></i>Đã
+                                                                                                    hủy
+                                                                                                </span>
+                                                                                                <% } else { %>
+                                                                                                    <span
+                                                                                                        class="badge badge-soft-secondary px-3 py-1 rounded-pill fw-semibold">
+                                                                                                        <%= order.status
+                                                                                                            %>
+                                                                                                    </span>
+                                                                                                    <% } %>
+                                                                    </td>
+
+                                                                    <!-- Thao tác -->
+                                                                    <!-- Thao tác -->
+                                                                    <td class="text-end pe-4 text-nowrap">
+                                                                        <div class="d-inline-flex gap-1">
+                                                                            <% if (statusKey==='PENDING' ) { %>
+                                                                                <form
+                                                                                    action="/admin/handle-confirm-order/<%= order.id %>"
+                                                                                    method="post" class="d-inline"
+                                                                                    onsubmit="return confirm('Xác nhận đơn hàng #<%= order.id %> và chuyển sang trạng thái Đang xử lý?');">
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-success btn-sm fw-semibold"
+                                                                                        title="Xác nhận đơn hàng">
+                                                                                        <i
+                                                                                            class="fas fa-check me-1"></i>Xác
+                                                                                        nhận
+                                                                                    </button>
+                                                                                </form>
+                                                                                <% } %>
+
+                                                                                    <% if (statusKey==='PROCESSING' ) {
+                                                                                        %>
+                                                                                        <form
+                                                                                            action="/admin/handle-ship-order/<%= order.id %>"
+                                                                                            method="post"
+                                                                                            class="d-inline"
+                                                                                            onsubmit="return confirm('Xác nhận bàn giao đơn hàng #<%= order.id %> cho đơn vị vận chuyển?');">
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-primary btn-sm fw-semibold"
+                                                                                                title="Chuyển sang đang giao hàng">
+                                                                                                <i
+                                                                                                    class="fas fa-shipping-fast me-1"></i>Giao
+                                                                                                hàng
+                                                                                            </button>
+                                                                                        </form>
+                                                                                        <% } %>
+
+                                                                                            <% if (statusKey==='PENDING'
+                                                                                                ||
+                                                                                                statusKey==='PROCESSING'
+                                                                                                ) { %>
+                                                                                                <form
+                                                                                                    action="/admin/handle-cancel-order/<%= order.id %>"
+                                                                                                    method="post"
+                                                                                                    class="d-inline"
+                                                                                                    onsubmit="return confirm('Bạn có chắc chắn muốn HỦY đơn hàng #<%= order.id %> không? Tồn kho sản phẩm sẽ được hoàn lại.');">
+                                                                                                    <button
+                                                                                                        type="submit"
+                                                                                                        class="btn btn-outline-danger btn-sm fw-semibold"
+                                                                                                        title="Hủy đơn hàng">
+                                                                                                        <i
+                                                                                                            class="fas fa-ban me-1"></i>Hủy
+                                                                                                        đơn
+                                                                                                    </button>
+                                                                                                </form>
+                                                                                                <% } %>
+
+                                                                                                    <a href="/admin/handle-view-order/<%= order.id %>"
+                                                                                                        class="btn btn-outline-secondary btn-sm"
+                                                                                                        title="Xem chi tiết đơn hàng">
+                                                                                                        <i
+                                                                                                            class="fas fa-eye me-1"></i>Chi
+                                                                                                        tiết
+                                                                                                    </a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <% }); %>
+                                                                    <% } else { %>
+                                                                        <tr>
+                                                                            <td colspan="8"
+                                                                                class="text-center py-5 text-muted">
+                                                                                <i
+                                                                                    class="fas fa-receipt fa-2x mb-2 d-block"></i>
+                                                                                Chưa có đơn hàng nào trong hệ thống.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% } %>
+                                                                            <tr id="noOrderFilterResult"
+                                                                                style="display: none;">
+                                                                                <td colspan="8"
+                                                                                    class="text-center py-4 text-muted">
+                                                                                    <i
+                                                                                        class="fas fa-search me-2"></i>Không
+                                                                                    tìm thấy đơn hàng nào phù hợp với bộ
+                                                                                    lọc.
+                                                                                </td>
+                                                                            </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="card-footer bg-white py-2 px-4 d-flex justify-content-between align-items-center small text-muted">
+                                        <span>Hiển thị <strong id="visibleOrderCount">
+                                                <%= totalOrders %>
+                                            </strong> / <strong>
+                                                <%= totalOrders %>
+                                            </strong> đơn hàng</span>
+                                    </div>
                                 </div>
                         </div>
-                    </div>
-                </main>
-                <%- include('../layout/footer') %>
-            </div>
+                    </main>
+                    <%- include('../layout/footer') %>
+                </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
         <script src="/admin/js/scripts.js"></script>
-    </body>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const searchInput = document.getElementById("searchOrderInput");
+                const statusSelect = document.getElementById("filterOrderStatus");
+                const paymentSelect = document.getElementById("filterPaymentStatus");
+                const btnReset = document.getElementById("btnResetOrderFilter");
+                const rows = document.querySelectorAll(".order-row");
+                const noResultRow = document.getElementById("noOrderFilterResult");
+                const visibleCountEl = document.getElementById("visibleOrderCount");
+
+                function filterOrders() {
+                    const keyword = (searchInput?.value || "").toLowerCase().trim();
+                    const status = statusSelect?.value || "ALL";
+                    const payment = paymentSelect?.value || "ALL";
+                    let visible = 0;
+
+                    rows.forEach(row => {
+                        const searchData = row.dataset.search || "";
+                        const rowStatus = row.dataset.status || "";
+                        const rowPayment = row.dataset.payment || "";
+
+                        const matchKeyword = searchData.includes(keyword);
+                        const matchStatus = status === "ALL" || rowStatus === status;
+                        const matchPayment = payment === "ALL" || rowPayment === payment;
+
+                        if (matchKeyword && matchStatus && matchPayment) {
+                            row.style.display = "";
+                            visible++;
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+
+                    if (visibleCountEl) visibleCountEl.textContent = visible;
+                    if (noResultRow) {
+                        noResultRow.style.display = (rows.length > 0 && visible === 0) ? "" : "none";
+                    }
+                }
+
+                if (searchInput) searchInput.addEventListener("input", filterOrders);
+                if (statusSelect) statusSelect.addEventListener("change", filterOrders);
+                if (paymentSelect) paymentSelect.addEventListener("change", filterOrders);
+
+                if (btnReset) {
+                    btnReset.addEventListener("click", function () {
+                        if (searchInput) searchInput.value = "";
+                        if (statusSelect) statusSelect.value = "ALL";
+                        if (paymentSelect) paymentSelect.value = "ALL";
+                        filterOrders();
+                    });
+                }
+            });
+        </script>
+</body>
+
 </html>

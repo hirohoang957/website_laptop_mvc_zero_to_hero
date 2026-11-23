@@ -1,37 +1,137 @@
+<style>
+    .admin-sidenav {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .admin-sidenav .sb-sidenav-menu-heading {
+        color: #64748b !important;
+        font-size: 0.72rem !important;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        padding: 1.25rem 1.25rem 0.5rem !important;
+    }
+    .admin-sidenav .nav-link {
+        color: #cbd5e1 !important;
+        margin: 0.2rem 0.75rem;
+        padding: 0.65rem 0.95rem !important;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+    .admin-sidenav .nav-link .sb-nav-link-icon {
+        width: 24px;
+        margin-right: 10px;
+        color: #94a3b8 !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+    }
+    .admin-sidenav .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+        transform: translateX(2px);
+    }
+    .admin-sidenav .nav-link:hover .sb-nav-link-icon {
+        color: #60a5fa !important;
+    }
+    .admin-sidenav .nav-link.active {
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.12) 100%) !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        border-left: 3px solid #3b82f6;
+    }
+    .admin-sidenav .nav-link.active .sb-nav-link-icon {
+        color: #60a5fa !important;
+    }
+    .admin-sidenav .sb-sidenav-footer {
+        background-color: rgba(15, 23, 42, 0.65) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.9rem 1.25rem !important;
+    }
+    .status-dot-online {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #22c55e;
+        display: inline-block;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    }
+</style>
+
+<%
+    const navUser = typeof user !== 'undefined' && user ? user : null;
+    const loggedName = navUser?.fullName || 'Khiêm';
+%>
+
 <div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <nav class="sb-sidenav accordion sb-sidenav-dark admin-sidenav" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
             <div class="nav">
-                <div class="sb-sidenav-menu-heading">Core</div>
-                <a class="nav-link" href="/admin">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Dashboard
+                <div class="sb-sidenav-menu-heading">Tổng quan</div>
+                <a class="nav-link" href="/admin" data-match="/admin">
+                    <div class="sb-nav-link-icon"><i class="fas fa-chart-pie"></i></div>
+                    Bảng điều khiển
                 </a>
-                <a class="nav-link" href="/admin/user">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    User
+
+                <div class="sb-sidenav-menu-heading">Quản lý hệ thống</div>
+                <a class="nav-link" href="/admin/user" data-match="user">
+                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                    Người dùng
                 </a>
-                <a class="nav-link" href="/admin/category">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Category
+                <a class="nav-link" href="/admin/category" data-match="category">
+                    <div class="sb-nav-link-icon"><i class="fas fa-layer-group"></i></div>
+                    Danh mục
                 </a>
-                <a class="nav-link" href="/admin/brand">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Brand
+                <a class="nav-link" href="/admin/brand" data-match="brand">
+                    <div class="sb-nav-link-icon"><i class="fas fa-copyright"></i></div>
+                    Thương hiệu
                 </a>
-                <a class="nav-link" href="/admin/product">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Product
+                <a class="nav-link" href="/admin/product" data-match="product">
+                    <div class="sb-nav-link-icon"><i class="fas fa-laptop"></i></div>
+                    Sản phẩm
                 </a>
-                <a class="nav-link" href="/admin/order">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Order
+                <a class="nav-link" href="/admin/order" data-match="order">
+                    <div class="sb-nav-link-icon"><i class="fas fa-shopping-bag"></i></div>
+                    Đơn hàng
                 </a>
             </div>
         </div>
+
         <div class="sb-sidenav-footer">
-            <div class="small">Logged in as:</div>
-            Khiem
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="small text-muted" style="font-size: 0.75rem;">Đang đăng nhập:</div>
+                    <div class="fw-semibold text-white small d-flex align-items-center gap-2 mt-1">
+                        <span class="status-dot-online"></span>
+                        <span><%= loggedName %></span>
+                    </div>
+                </div>
+                <span class="badge bg-primary bg-opacity-25 text-info" style="font-size: 0.68rem;">Admin</span>
+            </div>
         </div>
     </nav>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const currentPath = window.location.pathname.toLowerCase();
+        const navLinks = document.querySelectorAll("#sidenavAccordion .nav-link");
+
+        navLinks.forEach(link => {
+            const matchKey = link.getAttribute("data-match");
+            link.classList.remove("active");
+
+            if (matchKey === "/admin") {
+                if (currentPath === "/admin" || currentPath === "/admin/") {
+                    link.classList.add("active");
+                }
+            } else if (matchKey && currentPath.includes(matchKey)) {
+                link.classList.add("active");
+            }
+        });
+    });
+</script>

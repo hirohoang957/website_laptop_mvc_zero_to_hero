@@ -1,90 +1,321 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Manage Brands - Khiem</title>
+    <meta name="description" content="Trang quản lý thương hiệu sản phẩm" />
+    <meta name="author" content="Khiem" />
+    <title>Quản lý thương hiệu - Trang quản trị</title>
     <link href="/admin/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .table-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .brand-logo-box {
+            width: 110px;
+            height: 52px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+        }
+        .brand-logo-box img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        .table thead th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 700;
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.92rem;
+        }
+        .badge-soft-primary {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+        .badge-soft-secondary {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+    </style>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bg-light">
     <%- include('../layout/header') %>
 
-        <div id="layoutSidenav">
-            <%- include('../layout/sidenav') %>
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid px-4">
-                            <h1 class="mt-4">Manage Brands</h1>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Brands</li>
-                            </ol>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5>Table Brands</h5>
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 pb-5">
+                    <!-- Tiêu đề & Nút thêm mới -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-3 gap-3">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Quản lý thương hiệu</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none">Bảng điều khiển</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Thương hiệu</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a class="btn btn-primary px-3 py-2 fw-semibold shadow-sm rounded-3" href="/admin/create-brand">
+                            <i class="fas fa-plus-circle me-2"></i>Thêm thương hiệu mới
+                        </a>
+                    </div>
+
+                    <!-- Thống kê nhanh dựa trên dữ liệu model Brand hiện tại -->
+                    <%
+                        const totalBrands = brands ? brands.length : 0;
+                        const withLogoCount = brands ? brands.filter(b => !!b.logo).length : 0;
+                        const withoutLogoCount = totalBrands - withLogoCount;
+                    %>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
-                                        <a class="btn btn-warning" href="/admin/create-brand">Create a new brand</a>
+                                        <div class="text-muted small fw-semibold mb-1">Tổng thương hiệu</div>
+                                        <h4 class="fw-bold mb-0 text-dark"><%= totalBrands %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                        <i class="fas fa-copyright"></i>
                                     </div>
                                 </div>
-                                <hr />
-                                <div>
-                                    <table class="table table-hover table-bordered align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Logo</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Đã có Logo</div>
+                                        <h4 class="fw-bold mb-0 text-success"><%= withLogoCount %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Chưa có Logo</div>
+                                        <h4 class="fw-bold mb-0 text-warning"><%= withoutLogoCount %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng dữ liệu thương hiệu -->
+                    <div class="card table-card shadow-sm">
+                        <!-- Thanh tìm kiếm & lọc -->
+                        <div class="card-header bg-white py-3 border-bottom">
+                            <div class="row g-2 align-items-center justify-content-between">
+                                <div class="col-md-5">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" id="searchBrandInput" class="form-control border-start-0 bg-light"
+                                            placeholder="Tìm kiếm theo tên thương hiệu...">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="filterBrandLogo" class="form-select form-select-sm">
+                                        <option value="ALL">Tất cả thương hiệu</option>
+                                        <option value="HAS_LOGO">Đã cập nhật Logo</option>
+                                        <option value="NO_LOGO">Chưa có Logo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="brandsAdminTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4" style="width: 90px;">ID</th>
+                                            <th style="width: 160px;">Logo</th>
+                                            <th>Tên thương hiệu</th>
+                                            <% if (brands && brands.some(b => b._count || b.products)) { %>
+                                                <th class="text-center">Số sản phẩm</th>
+                                            <% } %>
+                                            <th class="text-end pe-4" style="width: 170px;">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% const hasProductRelation = brands && brands.some(b => b._count || b.products); %>
+                                        <% if (brands && brands.length > 0) { %>
                                             <% brands.forEach(function(brand) { %>
-                                                <tr>
+                                                <% const productCount = brand._count?.products ?? (brand.products ? brand.products.length : 0); %>
+                                                <tr class="brand-row"
+                                                    data-name="<%= (brand.name || '').toLowerCase() %>"
+                                                    data-has-logo="<%= brand.logo ? '1' : '0' %>">
+
+                                                    <td class="ps-4 fw-semibold text-muted">#<%= brand.id %></td>
+
                                                     <td>
-                                                        <%= brand.id %>
+                                                        <div class="brand-logo-box">
+                                                            <% if (brand.logo) { %>
+                                                                <img src="/images/brand/<%= brand.logo %>" alt="Logo <%= brand.name %>" />
+                                                            <% } else { %>
+                                                                <span class="text-muted small fst-italic">Chưa có ảnh</span>
+                                                            <% } %>
+                                                        </div>
                                                     </td>
+
                                                     <td>
-                                                        <%= brand.name %>
+                                                        <a href="/admin/handle-view-brand/<%= brand.id %>"
+                                                            class="fw-bold text-dark text-decoration-none">
+                                                            <%= brand.name %>
+                                                        </a>
                                                     </td>
-                                                    <td>
-                                                        <% if (brand.logo) { %>
-                                                            <img src="/images/brand/<%= brand.logo %>" alt="<%= brand.name %> logo"
-                                                                style="max-height: 45px; max-width: 100px; object-fit: contain;" />
-                                                        <% } else { %>
-                                                            <span class="text-muted">No logo</span>
-                                                        <% } %>
-                                                    </td>
-                                                    <td>
-                                                        <div style="display: flex; gap: 10px;">
+
+                                                    <% if (hasProductRelation) { %>
+                                                        <td class="text-center">
+                                                            <% if (productCount > 0) { %>
+                                                                <span class="badge badge-soft-primary px-3 py-1 rounded-pill fw-semibold">
+                                                                    <i class="fas fa-laptop me-1"></i><%= productCount %> sản phẩm
+                                                                </span>
+                                                            <% } else { %>
+                                                                <span class="badge badge-soft-secondary px-3 py-1 rounded-pill">
+                                                                    0 sản phẩm
+                                                                </span>
+                                                            <% } %>
+                                                        </td>
+                                                    <% } %>
+
+                                                    <td class="text-end pe-4 text-nowrap">
+                                                        <div class="d-inline-flex gap-1">
                                                             <a href="/admin/handle-view-brand/<%= brand.id %>"
-                                                                class="btn btn-primary btn-sm">View</a>
+                                                                class="btn btn-outline-primary btn-sm" title="Xem & Chỉnh sửa">
+                                                                <i class="fas fa-edit me-1"></i>Chi tiết
+                                                            </a>
                                                             <form action="/admin/handle-delete-brand/<%= brand.id %>"
-                                                                method="post" style="margin: 0;">
-                                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                                                method="post" class="d-inline"
+                                                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa thương hiệu <%= brand.name %> không?');">
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa thương hiệu">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
                                                             </form>
                                                         </div>
                                                     </td>
                                                 </tr>
                                             <% }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="<%= hasProductRelation ? 5 : 4 %>" class="text-center py-5 text-muted">
+                                                    <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                                                    Chưa có thương hiệu nào trong hệ thống.
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                        <tr id="noBrandFilterResult" style="display: none;">
+                                            <td colspan="<%= hasProductRelation ? 5 : 4 %>" class="text-center py-4 text-muted">
+                                                <i class="fas fa-search me-2"></i>Không tìm thấy thương hiệu nào phù hợp.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </main>
-                    <%- include('../layout/footer') %>
+
+                        <div class="card-footer bg-white py-2 px-4 d-flex justify-content-between align-items-center small text-muted">
+                            <span>Hiển thị <strong id="visibleBrandCount"><%= totalBrands %></strong> / <strong><%= totalBrands %></strong> thương hiệu</span>
+                        </div>
+                    </div>
                 </div>
+            </main>
+            <%- include('../layout/footer') %>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchBrandInput");
+            const logoSelect = document.getElementById("filterBrandLogo");
+            const rows = document.querySelectorAll(".brand-row");
+            const noResultRow = document.getElementById("noBrandFilterResult");
+            const visibleCountEl = document.getElementById("visibleBrandCount");
+
+            function filterBrands() {
+                const keyword = (searchInput?.value || "").toLowerCase().trim();
+                const filterType = logoSelect?.value || "ALL";
+                let visible = 0;
+
+                rows.forEach(row => {
+                    const name = row.dataset.name || "";
+                    const hasLogo = row.dataset.hasLogo === "1";
+
+                    const matchName = name.includes(keyword);
+                    let matchFilter = true;
+
+                    if (filterType === "HAS_LOGO") matchFilter = hasLogo;
+                    else if (filterType === "NO_LOGO") matchFilter = !hasLogo;
+
+                    if (matchName && matchFilter) {
+                        row.style.display = "";
+                        visible++;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                if (visibleCountEl) visibleCountEl.textContent = visible;
+                if (noResultRow) {
+                    noResultRow.style.display = (rows.length > 0 && visible === 0) ? "" : "none";
+                }
+            }
+
+            if (searchInput) searchInput.addEventListener("input", filterBrands);
+            if (logoSelect) logoSelect.addEventListener("change", filterBrands);
+        });
+    </script>
 </body>
 
 </html>

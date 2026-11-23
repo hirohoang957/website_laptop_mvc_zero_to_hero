@@ -1,96 +1,408 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Manage Orders - Khiem</title>
+    <meta name="description" content="Xem chi tiết sản phẩm và thông tin đơn hàng" />
+    <meta name="author" content="Khiem" />
+    <title>Chi tiết đơn hàng #<%= id %> - Trang quản trị</title>
     <link href="/admin/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .detail-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .detail-card .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #edf2f7;
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .table thead th {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 700;
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.92rem;
+        }
+        .product-thumb-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background-color: #fff;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .product-thumb-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        .info-label {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.94rem;
+        }
+        .badge-soft-warning { background-color: #fff3cd; color: #664d03; }
+        .badge-soft-info { background-color: #cff4fc; color: #055160; }
+        .badge-soft-primary { background-color: #cfe2ff; color: #084298; }
+        .badge-soft-success { background-color: #d1e7dd; color: #0f5132; }
+        .badge-soft-danger { background-color: #f8d7da; color: #842029; }
+        .badge-soft-secondary { background-color: #e2e3e5; color: #41464b; }
+        .badge-soft-purple { background-color: #e0cffc; color: #3d0a91; }
+    </style>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bg-light">
     <%- include('../layout/header') %>
 
-        <div id="layoutSidenav">
-            <%- include('../layout/sidenav') %>
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid px-4">
-                            <h1 class="mt-4">Manage Orders</h1>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Orders</li>
-                            </ol>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5>View detail order id <%= id %>
-                                    </h5>
-                                </div>
-                                <hr />
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Sản phẩm</th>
-                                                <th scope="col">Tên</th>
-                                                <th scope="col">Giá</th>
-                                                <th scope="col">Số lương</th>
-                                                <th scope="col">Thành tiền</th>
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 pb-5">
+                    <%
+                        const currentOrder = typeof order !== 'undefined' && order ? order : null;
+                        const subTotal = orderDetails && orderDetails.length > 0
+                            ? orderDetails.reduce((sum, item) => sum + (item.quantity * item.price), 0)
+                            : 0;
+                        const totalQuantity = orderDetails && orderDetails.length > 0
+                            ? orderDetails.reduce((sum, item) => sum + item.quantity, 0)
+                            : 0;
+                        const discount = currentOrder?.discountAmount || 0;
+                        const finalTotal = currentOrder?.totalPrice ?? Math.max(0, subTotal - discount);
+                    %>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% orderDetails.forEach(function(cartDetail) { %>
-                                                <tr>
-                                                    <th scope="row">
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="/images/product/<%= cartDetail.product.thumbnail %>"
-                                                                class="img-fluid me-5 rounded-circle"
-                                                                style="width: 80px; height: 80px;" alt="">
-                                                        </div>
-                                                    </th>
-                                                    <td>
-                                                        <p class="mb-0 mt-4">
-                                                            <%= cartDetail.product.name %>
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="mb-0 mt-4">
-                                                            <%= new Intl.NumberFormat('vi-VN', {style: "currency" ,
-                                                                currency: "VND" }).format(cartDetail.price) %>
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="mb-0 mt-4">
-                                                            <%= cartDetail.quantity %>
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="mb-0 mt-4" data-cart-detail-id="<%= cartDetail.id %>">
-                                                            <%= new Intl.NumberFormat('vi-VN', {style: "currency" ,
-                                                                currency: "VND" }).format(cartDetail.quantity *
-                                                                cartDetail.price) %>
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                                <% }); %>
-                                        </tbody>
-                                    </table>
+                    <!-- Header & Breadcrumb -->
+                    <!-- Header & Breadcrumb -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <h2 class="fw-bold text-dark mb-0">Chi tiết đơn hàng</h2>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">
+                                    #<%= id %>
+                                </span>
+                            </div>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none">Bảng điều khiển</a></li>
+                                    <li class="breadcrumb-item"><a href="/admin/order" class="text-decoration-none">Đơn hàng</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Đơn hàng #<%= id %></li>
+                                </ol>
+                            </nav>
+                        </div>
+
+                        <% const currentStatus = (currentOrder?.status || '').toUpperCase(); %>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <% if (currentStatus === 'PENDING') { %>
+                                <form action="/admin/handle-confirm-order/<%= id %>" method="post" class="d-inline"
+                                    onsubmit="return confirm('Xác nhận đơn hàng #<%= id %> và chuyển sang trạng thái Đang xử lý?');">
+                                    <button type="submit" class="btn btn-success btn-sm px-3 py-2 rounded-3 fw-semibold shadow-sm">
+                                        <i class="fas fa-check-circle me-1"></i> Xác nhận đơn
+                                    </button>
+                                </form>
+                            <% } %>
+
+                            <% if (currentStatus === 'PROCESSING') { %>
+                                <form action="/admin/handle-ship-order/<%= id %>" method="post" class="d-inline"
+                                    onsubmit="return confirm('Xác nhận giao đơn hàng #<%= id %> cho đơn vị vận chuyển?');">
+                                    <button type="submit" class="btn btn-primary btn-sm px-3 py-2 rounded-3 fw-semibold shadow-sm">
+                                        <i class="fas fa-shipping-fast me-1"></i> Giao hàng
+                                    </button>
+                                </form>
+                            <% } %>
+
+                            <% if (currentStatus === 'PENDING' || currentStatus === 'PROCESSING') { %>
+                                <form action="/admin/handle-cancel-order/<%= id %>" method="post" class="d-inline"
+                                    onsubmit="return confirm('Bạn có chắc chắn muốn HỦY đơn hàng #<%= id %> không? Tồn kho sản phẩm sẽ được hoàn lại.');">
+                                    <button type="submit" class="btn btn-danger btn-sm px-3 py-2 rounded-3 fw-semibold shadow-sm">
+                                        <i class="fas fa-ban me-1"></i> Hủy đơn hàng
+                                    </button>
+                                </form>
+                            <% } %>
+
+                            <a href="/admin/order" class="btn btn-outline-secondary btn-sm px-3 py-2 rounded-3 fw-semibold">
+                                <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin giao hàng & thanh toán (hiển thị nếu controller có truyền biến order) -->
+                    <% if (currentOrder) { %>
+                        <%
+                            const statusKey = (currentOrder.status || 'PENDING').toUpperCase();
+                            const payStatusKey = (currentOrder.paymentStatus || 'UNPAID').toUpperCase();
+                        %>
+                        <div class="row g-3 mb-4">
+                            <!-- Thông tin người nhận -->
+                            <div class="col-lg-6">
+                                <div class="card detail-card shadow-sm h-100">
+                                    <div class="card-header">
+                                        <div class="section-title-group">
+                                            <span class="section-icon bg-primary bg-opacity-10 text-primary">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                            </span>
+                                            <span>Thông tin nhận hàng</span>
+                                        </div>
+                                        <% if (currentOrder.createdAt) { %>
+                                            <span class="small text-muted fw-normal">
+                                                <i class="far fa-clock me-1"></i>
+                                                <%= new Date(currentOrder.createdAt).toLocaleString('vi-VN') %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <div class="info-label">Người nhận hàng</div>
+                                                <div class="info-value"><%= currentOrder.receiverName || '—' %></div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="info-label">Số điện thoại</div>
+                                                <div class="info-value"><%= currentOrder.receiverPhone || '—' %></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="info-label">Địa chỉ giao hàng</div>
+                                                <div class="info-value"><%= currentOrder.receiverAddress || '—' %></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <a href="/admin/order" class="btn btn-success mt-3">Quay lại</a>
+                            </div>
+
+                            <!-- Trạng thái đơn & thanh toán -->
+                            <div class="col-lg-6">
+                                <div class="card detail-card shadow-sm h-100">
+                                    <div class="card-header">
+                                        <div class="section-title-group">
+                                            <span class="section-icon bg-success bg-opacity-10 text-success">
+                                                <i class="fas fa-credit-card"></i>
+                                            </span>
+                                            <span>Trạng thái & Thanh toán</span>
+                                        </div>
+                                        <% if (currentOrder.paymentRef) { %>
+                                            <span class="badge bg-light text-secondary border fw-normal">
+                                                Mã GD: <%= currentOrder.paymentRef %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="row g-3">
+                                            <div class="col-sm-4">
+                                                <div class="info-label">Trạng thái đơn</div>
+                                                <div>
+                                                    <% if (statusKey === 'PENDING') { %>
+                                                        <span class="badge badge-soft-warning px-3 py-1 rounded-pill">Chờ xác nhận</span>
+                                                    <% } else if (statusKey === 'PROCESSING') { %>
+                                                        <span class="badge badge-soft-info px-3 py-1 rounded-pill">Đang xử lý</span>
+                                                    <% } else if (statusKey === 'SHIPPING') { %>
+                                                        <span class="badge badge-soft-primary px-3 py-1 rounded-pill">Đang giao hàng</span>
+                                                    <% } else if (statusKey === 'DELIVERED') { %>
+                                                        <span class="badge badge-soft-info px-3 py-1 rounded-pill">Đã giao hàng</span>
+                                                    <% } else if (statusKey === 'COMPLETED') { %>
+                                                        <span class="badge badge-soft-success px-3 py-1 rounded-pill">Hoàn thành</span>
+                                                    <% } else if (statusKey === 'CANCELLED') { %>
+                                                        <span class="badge badge-soft-danger px-3 py-1 rounded-pill">Đã hủy</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-soft-secondary px-3 py-1 rounded-pill"><%= currentOrder.status %></span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <div class="info-label">Phương thức</div>
+                                                <div class="info-value"><%= currentOrder.paymentMethod || '—' %></div>
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <div class="info-label">Thanh toán</div>
+                                                <div>
+                                                    <% if (payStatusKey === 'PAID' || payStatusKey === 'SUCCED' || payStatusKey === 'SUCCEEDED') { %>
+                                                        <span class="badge badge-soft-success px-3 py-1 rounded-pill">Đã thanh toán</span>
+                                                    <% } else if (payStatusKey === 'FAILED') { %>
+                                                        <span class="badge badge-soft-danger px-3 py-1 rounded-pill">Thất bại</span>
+                                                    <% } else if (payStatusKey === 'REFUNDED') { %>
+                                                        <span class="badge badge-soft-purple px-3 py-1 rounded-pill">Đã hoàn tiền</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-soft-warning px-3 py-1 rounded-pill">Chưa thanh toán</span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+
+                                            <% if (currentOrder.user) { %>
+                                                <div class="col-12">
+                                                    <div class="info-label">Tài khoản đặt hàng</div>
+                                                    <div class="info-value">
+                                                        <%= currentOrder.user.fullName || 'Khách hàng' %>
+                                                        <span class="text-muted fw-normal small">(<%= currentOrder.user.username %>)</span>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </main>
-                    <%- include('../layout/footer') %>
+                    <% } %>
+
+                    <!-- Bảng danh sách sản phẩm trong đơn -->
+                    <div class="card detail-card shadow-sm">
+                        <div class="card-header">
+                            <div class="section-title-group">
+                                <span class="section-icon bg-info bg-opacity-10 text-info">
+                                    <i class="fas fa-laptop"></i>
+                                </span>
+                                <span>Danh sách sản phẩm trong đơn</span>
+                            </div>
+                            <span class="badge bg-light text-secondary border fw-normal">
+                                <strong><%= orderDetails ? orderDetails.length : 0 %></strong> mặt hàng (<strong><%= totalQuantity %></strong> sản phẩm)
+                            </span>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4" style="width: 60px;">STT</th>
+                                            <th>Sản phẩm</th>
+                                            <th class="text-end">Đơn giá</th>
+                                            <th class="text-center" style="width: 120px;">Số lượng</th>
+                                            <th class="text-end pe-4">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (orderDetails && orderDetails.length > 0) { %>
+                                            <% orderDetails.forEach(function(cartDetail, index) { %>
+                                                <tr>
+                                                    <td class="ps-4 text-muted fw-semibold"><%= index + 1 %></td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="product-thumb-box">
+                                                                <img src="/images/product/<%= cartDetail.product.thumbnail %>"
+                                                                    alt="<%= cartDetail.product.name %>">
+                                                            </div>
+                                                            <div>
+                                                                <a href="/admin/handle-view-product/<%= cartDetail.product.id %>"
+                                                                    class="fw-bold text-dark text-decoration-none d-block">
+                                                                    <%= cartDetail.product.name %>
+                                                                </a>
+                                                                <% if (cartDetail.product.cpu || cartDetail.product.ram) { %>
+                                                                    <div class="small text-muted">
+                                                                        <%= [cartDetail.product.cpu, cartDetail.product.ram, cartDetail.product.storage].filter(Boolean).join(' • ') %>
+                                                                    </div>
+                                                                <% } %>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-end text-nowrap text-muted">
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cartDetail.price) %>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-light text-dark border px-3 py-1 fw-semibold">
+                                                            x<%= cartDetail.quantity %>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end pe-4 fw-bold text-dark text-nowrap" data-cart-detail-id="<%= cartDetail.id %>">
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cartDetail.quantity * cartDetail.price) %>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="5" class="text-center py-5 text-muted">
+                                                    Không có sản phẩm nào trong đơn hàng này.
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tổng kết giá trị đơn hàng & Nút quay lại -->
+                        <div class="card-footer bg-white py-3 px-4 border-top">
+                            <div class="row align-items-center g-3">
+                                <div class="col-md-6">
+                                    <a href="/admin/order" class="btn btn-outline-secondary px-4 fw-semibold">
+                                        <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách đơn hàng
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="ms-auto" style="max-width: 340px;">
+                                        <div class="d-flex justify-content-between small text-muted mb-1">
+                                            <span>Tạm tính (<%= totalQuantity %> sản phẩm):</span>
+                                            <span class="fw-semibold text-dark">
+                                                <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(subTotal) %>
+                                            </span>
+                                        </div>
+                                        <% if (discount > 0) { %>
+                                            <div class="d-flex justify-content-between small text-success mb-1">
+                                                <span>Giảm giá (Voucher):</span>
+                                                <span class="fw-semibold">
+                                                    -<%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(discount) %>
+                                                </span>
+                                            </div>
+                                        <% } %>
+                                        <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
+                                            <span class="fw-bold text-dark">Tổng thanh toán:</span>
+                                            <span class="fs-5 fw-bold text-danger">
+                                                <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(finalTotal) %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </main>
+            <%- include('../layout/footer') %>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
 </body>
 
 </html>

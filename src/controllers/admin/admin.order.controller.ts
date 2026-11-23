@@ -1,13 +1,18 @@
 import { Request, Response } from "express";
-import { getOrderDetailAdmin } from "services/admin/admin.service";
+import { getOrderByIdAdmin, getOrderDetailAdmin } from "services/admin/admin.service";
 
 const getAdminViewOrderPage = async (req: Request, res: Response) => {
     const {id} = req.params;
 
-    const orderDetails = await getOrderDetailAdmin(+id);
+    const [order, orderDetails] = await Promise.all([
+        getOrderByIdAdmin(+id),
+        getOrderDetailAdmin(+id),
+    ]);
 
     return res.render("admin/order/detail.ejs", {
-        orderDetails, id
+        order,
+        orderDetails,
+        id,
     })
 }
 

@@ -170,6 +170,16 @@ const getOrderDetailAdmin = async (id: number) => {
     })
 }
 
+const getOrderByIdAdmin = async (id: number) => {
+    return await prisma.order.findUnique({
+        where: { id },
+        include: {
+            user: true,
+        },
+    });
+};
+
+
 export {
     getAllUsers,
     getAllRoles,
@@ -189,5 +199,6 @@ export {
     handleUpdateBrand,
     handleDeleteBrand,
     getAllOrders,
-    getOrderDetailAdmin
+    getOrderDetailAdmin,
+    getOrderByIdAdmin
 }

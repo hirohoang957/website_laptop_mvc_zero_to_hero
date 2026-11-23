@@ -1,18 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import { getAllProducts, getProducts, getProductById } from "services/admin/admin.product.service";
+import { getAllProducts, getProducts, getProductById, } from "services/admin/admin.product.service";
 import { getAllBrands, getAllCategories, getAllOrders, getOrderDetailAdmin } from "services/admin/admin.service";
 import { registerNewUser } from "services/user/auth.service";
-import { addProductToCart, deleteProductInCart, getAllOrderById, getBestSellingProducts, getCartDetailByUserId, getProductRecommendation, handlePlaceOrder, updateCartDetailBeforeCheckout } from "services/user/user.service";
+import { addProductToCart, deleteProductInCart, getAllOrderById, getBestSellingProducts, getCartDetailByUserId, getProductHot, getProductRecommendation, getTopDiscountProducts, handlePlaceOrder, updateCartDetailBeforeCheckout } from "services/user/user.service";
 import { AdminUserSchema, TAdminUserSchema } from "src/validation/admin.user.schema";
 
 const getHomePage = async (req: Request, res: Response) => {
     const products = await getProducts();
+    const hotProducts = await getProductHot();
     const bestSellingProducts = await getBestSellingProducts();
+    const discountProducts = await getTopDiscountProducts();
     const brands = await getAllBrands();
     return res.render("user/home/show.ejs", {
         products: products,
         bestSellingProducts: bestSellingProducts,
         brands: brands,
+        discountProducts: discountProducts,
+        hotProducts: hotProducts
     });
 }
 
@@ -162,7 +166,8 @@ const postPlaceOrder = async (req: Request, res: Response) => {
     if (!user) return res.redirect("/login");
     const {receiverName, receiverAddress, receiverPhone, totalPrice, paymentMethod} = req.body;
 
-   await handlePlaceOrder(user.id, receiverName, receiverAddress, receiverPhone, totalPrice, paymentMethod);
+    const message = await handlePlaceOrder(user.id, receiverName, receiverAddress, receiverPhone, totalPrice, paymentMethod);
+    if (message) return res.redirect("/checkout");
     return res.redirect("/thanks");
 }
 

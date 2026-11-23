@@ -14,7 +14,7 @@ const getProducts = async (limit: number = 8) => {
         where: {
             AND: {
                 quantity: { gt: 0 },
-                status: { gt: 0}
+                status: 1
             }
         },
     })

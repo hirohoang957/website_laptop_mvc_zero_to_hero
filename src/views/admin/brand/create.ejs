@@ -1,90 +1,194 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Create Brands - Khiem</title>
+    <meta name="description" content="Thêm thương hiệu mới vào hệ thống" />
+    <meta name="author" content="Khiem" />
+    <title>Thêm thương hiệu mới - Trang quản trị</title>
     <link href="/admin/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .form-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .form-card .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #edf2f7;
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #334155;
+        }
+        .form-control {
+            border-radius: 8px;
+            border-color: #cbd5e1;
+            padding: 0.55rem 0.85rem;
+            font-size: 0.92rem;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
+        }
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+        .upload-zone:hover {
+            border-color: #0d6efd;
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed bg-light">
+    <%- include('../layout/header') %>
+
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 pb-5">
+                    <!-- Header & Breadcrumb -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-3">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Thêm thương hiệu mới</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none">Bảng điều khiển</a></li>
+                                    <li class="breadcrumb-item"><a href="/admin/brand" class="text-decoration-none">Thương hiệu</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a href="/admin/brand" class="btn btn-outline-secondary btn-sm px-3 py-2 rounded-3 fw-semibold">
+                            <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                        </a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-8 col-12 mx-auto">
+                            <!-- Hiển thị danh sách lỗi nếu có -->
+                            <% if (errors && errors.length > 0) { %>
+                                <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4">
+                                    <div class="fw-bold mb-1"><i class="fas fa-exclamation-circle me-2"></i>Vui lòng kiểm tra lại thông tin:</div>
+                                    <ul class="mb-0 ps-3 small">
+                                        <% errors.forEach(function(error) { %>
+                                            <li><%= error %></li>
+                                        <% }); %>
+                                    </ul>
+                                </div>
+                            <% } %>
+
+                            <form action="/admin/handle-create-brand" method="post" enctype="multipart/form-data">
+                                <div class="card form-card shadow-sm mb-4">
+                                    <div class="card-header">
+                                        <span class="section-icon bg-primary bg-opacity-10 text-primary">
+                                            <i class="fas fa-copyright"></i>
+                                        </span>
+                                        <span>Thông tin thương hiệu</span>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <!-- Tên thương hiệu -->
+                                        <div class="mb-4">
+                                            <label for="brandName" class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
+                                            <input id="brandName" name="name" type="text" class="form-control"
+                                                placeholder="VD: Apple, Dell, Asus, Lenovo, HP..."
+                                                value="<%= oldData?.name || '' %>" required>
+                                            <div class="form-text small">Tên thương hiệu là duy nhất và không được trùng lặp.</div>
+                                        </div>
+
+                                        <!-- Logo thương hiệu -->
+                                        <div class="mb-2">
+                                            <label for="logoFile" class="form-label">Logo thương hiệu</label>
+                                            <div class="upload-zone text-center">
+                                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                                <div class="small text-muted mb-2">Định dạng hỗ trợ: PNG, JPG, JPEG, WEBP, SVG</div>
+                                                <input class="form-control form-control-sm" type="file" id="logoFile"
+                                                    accept=".png, .jpg, .jpeg, .webp, .svg" name="logo">
+
+                                                <div id="logoPreviewWrapper" class="mt-3" style="display: none;">
+                                                    <div class="d-inline-block position-relative border rounded-3 bg-white p-3 shadow-sm">
+                                                        <img id="logoPreview" src="" alt="Xem trước Logo"
+                                                            style="max-height: 120px; max-width: 240px; object-fit: contain;" />
+                                                        <button type="button" id="btnClearLogo"
+                                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 py-0 px-1"
+                                                            title="Bỏ chọn ảnh">
+                                                            <i class="fas fa-times" style="font-size: 0.75rem;"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer nút thao tác -->
+                                    <div class="card-footer bg-white py-3 px-4 border-top d-flex justify-content-end gap-2">
+                                        <a href="/admin/brand" class="btn btn-light border px-4 fw-semibold">
+                                            <i class="fas fa-times me-1"></i> Hủy bỏ
+                                        </a>
+                                        <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                                            <i class="fas fa-save me-1"></i> Lưu thương hiệu
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <%- include('../layout/footer') %>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
     <script>
         $(document).ready(function () {
-            const logoFile = $("#logoFile");
-            logoFile.change(function (e) {
+            $("#logoFile").change(function (e) {
                 if (e.target.files && e.target.files[0]) {
                     const imgURL = URL.createObjectURL(e.target.files[0]);
                     $("#logoPreview").attr("src", imgURL);
-                    $("#logoPreview").css({ "display": "block" });
+                    $("#logoPreviewWrapper").fadeIn(200);
+                } else {
+                    $("#logoPreviewWrapper").hide();
+                    $("#logoPreview").attr("src", "");
                 }
+            });
+
+            $("#btnClearLogo").click(function () {
+                $("#logoFile").val("");
+                $("#logoPreviewWrapper").fadeOut(150, function () {
+                    $("#logoPreview").attr("src", "");
+                });
             });
         });
     </script>
-</head>
-
-<body class="sb-nav-fixed">
-    <%- include('../layout/header') %>
-
-        <div id="layoutSidenav">
-            <%- include('../layout/sidenav') %>
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid px-4">
-                            <h1 class="mt-4">Manage Brands</h1>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item"><a href="/admin/brand">Brands</a></li>
-                                <li class="breadcrumb-item active">Create</li>
-                            </ol>
-                            <div class="row">
-                                <div class="col-6 mx-auto">
-                                    <div>
-                                        <% errors.forEach(function(error) { %>
-                                            <div class="alert alert-danger mb-3">
-                                                <%= error %>
-                                            </div>
-                                        <% }); %>
-                                        <h5 style="padding: 10px 0;">Create a brand</h5>
-                                        <form action="/admin/handle-create-brand" method="post"
-                                            enctype="multipart/form-data">
-                                            <div class="row">
-                                                <div class="mb-3 col-12">
-                                                    <label class="form-label">Brand Name <span
-                                                            class="text-danger">*</span></label>
-                                                    <input name="name" type="text" class="form-control"
-                                                        placeholder="Enter brand name" required
-                                                        value="<%= oldData.name %>">
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="logoFile" class="form-label">Logo</label>
-                                                <input class="form-control" type="file" id="logoFile"
-                                                    accept=".png, .jpg, .jpeg, .webp, .svg" name="logo">
-                                            </div>
-                                            <div class="mb-3">
-                                                <img style="max-height: 200px; display: none;" alt="Logo preview"
-                                                    id="logoPreview" class="img-thumbnail" />
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <button type="submit" class="btn btn-primary">Create Brand</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                    <%- include('../layout/footer') %>
-                </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
 </body>
 
 </html>

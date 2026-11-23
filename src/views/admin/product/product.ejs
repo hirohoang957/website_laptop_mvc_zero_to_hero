@@ -1,126 +1,443 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Manage Products - Khiem</title>
+    <meta name="description" content="Trang quản lý danh sách sản phẩm" />
+    <meta name="author" content="Khiem" />
+    <title>Quản lý sản phẩm - Trang quản trị</title>
     <link href="/admin/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .table-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .product-thumb {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            background-color: #fff;
+            padding: 4px;
+        }
+        .table thead th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 700;
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.92rem;
+        }
+        .badge-soft-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        .badge-soft-danger {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        .badge-soft-warning {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+        .badge-soft-secondary {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+        .badge-soft-primary {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+    </style>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bg-light">
     <%- include('../layout/header') %>
 
-        <div id="layoutSidenav">
-            <%- include('../layout/sidenav') %>
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid px-4">
-                            <h1 class="mt-4">Manage Products</h1>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Products</li>
-                            </ol>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5>Table Products</h5>
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 pb-5">
+                    <!-- Tiêu đề & Nút thêm mới -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-3 gap-3">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Quản lý sản phẩm</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none">Bảng điều khiển</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a class="btn btn-primary px-3 py-2 fw-semibold shadow-sm rounded-3" href="/admin/create-product">
+                            <i class="fas fa-plus-circle me-2"></i>Thêm sản phẩm mới
+                        </a>
+                    </div>
+
+                    <!-- Thống kê nhanh -->
+                    <%
+                        const totalProducts = products ? products.length : 0;
+                        const activeCount = products ? products.filter(p => p.status === 1).length : 0;
+                        const hotCount = products ? products.filter(p => p.hot === 1).length : 0;
+                        const lowStockCount = products ? products.filter(p => p.quantity <= 5).length : 0;
+                    %>
+                    <div class="row g-3 mb-4">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
-                                        <a class="btn btn-warning" href="/admin/create-product">Create a new product</a>
+                                        <div class="text-muted small fw-semibold mb-1">Tổng sản phẩm</div>
+                                        <h4 class="fw-bold mb-0 text-dark"><%= totalProducts %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                        <i class="fas fa-laptop"></i>
                                     </div>
                                 </div>
-                                <hr />
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Id</th>
-                                                <th>Name</th>
-                                                <th>Thumbnail</th>
-                                                <th>PriceOrigin</th>
-                                                <th>PriceCurr</th>
-                                                <th>Quantity</th>
-                                                <th>Sold</th>
-                                                <th>Brand</th>
-                                                <th>Category</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Đang kinh doanh</div>
+                                        <h4 class="fw-bold mb-0 text-success"><%= activeCount %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Sản phẩm nổi bật (Hot)</div>
+                                        <h4 class="fw-bold mb-0 text-warning"><%= hotCount %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Sắp hết / Hết hàng</div>
+                                        <h4 class="fw-bold mb-0 text-danger"><%= lowStockCount %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng dữ liệu sản phẩm -->
+                    <div class="card table-card shadow-sm">
+                        <!-- Thanh công cụ tìm kiếm & lọc -->
+                        <div class="card-header bg-white py-3 border-bottom">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" id="searchProductInput" class="form-control border-start-0 bg-light"
+                                            placeholder="Tìm theo tên laptop, CPU...">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-6">
+                                    <select id="filterBrandSelect" class="form-select form-select-sm">
+                                        <option value="ALL">Tất cả thương hiệu</option>
+                                        <% if (brands && brands.length > 0) { %>
+                                            <% brands.forEach(function(b) { %>
+                                                <option value="<%= b.id %>"><%= b.name %></option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <select id="filterCategorySelect" class="form-select form-select-sm">
+                                        <option value="ALL">Tất cả danh mục</option>
+                                        <% if (categories && categories.length > 0) { %>
+                                            <% categories.forEach(function(c) { %>
+                                                <option value="<%= c.id %>"><%= c.name %></option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <select id="filterStatusSelect" class="form-select form-select-sm">
+                                        <option value="ALL">Tất cả trạng thái & nhãn</option>
+                                        <option value="HOT">🔥 Sản phẩm nổi bật (Hot)</option>
+                                        <option value="ACTIVE">✅ Đang hoạt động</option>
+                                        <option value="LOCKED">🔒 Ngừng kinh doanh (Khóa)</option>
+                                        <option value="LOW_STOCK">⚠️ Tồn kho thấp (≤ 5)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="productsAdminTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-3" style="width: 60px;">ID</th>
+                                            <th style="min-width: 280px;">Sản phẩm</th>
+                                            <th>Giá bán</th>
+                                            <th class="text-center">Kho / Đã bán</th>
+                                            <th>Phân loại</th>
+                                            <th class="text-center">Nổi bật</th>
+                                            <th class="text-center">Trạng thái</th>
+                                            <th class="text-end pe-3" style="width: 140px;">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (products && products.length > 0) { %>
                                             <% products.forEach(function(product) { %>
-                                                <tr>
+                                                <%
+                                                    const brand = brands.find(b => b.id === product.brandId);
+                                                    const category = categories.find(c => c.id === product.categoryId);
+                                                    const discountPercent = product.priceOrigin > product.priceCurr
+                                                        ? Math.round(((product.priceOrigin - product.priceCurr) / product.priceOrigin) * 100)
+                                                        : 0;
+                                                %>
+                                                <tr class="product-row"
+                                                    data-name="<%= (product.name + ' ' + product.cpu).toLowerCase() %>"
+                                                    data-brand="<%= product.brandId %>"
+                                                    data-category="<%= product.categoryId %>"
+                                                    data-hot="<%= product.hot === 1 ? '1' : '0' %>"
+                                                    data-status="<%= product.status === 1 ? '1' : '0' %>"
+                                                    data-quantity="<%= product.quantity %>">
+                                                    
+                                                    <td class="ps-3 fw-semibold text-muted">#<%= product.id %></td>
+                                                    
                                                     <td>
-                                                        <%= product.id %>
-                                                    </td>
-                                                    <td>
-                                                        <%= product.name %>
-                                                    </td>
-                                                    <td>
-                                                        <% if (product.thumbnail) { %>
-                                                            <img height="80" width="80" style="object-fit: cover;"
-                                                                src="/images/product/<%= product.thumbnail %>"
-                                                                alt="<%= product.name %>" />
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <% if (product.thumbnail) { %>
+                                                                <img class="product-thumb flex-shrink-0"
+                                                                    src="/images/product/<%= product.thumbnail %>"
+                                                                    alt="<%= product.name %>" />
                                                             <% } else { %>
-                                                                <span class="text-muted small">No image</span>
-                                                                <% } %>
+                                                                <div class="product-thumb d-flex align-items-center justify-content-center text-muted small flex-shrink-0">
+                                                                    <i class="fas fa-image"></i>
+                                                                </div>
+                                                            <% } %>
+                                                            <div>
+                                                                <a href="/admin/handle-view-product/<%= product.id %>"
+                                                                    class="fw-bold text-dark text-decoration-none d-block mb-1">
+                                                                    <%= product.name %>
+                                                                </a>
+                                                                <div class="small text-muted">
+                                                                    <span class="me-2"><i class="fas fa-microchip me-1 text-secondary"></i><%= product.cpu %></span>
+                                                                    <span><i class="fas fa-memory me-1 text-secondary"></i><%= product.ram %>GB / <%= product.storage %>GB</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </td>
-                                                    <td>
-                                                        <%= product.priceOrigin.toLocaleString('vi-VN') %> ₫
+
+                                                    <td class="text-nowrap">
+                                                        <div class="fw-bold text-danger">
+                                                            <%= product.priceCurr.toLocaleString('vi-VN') %> ₫
+                                                        </div>
+                                                        <% if (discountPercent > 0) { %>
+                                                            <div class="small">
+                                                                <span class="text-muted text-decoration-line-through me-1">
+                                                                    <%= product.priceOrigin.toLocaleString('vi-VN') %> ₫
+                                                                </span>
+                                                                <span class="badge bg-danger bg-opacity-10 text-danger">-<%= discountPercent %>%</span>
+                                                            </div>
+                                                        <% } %>
                                                     </td>
-                                                    <td>
-                                                        <%= product.priceCurr.toLocaleString('vi-VN') %> ₫
-                                                    </td>
-                                                    <td>
-                                                        <%= product.quantity %>
-                                                    </td>
-                                                    <td>
-                                                        <%= product.sold %>
-                                                    </td>
-                                                    <td>
-                                                        <% const brand=brands.find(brand=> brand.id === product.brandId); %>
-                                                            <%= brand ? brand.name : 'Unknown' %>
-                                                    </td>
-                                                    <td>
-                                                        <% const category=categories.find(category=> category.id === product.categoryId); %>
-                                                            <%= category ? category.name : 'Unknown' %>
-                                                    </td>
-                                                    <td>
-                                                        <% if (product.status===1) { %>
-                                                            <span class="badge bg-success">Hoạt động</span>
+
+                                                    <td class="text-center text-nowrap">
+                                                        <div class="mb-1">
+                                                            <% if (product.quantity === 0) { %>
+                                                                <span class="badge badge-soft-danger px-2 py-1">Hết hàng (0)</span>
+                                                            <% } else if (product.quantity <= 5) { %>
+                                                                <span class="badge badge-soft-warning px-2 py-1">Còn <%= product.quantity %></span>
                                                             <% } else { %>
-                                                                <span class="badge bg-danger">Khóa</span>
-                                                                <% } %>
+                                                                <span class="fw-semibold text-dark">Kho: <%= product.quantity %></span>
+                                                            <% } %>
+                                                        </div>
+                                                        <small class="text-muted">Đã bán: <strong><%= product.sold ?? 0 %></strong></small>
                                                     </td>
-                                                    <td>
-                                                        <div style="display: flex; gap: 8px;">
+
+                                                    <td class="text-nowrap">
+                                                        <div class="mb-1">
+                                                            <span class="badge badge-soft-primary fw-semibold">
+                                                                <%= brand ? brand.name : 'Không rõ' %>
+                                                            </span>
+                                                        </div>
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-tag me-1"></i><%= category ? category.name : 'Chưa phân loại' %>
+                                                        </small>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <% if (product.hot === 1) { %>
+                                                            <span class="badge badge-soft-warning border border-warning px-2 py-1">
+                                                                <i class="fas fa-fire text-danger me-1"></i>Nổi bật
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="badge badge-soft-secondary px-2 py-1">Thường</span>
+                                                        <% } %>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <% if (product.status === 1) { %>
+                                                            <span class="badge badge-soft-success px-2 py-1">
+                                                                <i class="fas fa-circle me-1" style="font-size: 0.55rem;"></i>Hoạt động
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="badge badge-soft-danger px-2 py-1">
+                                                                <i class="fas fa-lock me-1" style="font-size: 0.65rem;"></i>Đã khóa
+                                                            </span>
+                                                        <% } %>
+                                                    </td>
+
+                                                    <td class="text-end pe-3 text-nowrap">
+                                                        <div class="d-inline-flex gap-1">
                                                             <a href="/admin/handle-view-product/<%= product.id %>"
-                                                                class="btn btn-primary btn-sm">View</a>
+                                                                class="btn btn-outline-primary btn-sm" title="Xem & Chỉnh sửa">
+                                                                <i class="fas fa-eye me-1"></i>Chi tiết
+                                                            </a>
                                                             <form action="/admin/handle-delete-product/<%= product.id %>"
-                                                                method="post"
-                                                                onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                                                <button type="submit"
-                                                                    class="btn btn-danger btn-sm">Delete</button>
+                                                                method="post" class="d-inline"
+                                                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm \'<%= product.name %>\' không?');">
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa sản phẩm">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
                                                             </form>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <% }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="8" class="text-center py-5 text-muted">
+                                                    <i class="fas fa-box-open fa-2x mb-2 d-block"></i>
+                                                    Chưa có sản phẩm nào trong hệ thống.
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                        <!-- Dòng thông báo khi lọc không ra kết quả -->
+                                        <tr id="noFilterResultRow" style="display: none;">
+                                            <td colspan="8" class="text-center py-4 text-muted">
+                                                <i class="fas fa-search me-2"></i>Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </main>
-                    <%- include('../layout/footer') %>
+
+                        <div class="card-footer bg-white py-2 px-3 d-flex justify-content-between align-items-center small text-muted">
+                            <span>Hiển thị <strong id="visibleCount"><%= totalProducts %></strong> / <strong><%= totalProducts %></strong> sản phẩm</span>
+                            <span>Cập nhật dữ liệu thời gian thực</span>
+                        </div>
+                    </div>
                 </div>
+            </main>
+            <%- include('../layout/footer') %>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchProductInput");
+            const brandSelect = document.getElementById("filterBrandSelect");
+            const categorySelect = document.getElementById("filterCategorySelect");
+            const statusSelect = document.getElementById("filterStatusSelect");
+            const rows = document.querySelectorAll(".product-row");
+            const noResultRow = document.getElementById("noFilterResultRow");
+            const visibleCountEl = document.getElementById("visibleCount");
+
+            function applyFilters() {
+                const keyword = (searchInput?.value || "").toLowerCase().trim();
+                const selectedBrand = brandSelect?.value || "ALL";
+                const selectedCategory = categorySelect?.value || "ALL";
+                const selectedStatus = statusSelect?.value || "ALL";
+
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const name = row.dataset.name || "";
+                    const brand = row.dataset.brand || "";
+                    const category = row.dataset.category || "";
+                    const isHot = row.dataset.hot === "1";
+                    const isActive = row.dataset.status === "1";
+                    const quantity = parseInt(row.dataset.quantity || "0", 10);
+
+                    const matchKeyword = name.includes(keyword);
+                    const matchBrand = selectedBrand === "ALL" || brand === selectedBrand;
+                    const matchCategory = selectedCategory === "ALL" || category === selectedCategory;
+
+                    let matchStatus = true;
+                    if (selectedStatus === "HOT") matchStatus = isHot;
+                    else if (selectedStatus === "ACTIVE") matchStatus = isActive;
+                    else if (selectedStatus === "LOCKED") matchStatus = !isActive;
+                    else if (selectedStatus === "LOW_STOCK") matchStatus = quantity <= 5;
+
+                    if (matchKeyword && matchBrand && matchCategory && matchStatus) {
+                        row.style.display = "";
+                        visibleCount++;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                if (visibleCountEl) visibleCountEl.textContent = visibleCount;
+                if (noResultRow) {
+                    noResultRow.style.display = (rows.length > 0 && visibleCount === 0) ? "" : "none";
+                }
+            }
+
+            if (searchInput) searchInput.addEventListener("input", applyFilters);
+            if (brandSelect) brandSelect.addEventListener("change", applyFilters);
+            if (categorySelect) categorySelect.addEventListener("change", applyFilters);
+            if (statusSelect) statusSelect.addEventListener("change", applyFilters);
+        });
+    </script>
 </body>
 
 </html>

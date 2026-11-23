@@ -49,12 +49,17 @@ const webRoutes = (app: Express) => {
     });
     router.get("/success-redirect", getSuccessRedirectPage);
     router.post("/logout", postLogout);
+    
     router.get("/detail-product/:id", getDetailProductPage);
+
+    //cart
     router.post("/add-product-to-cart/:id", postAddProductToCart);
     router.post("/delete-product-in-cart/:id", postDeleteProductInCart);
     router.get("/cart", getCardPage);
-    router.get("/checkout", getCheckOutPage);
     router.post("/handle-cart-to-checkout", postHandleCartToCheckOut);
+
+    router.get("/checkout", getCheckOutPage);
+    
     router.post("/place-order", postPlaceOrder);
     router.get("/thanks", getThanksPage);
     router.get("/order-history", getOrderHistoryPage);

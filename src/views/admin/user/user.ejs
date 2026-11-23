@@ -1,111 +1,439 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Manage Users - Khiem</title>
+    <meta name="description" content="Trang quản lý tài khoản người dùng" />
+    <meta name="author" content="Khiem" />
+    <title>Quản lý người dùng - Trang quản trị</title>
     <link href="/admin/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .table-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .table thead th {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 700;
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        .user-avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e0e7ff;
+            flex-shrink: 0;
+        }
+        .address-truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+        .badge-soft-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        .badge-soft-danger {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        .badge-soft-primary {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+        .badge-soft-info {
+            background-color: #cff4fc;
+            color: #055160;
+        }
+        .badge-soft-secondary {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+    </style>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bg-light">
     <%- include('../layout/header') %>
 
-        <div id="layoutSidenav">
-            <%- include('../layout/sidenav') %>
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid px-4">
-                            <h1 class="mt-4">Manage Users</h1>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Users</li>
-                            </ol>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5>Table Users</h5>
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 pb-5">
+                    <!-- Tiêu đề & Nút thêm mới -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-3 gap-3">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Quản lý người dùng</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none">Bảng điều khiển</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Người dùng</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a class="btn btn-primary px-3 py-2 fw-semibold shadow-sm rounded-3" href="/admin/create-user">
+                            <i class="fas fa-user-plus me-2"></i>Thêm người dùng mới
+                        </a>
+                    </div>
+
+                    <%
+                        const totalUsers = users ? users.length : 0;
+                        const activeUsers = users ? users.filter(u => Number(u.status) === 1).length : 0;
+                        const lockedUsers = totalUsers - activeUsers;
+                        const adminUsers = users ? users.filter(u => Number(u.roleId) === 1).length : 0;
+                    %>
+
+                    <!-- Thẻ thống kê nhanh -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
-                                        <a class="btn btn-warning" href="/admin/create-user">Create a new user</a>
+                                        <div class="text-muted small fw-semibold mb-1">Tổng tài khoản</div>
+                                        <h4 class="fw-bold mb-0 text-dark"><%= totalUsers %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                        <i class="fas fa-users"></i>
                                     </div>
                                 </div>
-                                <hr />
-                                <div>
-                                    <table class="table table-hover table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Full Name</th>
-                                                <th>Username</th>
-                                                <th>Phone</th>
-                                                <th>Address</th>
-                                                <th>Account Type</th>
-                                                <th>Status</th>
-                                                <th>Role</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Đang hoạt động</div>
+                                        <h4 class="fw-bold mb-0 text-success"><%= activeUsers %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Đang bị khóa</div>
+                                        <h4 class="fw-bold mb-0 text-danger"><%= lockedUsers %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                                        <i class="fas fa-user-lock"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted small fw-semibold mb-1">Quản trị viên (Admin)</div>
+                                        <h4 class="fw-bold mb-0 text-info"><%= adminUsers %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng danh sách người dùng -->
+                    <div class="card table-card shadow-sm">
+                        <!-- Thanh tìm kiếm & Lọc đa điều kiện -->
+                        <div class="card-header bg-white py-3 border-bottom">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" id="searchUserInput" class="form-control border-start-0 bg-light"
+                                            placeholder="Tìm theo họ tên, email/username, số điện thoại...">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-3 col-6">
+                                    <select id="filterUserRole" class="form-select form-select-sm">
+                                        <option value="ALL">Tất cả vai trò</option>
+                                        <option value="1">Quản trị viên (ADMIN)</option>
+                                        <option value="2">Khách hàng (USER)</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-md-3 col-6">
+                                    <select id="filterUserStatus" class="form-select form-select-sm">
+                                        <option value="ALL">Tất cả trạng thái</option>
+                                        <option value="1">Đang hoạt động</option>
+                                        <option value="0">Đã khóa</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-12 text-lg-end">
+                                    <button type="button" id="btnResetUserFilter" class="btn btn-outline-secondary btn-sm w-100 w-lg-auto">
+                                        <i class="fas fa-rotate-left me-1"></i>Đặt lại bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="usersAdminTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4" style="width: 75px;">ID</th>
+                                            <th>Người dùng</th>
+                                            <th>Liên hệ & Địa chỉ</th>
+                                            <th class="text-center">Loại TK</th>
+                                            <th class="text-center">Vai trò</th>
+                                            <th class="text-center">Trạng thái</th>
+                                            <th class="text-end pe-4" style="width: 165px;">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (users && users.length > 0) { %>
                                             <% users.forEach(function(user) { %>
-                                                <tr>
+                                                <%
+                                                    const displayName = user.fullName || 'Chưa cập nhật';
+                                                    const initialChar = (user.fullName || user.username || 'U').charAt(0).toUpperCase();
+                                                    const isGoogle = (user.accountType || '').toUpperCase() === 'GOOGLE';
+                                                %>
+                                                <tr class="user-row"
+                                                    data-search="<%= `${user.fullName || ''} ${user.username || ''} ${user.phone || ''} ${user.address || ''}`.toLowerCase() %>"
+                                                    data-role="<%= user.roleId %>"
+                                                    data-status="<%= Number(user.status) === 1 ? '1' : '0' %>">
+
+                                                    <td class="ps-4 fw-semibold text-muted">#<%= user.id %></td>
+
+                                                    <!-- Avatar + Họ tên + Username -->
                                                     <td>
-                                                        <%= user.id %>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <% if (user.avatar) { %>
+                                                                <img src="/images/avatar/<%= user.avatar %>"
+                                                                    alt="<%= displayName %>"
+                                                                    class="user-avatar"
+                                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                                                                <span class="user-avatar-placeholder" style="display: none;"><%= initialChar %></span>
+                                                            <% } else { %>
+                                                                <span class="user-avatar-placeholder"><%= initialChar %></span>
+                                                            <% } %>
+                                                            <div>
+                                                                <a href="/admin/handle-view-user/<%= user.id %>"
+                                                                    class="fw-bold text-dark text-decoration-none d-block">
+                                                                    <%= displayName %>
+                                                                </a>
+                                                                <span class="small text-muted">
+                                                                    <i class="far fa-envelope me-1"></i><%= user.username %>
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     </td>
+
+                                                    <!-- Số điện thoại & Địa chỉ -->
                                                     <td>
-                                                        <%= user.fullName || 'N/A' %>
+                                                        <div class="small">
+                                                            <div class="text-dark fw-medium mb-1">
+                                                                <i class="fas fa-phone-alt text-muted me-1" style="width: 14px;"></i>
+                                                                <%= user.phone || 'Chưa có SĐT' %>
+                                                            </div>
+                                                            <div class="text-muted address-truncate" title="<%= user.address || 'Chưa cập nhật địa chỉ' %>">
+                                                                <i class="fas fa-map-marker-alt text-muted me-1" style="width: 14px;"></i>
+                                                                <%= user.address || 'Chưa có địa chỉ' %>
+                                                            </div>
+                                                        </div>
                                                     </td>
-                                                    <td>
-                                                        <%= user.username %>
+
+                                                    <!-- Loại tài khoản -->
+                                                    <td class="text-center">
+                                                        <% if (isGoogle) { %>
+                                                            <span class="badge badge-soft-danger px-2 py-1 rounded-pill fw-semibold">
+                                                                <i class="fab fa-google me-1"></i>GOOGLE
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="badge badge-soft-secondary px-2 py-1 rounded-pill fw-semibold">
+                                                                <i class="fas fa-key me-1"></i><%= user.accountType || 'SYSTEM' %>
+                                                            </span>
+                                                        <% } %>
                                                     </td>
-                                                    <td>
-                                                        <%= user.phone || 'N/A' %>
+
+                                                    <!-- Vai trò -->
+                                                    <td class="text-center">
+                                                        <% if (Number(user.roleId) === 1) { %>
+                                                            <span class="badge badge-soft-primary px-3 py-1 rounded-pill fw-semibold">
+                                                                <i class="fas fa-shield-alt me-1"></i>ADMIN
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="badge badge-soft-info px-3 py-1 rounded-pill fw-semibold">
+                                                                <i class="fas fa-user me-1"></i>USER
+                                                            </span>
+                                                        <% } %>
                                                     </td>
-                                                    <td>
-                                                        <%= user.address || 'N/A' %>
+
+                                                    <!-- Trạng thái -->
+                                                    <td class="text-center">
+                                                        <% if (Number(user.status) === 1) { %>
+                                                            <span class="badge badge-soft-success px-3 py-1 rounded-pill fw-semibold">
+                                                                <i class="fas fa-circle me-1" style="font-size: 0.5rem; vertical-align: middle;"></i>Hoạt động
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="badge badge-soft-danger px-3 py-1 rounded-pill fw-semibold">
+                                                                <i class="fas fa-lock me-1" style="font-size: 0.65rem;"></i>Đã khóa
+                                                            </span>
+                                                        <% } %>
                                                     </td>
-                                                    <td>
-                                                        <%= user.accountType %>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="badge <%= user.status ? 'bg-success' : 'bg-danger' %>">
-                                                            <%= user.status == 1 ? 'Hoạt động' : 'Khóa' %>
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="badge <%= user.roleId == 1 ? 'bg-primary' : 'bg-success' %>">
-                                                            <%= user.roleId == 1 ? 'ADMIN' : 'USER' %>
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div style="display: flex; gap: 10px;">
+
+                                                    <!-- Thao tác -->
+                                                    <td class="text-end pe-4 text-nowrap">
+                                                        <div class="d-inline-flex gap-1">
                                                             <a href="/admin/handle-view-user/<%= user.id %>"
-                                                                class="btn btn-primary btn-sm">View</a>
+                                                                class="btn btn-outline-primary btn-sm" title="Xem & Chỉnh sửa">
+                                                                <i class="fas fa-edit me-1"></i>Chi tiết
+                                                            </a>
                                                             <form action="/admin/handle-delete-user/<%= user.id %>"
-                                                                method="post" style="margin: 0;">
-                                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                                                method="post" class="d-inline"
+                                                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng <%= user.username %> không?');">
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa người dùng">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
                                                             </form>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <% }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7" class="text-center py-5 text-muted">
+                                                    <i class="fas fa-users-slash fa-2x mb-2 d-block"></i>
+                                                    Chưa có người dùng nào trong hệ thống.
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                        <tr id="noUserFilterResult" style="display: none;">
+                                            <td colspan="7" class="text-center py-4 text-muted">
+                                                <i class="fas fa-search me-2"></i>Không tìm thấy người dùng nào phù hợp với bộ lọc.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </main>
-                    <%- include('../layout/footer') %>
+
+                        <div class="card-footer bg-white py-2 px-4 d-flex justify-content-between align-items-center small text-muted">
+                            <span>Hiển thị <strong id="visibleUserCount"><%= totalUsers %></strong> / <strong><%= totalUsers %></strong> người dùng</span>
+                        </div>
+                    </div>
                 </div>
+            </main>
+            <%- include('../layout/footer') %>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchUserInput");
+            const roleSelect = document.getElementById("filterUserRole");
+            const statusSelect = document.getElementById("filterUserStatus");
+            const btnReset = document.getElementById("btnResetUserFilter");
+            const rows = document.querySelectorAll(".user-row");
+            const noResultRow = document.getElementById("noUserFilterResult");
+            const visibleCountEl = document.getElementById("visibleUserCount");
+
+            function filterUsers() {
+                const keyword = (searchInput?.value || "").toLowerCase().trim();
+                const role = roleSelect?.value || "ALL";
+                const status = statusSelect?.value || "ALL";
+                let visible = 0;
+
+                rows.forEach(row => {
+                    const searchData = row.dataset.search || "";
+                    const rowRole = row.dataset.role || "";
+                    const rowStatus = row.dataset.status || "";
+
+                    const matchKeyword = searchData.includes(keyword);
+                    const matchRole = role === "ALL" || rowRole === role;
+                    const matchStatus = status === "ALL" || rowStatus === status;
+
+                    if (matchKeyword && matchRole && matchStatus) {
+                        row.style.display = "";
+                        visible++;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                if (visibleCountEl) visibleCountEl.textContent = visible;
+                if (noResultRow) {
+                    noResultRow.style.display = (rows.length > 0 && visible === 0) ? "" : "none";
+                }
+            }
+
+            if (searchInput) searchInput.addEventListener("input", filterUsers);
+            if (roleSelect) roleSelect.addEventListener("change", filterUsers);
+            if (statusSelect) statusSelect.addEventListener("change", filterUsers);
+
+            if (btnReset) {
+                btnReset.addEventListener("click", function () {
+                    if (searchInput) searchInput.value = "";
+                    if (roleSelect) roleSelect.value = "ALL";
+                    if (statusSelect) statusSelect.value = "ALL";
+                    filterUsers();
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

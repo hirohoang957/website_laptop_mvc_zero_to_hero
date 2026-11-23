@@ -1,82 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Manage Categories - Khiem</title>
+    <meta name="description" content="Trang quản lý danh mục sản phẩm" />
+    <meta name="author" content="Khiem" />
+    <title>Quản lý danh mục - Trang quản trị</title>
     <link href="/admin/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .table-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .table thead th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            font-weight: 700;
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.92rem;
+        }
+        .category-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: #eef2ff;
+            color: #4f46e5;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .badge-soft-primary {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+        .badge-soft-secondary {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+    </style>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed bg-light">
     <%- include('../layout/header') %>
 
-        <div id="layoutSidenav">
-            <%- include('../layout/sidenav') %>
-                <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid px-4">
-                            <h1 class="mt-4">Manage Categories</h1>
-                            <ol class="breadcrumb mb-4">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Categories</li>
-                            </ol>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5>Table Categories</h5>
+    <div id="layoutSidenav">
+        <%- include('../layout/sidenav') %>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 pb-5">
+                    <!-- Tiêu đề & Nút thêm mới -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-3 gap-3">
+                        <div>
+                            <h2 class="fw-bold text-dark mb-1">Quản lý danh mục</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/admin" class="text-decoration-none">Bảng điều khiển</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Danh mục</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a class="btn btn-primary px-3 py-2 fw-semibold shadow-sm rounded-3" href="/admin/create-category">
+                            <i class="fas fa-plus-circle me-2"></i>Thêm danh mục mới
+                        </a>
+                    </div>
+
+                    <%
+                        const totalCategories = categories ? categories.length : 0;
+                        const hasProductRelation = categories && categories.some(c => c._count || c.products);
+                        const totalLinkedProducts = hasProductRelation
+                            ? categories.reduce((sum, c) => sum + (c._count?.products ?? (c.products ? c.products.length : 0)), 0)
+                            : 0;
+                    %>
+
+                    <!-- Thống kê nhanh -->
+                    <div class="row g-3 mb-4">
+                        <div class="<%= hasProductRelation ? 'col-md-6' : 'col-md-4' %>">
+                            <div class="card stat-card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
-                                        <a class="btn btn-warning" href="/admin/create-category">Create a new category</a>
+                                        <div class="text-muted small fw-semibold mb-1">Tổng số danh mục</div>
+                                        <h4 class="fw-bold mb-0 text-dark"><%= totalCategories %></h4>
+                                    </div>
+                                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                        <i class="fas fa-layer-group"></i>
                                     </div>
                                 </div>
-                                <hr />
-                                <div>
-                                    <table class="table table-hover table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                            </div>
+                        </div>
+
+                        <% if (hasProductRelation) { %>
+                            <div class="col-md-6">
+                                <div class="card stat-card shadow-sm h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="text-muted small fw-semibold mb-1">Tổng sản phẩm đã phân loại</div>
+                                            <h4 class="fw-bold mb-0 text-success"><%= totalLinkedProducts %></h4>
+                                        </div>
+                                        <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                            <i class="fas fa-laptop"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!-- Bảng dữ liệu danh mục -->
+                    <div class="card table-card shadow-sm">
+                        <!-- Thanh tìm kiếm nhanh -->
+                        <div class="card-header bg-white py-3 border-bottom">
+                            <div class="row g-2 align-items-center justify-content-between">
+                                <div class="col-md-5">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" id="searchCategoryInput" class="form-control border-start-0 bg-light"
+                                            placeholder="Tìm kiếm theo tên danh mục...">
+                                    </div>
+                                </div>
+                                <% if (hasProductRelation) { %>
+                                    <div class="col-md-3">
+                                        <select id="filterCategoryProducts" class="form-select form-select-sm">
+                                            <option value="ALL">Tất cả danh mục</option>
+                                            <option value="HAS_PRODUCTS">Đã có sản phẩm</option>
+                                            <option value="EMPTY">Danh mục trống (0 sản phẩm)</option>
+                                        </select>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="categoriesAdminTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4" style="width: 100px;">ID</th>
+                                            <th>Tên danh mục</th>
+                                            <% if (hasProductRelation) { %>
+                                                <th class="text-center" style="width: 180px;">Số sản phẩm</th>
+                                            <% } %>
+                                            <th class="text-end pe-4" style="width: 180px;">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (categories && categories.length > 0) { %>
                                             <% categories.forEach(function(category) { %>
-                                                <tr>
+                                                <% const productCount = category._count?.products ?? (category.products ? category.products.length : 0); %>
+                                                <tr class="category-row"
+                                                    data-name="<%= (category.name || '').toLowerCase() %>"
+                                                    data-count="<%= productCount %>">
+
+                                                    <td class="ps-4 fw-semibold text-muted">#<%= category.id %></td>
+
                                                     <td>
-                                                        <%= category.id %>
-                                                    </td>
-                                                    <td>
-                                                        <%= category.name %>
-                                                    </td>
-                                                    
-                                                    <td>
-                                                        <div style="display: flex; gap: 10px;">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <span class="category-icon-box">
+                                                                <i class="fas fa-tag"></i>
+                                                            </span>
                                                             <a href="/admin/handle-view-category/<%= category.id %>"
-                                                                class="btn btn-primary btn-sm">View</a>
+                                                                class="fw-bold text-dark text-decoration-none">
+                                                                <%= category.name %>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+
+                                                    <% if (hasProductRelation) { %>
+                                                        <td class="text-center">
+                                                            <% if (productCount > 0) { %>
+                                                                <span class="badge badge-soft-primary px-3 py-1 rounded-pill fw-semibold">
+                                                                    <i class="fas fa-laptop me-1"></i><%= productCount %> sản phẩm
+                                                                </span>
+                                                            <% } else { %>
+                                                                <span class="badge badge-soft-secondary px-3 py-1 rounded-pill">
+                                                                    0 sản phẩm
+                                                                </span>
+                                                            <% } %>
+                                                        </td>
+                                                    <% } %>
+
+                                                    <td class="text-end pe-4 text-nowrap">
+                                                        <div class="d-inline-flex gap-1">
+                                                            <a href="/admin/handle-view-category/<%= category.id %>"
+                                                                class="btn btn-outline-primary btn-sm" title="Xem & Chỉnh sửa">
+                                                                <i class="fas fa-edit me-1"></i>Chi tiết
+                                                            </a>
                                                             <form action="/admin/handle-delete-category/<%= category.id %>"
-                                                                method="post" style="margin: 0;">
-                                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                                                method="post" class="d-inline"
+                                                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục <%= category.name %> không?');">
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa danh mục">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
                                                             </form>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <% }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="<%= hasProductRelation ? 4 : 3 %>" class="text-center py-5 text-muted">
+                                                    <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                                                    Chưa có danh mục nào trong hệ thống.
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                        <tr id="noCategoryFilterResult" style="display: none;">
+                                            <td colspan="<%= hasProductRelation ? 4 : 3 %>" class="text-center py-4 text-muted">
+                                                <i class="fas fa-search me-2"></i>Không tìm thấy danh mục nào phù hợp.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </main>
-                    <%- include('../layout/footer') %>
+
+                        <div class="card-footer bg-white py-2 px-4 d-flex justify-content-between align-items-center small text-muted">
+                            <span>Hiển thị <strong id="visibleCategoryCount"><%= totalCategories %></strong> / <strong><%= totalCategories %></strong> danh mục</span>
+                        </div>
+                    </div>
                 </div>
+            </main>
+            <%- include('../layout/footer') %>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/admin/js/scripts.js"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchCategoryInput");
+            const productSelect = document.getElementById("filterCategoryProducts");
+            const rows = document.querySelectorAll(".category-row");
+            const noResultRow = document.getElementById("noCategoryFilterResult");
+            const visibleCountEl = document.getElementById("visibleCategoryCount");
+
+            function filterCategories() {
+                const keyword = (searchInput?.value || "").toLowerCase().trim();
+                const filterType = productSelect?.value || "ALL";
+                let visible = 0;
+
+                rows.forEach(row => {
+                    const name = row.dataset.name || "";
+                    const count = parseInt(row.dataset.count || "0", 10);
+
+                    const matchName = name.includes(keyword);
+                    let matchFilter = true;
+
+                    if (filterType === "HAS_PRODUCTS") matchFilter = count > 0;
+                    else if (filterType === "EMPTY") matchFilter = count === 0;
+
+                    if (matchName && matchFilter) {
+                        row.style.display = "";
+                        visible++;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                if (visibleCountEl) visibleCountEl.textContent = visible;
+                if (noResultRow) {
+                    noResultRow.style.display = (rows.length > 0 && visible === 0) ? "" : "none";
+                }
+            }
+
+            if (searchInput) searchInput.addEventListener("input", filterCategories);
+            if (productSelect) productSelect.addEventListener("change", filterCategories);
+        });
+    </script>
 </body>
 
 </html>

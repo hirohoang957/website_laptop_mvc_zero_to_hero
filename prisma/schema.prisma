@@ -97,7 +97,8 @@ model Product {
   priceCurr   Int
   quantity    Int
   sold        Int?     @default(0)
-  status      Int      @db.TinyInt
+  hot      Int      @default(0) @db.TinyInt
+  status      Int      @default(1) @db.TinyInt
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
