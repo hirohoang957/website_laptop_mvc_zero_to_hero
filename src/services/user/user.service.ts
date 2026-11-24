@@ -72,7 +72,6 @@ const getRelatedProducts = async (productsId: number[]) => {
     return products;
 }
 
-
 const addProductToCart = async (quantity: number, productId: number, user: Express.User) => {
     const cart = await prisma.cart.findUnique({
         where: { userId: user.id }

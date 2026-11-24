@@ -3,35 +3,20 @@ import { getProductById, handleCreateProduct, handleDeleteProduct, handleUpdateP
 import { getAllBrands, getAllCategories } from "services/admin/admin.service";
 import { AdminProductSchema } from "src/validation/admin.product.schema";
 
+// Truy cập trang tạo sản phẩm
 const getAdminCreateProductPage = async (req: Request, res: Response) => {
     const errors: Array<string> = [];
     const oldData = {
-        name: "",
-        shortDesc: "",
-        detailDesc: "",
-        cpu: "",
-        cpuType: "",
-        ram: "",
-        ramType: "",
-        storage: "",
-        storageType: "",
-        gpu: "",
-        gpuType: "",
-        screenSize: "",
-        resolution: "",
-        os: "",
-        battery: "",
-        weight: "",
-        priceOrigin: "",
-        // priceCurr: "",
-        quantity: "",
-        // sold: "",
-        status: "",
-        brandId: "",
-        categoryId: "",
+        name: "", shortDesc: "", detailDesc: "", cpu: "",
+        cpuType: "", ram: "", ramType: "", storage: "",
+        storageType: "", gpu: "", gpuType: "", screenSize: "", 
+        resolution: "", os: "", battery: "", weight: "",
+        priceOrigin: "", quantity: "", status: "",
+        brandId: "", categoryId: "", hot: ""
     }
     const categories = await getAllCategories();
     const brands = await getAllBrands();
+
     return res.render("admin/product/create.ejs", {
         categories: categories,
         brands: brands,
@@ -40,11 +25,12 @@ const getAdminCreateProductPage = async (req: Request, res: Response) => {
     });
 }
 
+// Xử lý tạo sản phẩm
 const postAdminCreateProduct = async (req: Request, res: Response) => {
     const {
         name, shortDesc, detailDesc, cpu, cpuType, ram, ramType,
         storage, storageType, gpu, gpuType, screenSize, resolution,
-        os, battery, weight, priceOrigin, quantity, status, brandId, categoryId
+        os, battery, weight, priceOrigin, quantity, status, brandId, categoryId, hot
     } = req.body;
 
     const categories = await getAllCategories();
@@ -68,7 +54,7 @@ const postAdminCreateProduct = async (req: Request, res: Response) => {
         const oldData = {
             name, shortDesc, detailDesc, cpu, cpuType, ram, ramType,
             storage, storageType, gpu, gpuType, screenSize, resolution,
-            os, battery, weight, priceOrigin, quantity, status, brandId, categoryId
+            os, battery, weight, priceOrigin, quantity, status, brandId, categoryId, hot
         };
 
         return res.render("admin/product/create.ejs", {
@@ -84,17 +70,19 @@ const postAdminCreateProduct = async (req: Request, res: Response) => {
         cpu, cpuType, ram, ramType, storage,
         storageType, gpu, gpuType, screenSize,
         resolution, os, battery, weight, priceOrigin,
-        quantity, status, brandId, categoryId
+        quantity, status, brandId, categoryId, hot
     );
     return res.redirect("/admin/product");
 };
 
+// Xử lý xóa sản phẩm
 const postAdminDeleteProduct = async (req: Request, res: Response) => {
     const { id } = req.params;
     await handleDeleteProduct(id as string);
     return res.redirect("/admin/product");
 }
 
+// Truy cập trang chi tiết sản phẩm phía ADMIN
 const getAdminViewProductPage = async (req: Request, res: Response) => {
     const { id } = req.params;
     const product = await getProductById(id as string);
@@ -113,7 +101,7 @@ const getAdminViewProductPage = async (req: Request, res: Response) => {
 const postAdminUpdateProduct = async (req: Request, res: Response) => {
     const {
         id, name, brandId, categoryId, shortDesc, detailDesc, priceOrigin, priceCurr, quantity, status,
-        cpu, cpuType, ram, ramType, storage, storageType,
+        cpu, cpuType, ram, ramType, storage, storageType, hot,
         gpu, gpuType, screenSize, resolution, os, battery, weight,
         deletedImageIds
     } = req.body;
@@ -149,7 +137,7 @@ const postAdminUpdateProduct = async (req: Request, res: Response) => {
 
         const product = {
             id, name, brandId, categoryId, shortDesc, detailDesc, priceOrigin, priceCurr, quantity, status,
-            cpu, cpuType, ram, ramType, storage, storageType,
+            cpu, cpuType, ram, ramType, storage, storageType, hot,
             gpu, gpuType, screenSize, resolution, os, battery, weight,
             thumbnail: existingProduct?.thumbnail ?? "",
             image: existingProduct?.image ?? []
@@ -168,7 +156,7 @@ const postAdminUpdateProduct = async (req: Request, res: Response) => {
         cpu, cpuType, ram, ramType, storage,
         storageType, gpu, gpuType, screenSize,
         resolution, os, battery, weight, priceOrigin, priceCurr,
-        quantity, status, brandId, categoryId
+        quantity, status, brandId, categoryId, hot
     );
     return res.redirect("/admin/product");
 };
