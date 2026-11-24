@@ -1,49 +1,55 @@
 import { NextFunction, Request, Response } from "express";
-import { getAllProducts, getProducts, getProductById, } from "services/admin/admin.product.service";
-import { getAllBrands, getAllCategories, getAllOrders, getOrderDetailAdmin } from "services/admin/admin.service";
+import { getProductById, } from "services/admin/admin.product.service";
+import { getAllBrands, getAllCategories } from "services/admin/admin.service";
 import { registerNewUser } from "services/user/auth.service";
-import { addProductToCart, deleteProductInCart, getAllOrderById, getBestSellingProducts, getCartDetailByUserId, getProductHot, getProductRecommendation, getTopDiscountProducts, handlePlaceOrder, updateCartDetailBeforeCheckout } from "services/user/user.service";
+import { 
+    addProductToCart, deleteProductInCart, getAllOrderById, getBestSellingProducts, 
+    getCartDetailByUserId, getHotProducts, getProducts, getRelatedProducts, 
+    getTopDiscountedProducts, handlePlaceOrder, updateCartDetailBeforeCheckout 
+} from "services/user/user.service";
 import { AdminUserSchema, TAdminUserSchema } from "src/validation/admin.user.schema";
 
+// Truy cập trang chủ
 const getHomePage = async (req: Request, res: Response) => {
     const products = await getProducts();
-    const hotProducts = await getProductHot();
+    const hotProducts = await getHotProducts();
+    const topDiscountedProducts = await getTopDiscountedProducts();
     const bestSellingProducts = await getBestSellingProducts();
-    const discountProducts = await getTopDiscountProducts();
     const brands = await getAllBrands();
+
     return res.render("user/home/show.ejs", {
         products: products,
         bestSellingProducts: bestSellingProducts,
         brands: brands,
-        discountProducts: discountProducts,
+        discountProducts: topDiscountedProducts,
         hotProducts: hotProducts
     });
 }
 
+// Truy cập trang chi tiết sản phẩm
 const getDetailProductPage = async (req: Request, res: Response) => {
     const {id} = req.params;
-    let productsRecommendation = new Array();
+    let relatedProducts = new Array();
     try {
         const response = await fetch(`http://127.0.0.1:5000/api/product-recommendation?id=${id}`);
-        const productsIdRecommendation = await response.json();
-        productsRecommendation =  await getProductRecommendation(productsIdRecommendation.products);
+        const relatedProductIds = await response.json();
+        relatedProducts =  await getRelatedProducts(relatedProductIds.products);
+    } catch (error) {
+        console.log(error);
     }
-    catch (e) {
-        console.log(e);
-    }
-    
-
     const brands = await getAllBrands();
     const categories = await getAllCategories();
     const product = await getProductById(id as string);
+
     return res.render("user/product/detail.ejs", {
         product: product,
         brands: brands,
         categories: categories,
-        productsRecommendation: productsRecommendation
+        productsRecommendation: relatedProducts
     })
 }
 
+// Truy cập trang đăng nhập
 const getLoginPage = async (req: Request, res: Response) => {
     const { session } = req as any;
     const messages = session?.messages ?? [];
@@ -53,6 +59,7 @@ const getLoginPage = async (req: Request, res: Response) => {
     return res.render("user/auth/login.ejs", { messages });
 }
 
+// Truy cập trang đăng ký
 const getRegisterPage = async (req: Request, res: Response) => {
     const oldData = {
         fullName: "",

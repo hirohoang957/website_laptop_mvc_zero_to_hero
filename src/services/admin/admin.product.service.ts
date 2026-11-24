@@ -1,5 +1,6 @@
 import { prisma } from "config/client";
 
+// Lấy tát cả sản phẩm
 const getAllProducts = async () => {
     const products = await prisma.product.findMany({
         orderBy: {
@@ -8,19 +9,6 @@ const getAllProducts = async () => {
     });
     return products;
 }
-
-const getProducts = async (limit: number = 8) => {
-    const products = await prisma.product.findMany({
-        where: {
-            AND: {
-                quantity: { gt: 0 },
-                status: 1
-            }
-        },
-    })
-    return products
-}
-
 
 const handleCreateProduct = async (
     name: string, shortDesc: string, detailDesc: string, thumbnail: string, images: string[],
@@ -72,6 +60,7 @@ const handleDeleteProduct = async (id: string) => {
     return deleteProduct
 }
 
+// Lấy sản phẩm theo id
 const getProductById = async (id : string) => {
     const product = await prisma.product.findUnique({
         where : {id: +id},
@@ -100,28 +89,13 @@ const handleUpdateProduct = async (
     const product = await prisma.product.update({
         where: { id: +id },
         data: {
-            name: name,
-            shortDesc: shortDesc,
-            detailDesc: detailDesc,
-            cpu: cpu,
-            cpuType: cpuType,
-            ram: +ram,
-            ramType: ramType,
-            storage: +storage,
-            storageType: storageType,
-            gpu: gpu,
-            gpuType: gpuType,
-            screenSize: screenSize,
-            resolution: resolution,
-            os: os,
-            battery: battery,
-            weight: weight,
-            priceOrigin: +priceOrigin,
-            priceCurr: +priceCurr,
-            quantity: +quantity,
-            status: +status,
-            brandId: +brandId,
-            categoryId: +categoryId,
+            name: name, shortDesc: shortDesc, detailDesc: detailDesc,
+            cpu: cpu, cpuType: cpuType, ram: +ram, ramType: ramType,
+            storage: +storage, storageType: storageType, gpu: gpu,
+            gpuType: gpuType, screenSize: screenSize, resolution: resolution,
+            os: os, battery: battery, weight: weight, priceOrigin: +priceOrigin,
+            priceCurr: +priceCurr, quantity: +quantity, status: +status,
+            brandId: +brandId, categoryId: +categoryId,
             ...(thumbnail && { thumbnail: thumbnail }),
             // Cập nhật bảng Image (quan hệ `image` trong schema.prisma)
             ...((deletedIds.length > 0 || newImages.length > 0) && {
@@ -147,5 +121,5 @@ export {
     handleDeleteProduct,
     getProductById,
     handleUpdateProduct,
-    getProducts,
+    
 }

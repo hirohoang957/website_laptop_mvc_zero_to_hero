@@ -2,8 +2,6 @@ import { prisma } from "config/client";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { comparePassword, getUserSumCart, getUserWithRoleById } from "services/user/auth.service";
-// import { getUserWithRoleById } from "services/client/auth.service";
-// import { comparePassword, getUserById } from "services/user.service";
 
 const configPassportLocal = () => {
     passport.use(new LocalStrategy({
@@ -16,7 +14,7 @@ const configPassportLocal = () => {
             session.messages = []
         }
 
-        // check user exist in database
+        // Kiểm tra email này đã tồn tại chưa
         const user = await prisma.user.findUnique(
             { where: { username: username } }
         );
@@ -24,12 +22,15 @@ const configPassportLocal = () => {
             // throw new Error(`Username: ${username} not found!!`);
             return callback(null, false, { message: "Email hoặc mật khẩu không chính xác!" });
         }
-        // compare password
+        // So sánh mật khẩu
         const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             // throw new Error(`Invalid password!!`);
             return callback(null, false, { message: "Email hoặc mật khẩu không chính xác!" });
         }
+
+        // Kiểm tra tài khoản có bị khóa hay không
+        if(user.status === 0) return callback(null, false, { message: "Tài khoản của bạn đã bị khóa!" });
 
         return callback(null, user as any);
     }));

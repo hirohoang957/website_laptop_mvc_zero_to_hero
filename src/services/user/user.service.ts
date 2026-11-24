@@ -2,18 +2,40 @@ import { getProductById } from "services/admin/admin.product.service";
 import { prisma } from "config/client";
 import { string } from "zod";
 
-const getProductRecommendation = async (productsId: number[]) => {
-    const products = await Promise.all(
-        productsId.map((id) => getProductById(String(id)))
-    );
-    return products;
+// Lấy tất cả sản phẩm
+const getProducts = async () => {
+    const products = await prisma.product.findMany({
+        where: {
+            AND: {
+                quantity: { gt: 0 },
+                status: 1
+            }
+        },
+    })
+    return products
 }
 
+// Lấy tất cả sản phẩm nổi bật
+const getHotProducts = async (limit: number = 8) => {
+    const products = await prisma.product.findMany({
+        where: {
+            AND: {
+                quantity: { gt: 0 },
+                status: 1,
+                hot: 1
+            }
+        },
+        orderBy: { createdAt: "desc" },
+    })
+    return products
+}
+
+// Lấy sản phẩm bán chạy
 const getBestSellingProducts = async (limit: number = 8) => {
     const products = await prisma.product.findMany({
         where: {
             quantity: { gt: 0 },
-            status: { gt: 0 },
+            status: 1,
         },
         orderBy: {
             sold: "desc",
@@ -23,9 +45,11 @@ const getBestSellingProducts = async (limit: number = 8) => {
     return products;
 };
 
-const getTopDiscountProducts = async () => {
+// Lấy sản phẩm giảm giá nhiều nhất theo %
+const getTopDiscountedProducts = async () => {
     const products = await prisma.product.findMany({
         where: {
+            quantity: { gt: 0 },
             status: 1,
         },
     });
@@ -40,19 +64,14 @@ const getTopDiscountProducts = async () => {
         .slice(0, 8);
 };
 
-const getProductHot = async (limit: number = 8) => {
-    const products = await prisma.product.findMany({
-        where: {
-            AND: {
-                quantity: { gt: 0 },
-                status: 1,
-                hot: 1
-            }
-        },
-        orderBy: { createdAt: "desc" },
-    })
-    return products
+// Lấy sản phẩm tương tự
+const getRelatedProducts = async (productsId: number[]) => {
+    const products = await Promise.all(
+        productsId.map((id) => getProductById(String(id)))
+    );
+    return products;
 }
+
 
 const addProductToCart = async (quantity: number, productId: number, user: Express.User) => {
     const cart = await prisma.cart.findUnique({
@@ -247,7 +266,7 @@ const getAllOrderById = async (userId: number) => {
 }
 
 export {
-    getProductRecommendation,
+    getRelatedProducts,
     addProductToCart,
     getCartDetailByUserId,
     deleteProductInCart,
@@ -255,6 +274,7 @@ export {
     handlePlaceOrder,
     getBestSellingProducts,
     getAllOrderById,
-    getProductHot,
-    getTopDiscountProducts
+    getHotProducts,
+    getTopDiscountedProducts,
+    getProducts,
 }

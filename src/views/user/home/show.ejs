@@ -538,10 +538,7 @@
                     <!-- Nội dung từng Tab Hãng (Lọc sản phẩm nổi bật theo hãng, fallback sang toàn bộ sản phẩm hãng đó nếu hãng chưa có máy hot) -->
                     <% brands.slice(0, 5).forEach((brand) => {
                         const hotByBrand = featuredList.filter(p => p.brandId === brand.id);
-                        const brandProducts = (hotByBrand.length > 0
-                            ? hotByBrand
-                            : products.filter(p => p.brandId === brand.id)
-                        ).slice(0, 8);
+                        const brandProducts = (hotByBrand.length > 0 ? hotByBrand : products.filter(p => p.brandId === brand.id)).slice(0, 8);
                     %>
                         <div id="tab-brand-<%= brand.id %>" class="tab-pane fade p-0">
                             <% if (brandProducts.length > 0) { %>

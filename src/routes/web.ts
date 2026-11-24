@@ -15,11 +15,12 @@ import { getAdminViewOrderPage } from 'controllers/admin/admin.order.controller'
 const router = express.Router();
 
 const webRoutes = (app: Express) => {
-
+    // User routes
     router.get("/", getHomePage);
 
     router.get("/register", isLogin, getRegisterPage);
     router.post("/register", postRegister);
+    
     router.get("/login", isLogin, getLoginPage);
     router.post('/login', (req: Request, res: Response, next: NextFunction) => {
         passport.authenticate('local', (err: any, user: any, info: any) => {
@@ -64,7 +65,7 @@ const webRoutes = (app: Express) => {
     router.get("/thanks", getThanksPage);
     router.get("/order-history", getOrderHistoryPage);
 
-    // admin routes
+    // Admin routes
     router.get("/admin", getDashboardPage);
     router.get("/admin/user", getAdminUserPage);
     router.get("/admin/category", getAdminCategoryPage);
