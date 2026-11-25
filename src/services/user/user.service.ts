@@ -264,6 +264,138 @@ const getAllOrderById = async (userId: number) => {
     return orders;
 }
 
+// Hàm dựng điều kiện lọc chung (giữ nguyên rule quantity > 0 và status = 1 của bạn)
+const buildProductFilterWhere = (query: any = {}) => {
+    const where: any = {
+        quantity: { gt: 0 },
+        status: 1,
+    };
+
+    const toStringArray = (val: any): string[] => {
+        if (!val) return [];
+        return (Array.isArray(val) ? val : [val])
+            .map((item) => String(item).trim())
+            .filter(Boolean);
+    };
+
+    const toNumberArray = (val: any): number[] => {
+        return toStringArray(val)
+            .map(Number)
+            .filter((num) => !isNaN(num));
+    };
+
+    // 1. Tìm kiếm theo từ khóa
+    if (query.keyword && String(query.keyword).trim() !== "") {
+        const kw = String(query.keyword).trim();
+        where.OR = [
+            { name: { contains: kw } },
+            { cpu: { contains: kw } },
+            { cpuType: { contains: kw } },
+            { gpu: { contains: kw } },
+        ];
+    }
+
+    // 2. Thương hiệu (brand)
+    const brandIds = toNumberArray(query.brand);
+    if (brandIds.length > 0) {
+        where.brandId = { in: brandIds };
+    }
+
+    // 3. Nhu cầu sử dụng (category)
+    const categoryIds = toNumberArray(query.category);
+    if (categoryIds.length > 0) {
+        where.categoryId = { in: categoryIds };
+    }
+
+    // 4. Khoảng giá (price)
+    if (query.price) {
+        switch (query.price) {
+            case "duoi-15-trieu":
+                where.priceCurr = { lt: 15000000 };
+                break;
+            case "15-20-trieu":
+                where.priceCurr = { gte: 15000000, lte: 20000000 };
+                break;
+            case "20-30-trieu":
+                where.priceCurr = { gte: 20000000, lte: 30000000 };
+                break;
+            case "tren-30-trieu":
+                where.priceCurr = { gt: 30000000 };
+                break;
+        }
+    }
+
+    // 5. Dòng CPU (cpuType)
+    const cpuTypes = toStringArray(query.cpuType);
+    if (cpuTypes.length > 0) {
+        where.cpuType = { in: cpuTypes };
+    }
+
+    // 6. Dung lượng RAM (ram)
+    const rams = toNumberArray(query.ram);
+    if (rams.length > 0) {
+        where.ram = { in: rams };
+    }
+
+    // 7. Dung lượng lưu trữ (storage)
+    const storages = toNumberArray(query.storage);
+    if (storages.length > 0) {
+        where.storage = { in: storages };
+    }
+
+    // 8. Loại GPU (gpuType)
+    const gpuTypes = toStringArray(query.gpuType);
+    if (gpuTypes.length > 0) {
+        where.gpuType = { in: gpuTypes };
+    }
+
+    return where;
+};
+
+const countTotalProducts = async (query: any = {}) => {
+    const where = buildProductFilterWhere(query);
+    const totalItems = await prisma.product.count({ where });
+    return totalItems;
+};
+
+const countTotalProductClientPages = async (pageSize: number, query: any = {}) => {
+    const totalItems = await countTotalProducts(query);
+    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+    return totalPages;
+};
+
+const getLimitProducts = async (page: number, pageSize: number, query: any = {}) => {
+    const where = buildProductFilterWhere(query);
+
+    let orderBy: any = { createdAt: "desc" };
+    switch (query.sort) {
+        case "hot":
+            orderBy = [{ hot: "desc" }, { createdAt: "desc" }];
+            break;
+        case "best-selling":
+            orderBy = [{ sold: "desc" }, { createdAt: "desc" }];
+            break;
+        case "price-asc":
+            orderBy = { priceCurr: "asc" };
+            break;
+        case "price-desc":
+            orderBy = { priceCurr: "desc" };
+            break;
+        case "newest":
+        default:
+            orderBy = { createdAt: "desc" };
+            break;
+    }
+
+    const products = await prisma.product.findMany({
+        where,
+        orderBy,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+    });
+    return products;
+};
+
 export {
     getRelatedProducts,
     addProductToCart,
@@ -276,4 +408,7 @@ export {
     getHotProducts,
     getTopDiscountedProducts,
     getProducts,
+    countTotalProductClientPages,
+    getLimitProducts,
+    countTotalProducts
 }

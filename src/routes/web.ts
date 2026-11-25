@@ -8,7 +8,7 @@ import { getAdminCreateUserPage, getAdminViewUserPage, postAdminCreateUser, post
 import { getAdminCreateCategoryPage, getAdminViewCategoryPage, postAdminCreateCategory, postAdminDeleteCategory, postAdminUpdateCategory } from 'controllers/admin/admin.category.controller';
 import { getAdminCreateBrandPage, getAdminViewBrandPage, postAdminCreateBrand, postAdminDeleteBrand, postAdminUpdateBrand } from 'controllers/admin/admin.brand.controller';
 import { getAdminCreateProductPage, getAdminViewProductPage, postAdminCreateProduct, postAdminDeleteProduct, postAdminUpdateProduct } from 'controllers/admin/admin.product.controller';
-import { getCardPage, getCheckOutPage, getDetailProductPage, getHomePage, getLoginPage, getOrderHistoryPage, getRegisterPage, getSuccessRedirectPage, getThanksPage, postAddProductToCart, postDeleteProductInCart, postHandleCartToCheckOut, postLogout, postPlaceOrder, postRegister } from 'controllers/user/user.controller';
+import { getCardPage, getCheckOutPage, getDetailProductPage, getHomePage, getLoginPage, getOrderHistoryPage, getProductPage, getRegisterPage, getSuccessRedirectPage, getThanksPage, postAddProductToCart, postDeleteProductInCart, postHandleCartToCheckOut, postLogout, postPlaceOrder, postRegister } from 'controllers/user/user.controller';
 import { getAdminViewOrderPage } from 'controllers/admin/admin.order.controller';
 
 
@@ -17,6 +17,7 @@ const router = express.Router();
 const webRoutes = (app: Express) => {
     // User routes
     router.get("/", getHomePage);
+    router.get("/products", getProductPage);
 
     router.get("/register", isLogin, getRegisterPage);
     router.post("/register", postRegister);

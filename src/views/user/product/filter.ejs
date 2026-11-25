@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>Tất cả sản phẩm - Laptopshop</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+
+        /* Breadcrumb Header */
+/* Khung Breadcrumb bo tròn giống trang chi tiết */
+.shop-breadcrumb-wrap {
+    padding-top: 170px;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 991.98px) {
+    .shop-breadcrumb-wrap {
+        padding-top: 110px;
+    }
+}
+
+.shop-breadcrumb-box {
+    background-color: #f1f5f9;
+    border-radius: 12px;
+    padding: 12px 20px;
+}
+
+.shop-breadcrumb-box .breadcrumb-item a {
+    color: #81c408;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.shop-breadcrumb-box .breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.shop-breadcrumb-box .breadcrumb-item + .breadcrumb-item::before {
+    color: #94a3b8;
+}
+
+.shop-breadcrumb-box .breadcrumb-item.active {
+    color: #64748b;
+}
+
+        /* Sidebar Bộ lọc bên trái */
+        .filter-sidebar {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            padding: 20px;
+            position: sticky;
+            top: 95px;
+        }
+
+        .filter-group {
+            padding-bottom: 18px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .filter-group:last-of-type {
+            border-bottom: none;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+        }
+
+        .filter-title {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-check-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #475569;
+            user-select: none;
+        }
+
+        .filter-check-item:hover {
+            color: #81c408;
+        }
+
+        .filter-check-item input[type="checkbox"],
+        .filter-check-item input[type="radio"] {
+            accent-color: #81c408;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Thanh sắp xếp phía trên danh sách */
+        .sort-toolbar {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+        }
+
+        .sort-pill-btn {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .sort-pill-btn:hover,
+        .sort-pill-btn.active {
+            background: #81c408;
+            border-color: #81c408;
+            color: #fff;
+        }
+
+        /* Card Sản phẩm đồng bộ với trang chủ */
+        .product-card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+            border-color: #81c408;
+        }
+
+        .product-img-wrap {
+            position: relative;
+            height: 200px;
+            padding: 16px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-img-wrap img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.35s ease;
+        }
+
+        .product-card:hover .product-img-wrap img {
+            transform: scale(1.06);
+        }
+
+        .product-badge-discount {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #dc3545;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .product-badge-hot {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ff7e00, #ff3d00);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .product-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+            height: 42px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .product-title a {
+            color: #212529;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .product-title a:hover {
+            color: #81c408;
+        }
+
+        .product-specs {
+            background: #f4f6f8;
+            border-radius: 8px;
+            padding: 7px 9px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #555;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .spec-tag {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .product-price-box {
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px dashed #eee;
+        }
+
+        .price-curr {
+            font-size: 17.5px;
+            font-weight: 800;
+            color: #d70018;
+            margin-bottom: 0;
+        }
+
+        .price-origin {
+            font-size: 12.5px;
+            color: #888;
+            text-decoration: line-through;
+            margin-left: 6px;
+        }
+
+        .btn-add-cart {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13.5px;
+            padding: 8px 14px;
+            transition: all 0.25s;
+        }
+
+        .btn-add-cart:hover {
+            background-color: #81c408 !important;
+            color: #fff !important;
+            border-color: #81c408 !important;
+        }
+
+        .btn-add-cart:hover i {
+            color: #fff !important;
+        }
+
+        /* Phân trang (ghi đè display: inline-block của style.css gốc) */
+        .shop-pagination {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .shop-pagination .page-item {
+            display: inline-block;
+        }
+
+        .shop-pagination .page-link {
+            border-radius: 10px !important;
+            margin: 0 !important;
+            color: #334155;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 12px;
+        }
+
+        .shop-pagination .page-item.active .page-link {
+            background-color: #81c408;
+            border-color: #81c408;
+            color: #fff;
+        }
+
+        .shop-pagination .page-link:hover {
+            background-color: #f1f5f9;
+            color: #81c408;
+        }
+    </style>
+</head>
+
+<body>
+    <% const q=typeof query !=='undefined' && query ? query : {}; const toArray=(val)=> !val ? [] : (Array.isArray(val)
+        ? val.map(String) : [String(val)]);
+
+        const selectedCategories = toArray(q.category);
+        const selectedBrands = toArray(q.brand);
+        const selectedCpuTypes = toArray(q.cpuType);
+        const selectedRams = toArray(q.ram);
+        const selectedStorages = toArray(q.storage);
+        const selectedGpuTypes = toArray(q.gpuType);
+        const selectedPrice = q.price || '';
+        const selectedSort = q.sort || 'newest';
+        const keywordVal = q.keyword || '';
+
+        const hasActiveFilter = selectedCategories.length > 0 || selectedBrands.length > 0 ||
+        selectedCpuTypes.length > 0 || selectedRams.length > 0 ||
+        selectedStorages.length > 0 || selectedGpuTypes.length > 0 ||
+        selectedPrice !== '' || keywordVal !== '';
+
+        const buildQueryUrl = (overrides = {}) => {
+        const params = new URLSearchParams();
+        if (keywordVal) params.set('keyword', keywordVal);
+        selectedCategories.forEach(c => params.append('category', c));
+        selectedBrands.forEach(b => params.append('brand', b));
+        selectedCpuTypes.forEach(cpu => params.append('cpuType', cpu));
+        selectedRams.forEach(r => params.append('ram', r));
+        selectedStorages.forEach(s => params.append('storage', s));
+        selectedGpuTypes.forEach(g => params.append('gpuType', g));
+        if (selectedPrice) params.set('price', selectedPrice);
+        if (selectedSort) params.set('sort', selectedSort);
+
+        Object.entries(overrides).forEach(([k, v]) => {
+        if (v === null || v === undefined || v === '') {
+        params.delete(k);
+        } else {
+        params.set(k, String(v));
+        }
+        });
+
+        const qs = params.toString();
+        return qs ? `/products?${qs}` : '/products';
+        };
+        %>
+
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Navbar start -->
+        <%- include('../layout/header') %>
+            <!-- Navbar End -->
+
+            <!-- Header Banner nhỏ -->
+            <!-- Breadcrumb đồng bộ với trang chi tiết -->
+<div class="container shop-breadcrumb-wrap">
+    <nav aria-label="breadcrumb" class="shop-breadcrumb-box">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <% if (selectedBrands.length === 1) {
+                const activeBrand = brands.find(b => String(b.id) === selectedBrands[0]);
+            %>
+                <li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <%= activeBrand ? activeBrand.name : 'Thương hiệu' %>
+                </li>
+            <% } else if (selectedCategories.length === 1) {
+                const activeCat = categories.find(c => String(c.id) === selectedCategories[0]);
+            %>
+                <li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <%= activeCat ? activeCat.name : 'Danh mục' %>
+                </li>
+            <% } else { %>
+                <li class="breadcrumb-item active" aria-current="page">Sản phẩm</li>
+            <% } %>
+        </ol>
+    </nav>
+</div>
+
+            <!-- MAIN CONTENT: BỘ LỌC BÊN TRÁI + DANH SÁCH SẢN PHẨM BÊN PHẢI -->
+            <div class="container py-5">
+                <div class="row g-4">
+                    <!-- CỘT TRÁI: BỘ LỌC SẢN PHẨM -->
+                    <div class="col-lg-3">
+                        <form action="/products" method="get" id="filterForm" class="filter-sidebar shadow-sm">
+                            <input type="hidden" name="sort" value="<%= selectedSort %>">
+
+                            <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+                                <h5 class="fw-bold text-dark mb-0">
+                                    <i class="fas fa-filter text-primary me-2"></i>Bộ lọc tìm kiếm
+                                </h5>
+                                <% if (hasActiveFilter) { %>
+                                    <a href="/products" class="small text-danger fw-semibold text-decoration-none">
+                                        <i class="fas fa-times-circle me-1"></i>Xóa lọc
+                                    </a>
+                                    <% } %>
+                            </div>
+
+                            <!-- 1. Hãng sản xuất -->
+                            <div class="filter-group">
+                                <div class="filter-title">Thương hiệu</div>
+                                <div class="row g-1">
+                                    <% brands.forEach(brand=> { %>
+                                        <div class="col-6">
+                                            <label class="filter-check-item">
+                                                <input type="checkbox" name="brand" value="<%= brand.id %>"
+                                                    <%=selectedBrands.includes(String(brand.id)) ? 'checked' : '' %>
+                                                onchange="this.form.submit()">
+                                                <span class="text-truncate">
+                                                    <%= brand.name %>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                            </div>
+
+                            <!-- 2. Nhu cầu sử dụng (Category) -->
+                            <div class="filter-group">
+                                <div class="filter-title">Nhu cầu sử dụng</div>
+                                <% categories.forEach(cat=> { %>
+                                    <label class="filter-check-item">
+                                        <input type="checkbox" name="category" value="<%= cat.id %>"
+                                            <%=selectedCategories.includes(String(cat.id)) ? 'checked' : '' %>
+                                        onchange="this.form.submit()">
+                                        <span>
+                                            <%= cat.name %>
+                                        </span>
+                                    </label>
+                                    <% }) %>
+                            </div>
+
+                            <!-- 3. Khoảng giá -->
+                            <div class="filter-group">
+                                <div class="filter-title">Mức giá</div>
+                                <% const priceOptions=[ { value: '' , label: 'Tất cả mức giá' }, {
+                                    value: 'duoi-15-trieu' , label: 'Dưới 15 triệu' }, { value: '15-20-trieu' ,
+                                    label: 'Từ 15 - 20 triệu' }, { value: '20-30-trieu' , label: 'Từ 20 - 30 triệu' }, {
+                                    value: 'tren-30-trieu' , label: 'Trên 30 triệu' } ]; %>
+                                    <% priceOptions.forEach(opt=> { %>
+                                        <label class="filter-check-item">
+                                            <input type="radio" name="price" value="<%= opt.value %>"
+                                                <%=selectedPrice===opt.value ? 'checked' : '' %>
+                                            onchange="this.form.submit()">
+                                            <span>
+                                                <%= opt.label %>
+                                            </span>
+                                        </label>
+                                        <% }) %>
+                            </div>
+
+                            <!-- 4. Dòng CPU -->
+                            <div class="filter-group">
+                                <div class="filter-title">Dòng CPU</div>
+                                <%
+                                    const cpuOptions = [
+                                        'Intel Core i3', 'Intel Core i5', 'Intel Core i7', 'Intel Core i9', 'Intel Core Ultra',
+                                        'AMD Ryzen 3', 'AMD Ryzen 5', 'AMD Ryzen 7', 'AMD Ryzen 9',
+                                        'Apple M1', 'Apple M2', 'Apple M3', 'Apple M4'
+                                    ];
+                                %>
+                                <div class="row g-1">
+                                    <% cpuOptions.forEach(cpu => { %>
+                                        <div class="col-6">
+                                            <label class="filter-check-item" title="<%= cpu %>">
+                                                <input type="checkbox" name="cpuType" value="<%= cpu %>"
+                                                    <%= selectedCpuTypes.includes(cpu) ? 'checked' : '' %>
+                                                    onchange="this.form.submit()">
+                                                <span class="text-truncate"><%= cpu %></span>
+                                            </label>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+
+                            <!-- 5. Dung lượng RAM -->
+                            <div class="filter-group">
+                                <div class="filter-title">Dung lượng RAM</div>
+                                <div class="row g-1">
+                                    <% [4, 8, 16, 24, 32, 64, 128, 256].forEach(ramVal => { %>
+                                        <div class="col-6">
+                                            <label class="filter-check-item">
+                                                <input type="checkbox" name="ram" value="<%= ramVal %>"
+                                                    <%= selectedRams.includes(String(ramVal)) ? 'checked' : '' %>
+                                                    onchange="this.form.submit()">
+                                                <span><%= ramVal %> GB</span>
+                                            </label>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+
+                            <!-- 6. Dung lượng lưu trữ -->
+                            <div class="filter-group">
+                                <div class="filter-title">Dung lượng lưu trữ</div>
+                                <div class="row g-1">
+                                    <%
+                                        const storageOptions = [
+                                            { val: 128, label: '128 GB' },
+                                            { val: 256, label: '256 GB' },
+                                            { val: 512, label: '512 GB' },
+                                            { val: 1024, label: '1 TB' },
+                                            { val: 2048, label: '2 TB' },
+                                            { val: 4096, label: '4 TB' }
+                                        ];
+                                    %>
+                                    <% storageOptions.forEach(ssd => { %>
+                                        <div class="col-6">
+                                            <label class="filter-check-item">
+                                                <input type="checkbox" name="storage" value="<%= ssd.val %>"
+                                                    <%= selectedStorages.includes(String(ssd.val)) ? 'checked' : '' %>
+                                                    onchange="this.form.submit()">
+                                                <span><%= ssd.label %></span>
+                                            </label>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+
+                            <!-- 7. Loại GPU -->
+                            <div class="filter-group">
+                                <div class="filter-title">Loại GPU</div>
+                                <%
+                                    const gpuOptions = [
+                                        { val: 'Onboard', label: 'Card tích hợp (Onboard)' },
+                                        { val: 'Dedicated', label: 'Card rời (Dedicated)' }
+                                    ];
+                                %>
+                                <% gpuOptions.forEach(gpu => { %>
+                                    <label class="filter-check-item">
+                                        <input type="checkbox" name="gpuType" value="<%= gpu.val %>"
+                                            <%= selectedGpuTypes.includes(gpu.val) ? 'checked' : '' %>
+                                            onchange="this.form.submit()">
+                                        <span><%= gpu.label %></span>
+                                    </label>
+                                <% }) %>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- CỘT PHẢI: THANH SẮP XẾP + LƯỚI SẢN PHẨM + PHÂN TRANG -->
+                    <div class="col-lg-9">
+                        <!-- Thanh Sắp xếp -->
+                        <div
+                            class="sort-toolbar shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <span class="small fw-bold text-muted me-1"><i
+                                        class="fas fa-sort-amount-down me-1"></i>Sắp xếp theo:</span>
+                                <a href="<%= buildQueryUrl({ sort: 'newest', page: 1 }) %>"
+                                    class="sort-pill-btn <%= selectedSort === 'newest' ? 'active' : '' %>">Mới nhất</a>
+                                <a href="<%= buildQueryUrl({ sort: 'hot', page: 1 }) %>"
+                                    class="sort-pill-btn <%= selectedSort === 'hot' ? 'active' : '' %>">Nổi bật</a>
+                                <a href="<%= buildQueryUrl({ sort: 'best-selling', page: 1 }) %>"
+                                    class="sort-pill-btn <%= selectedSort === 'best-selling' ? 'active' : '' %>">Bán
+                                    chạy</a>
+                                <a href="<%= buildQueryUrl({ sort: 'price-asc', page: 1 }) %>"
+                                    class="sort-pill-btn <%= selectedSort === 'price-asc' ? 'active' : '' %>">Giá thấp -
+                                    cao</a>
+                                <a href="<%= buildQueryUrl({ sort: 'price-desc', page: 1 }) %>"
+                                    class="sort-pill-btn <%= selectedSort === 'price-desc' ? 'active' : '' %>">Giá cao -
+                                    thấp</a>
+                            </div>
+
+                            <div class="small text-muted">
+                                Trang <strong class="text-dark">
+                                    <%= currentPage %>
+                                </strong> / <%= totalPages %>
+                            </div>
+                        </div>
+
+                        <!-- Lưới danh sách sản phẩm -->
+                        <% if (products && products.length> 0) { %>
+                            <div class="row g-4">
+                                <% products.forEach(function(product) { const discount=(product.priceOrigin &&
+                                    product.priceOrigin> product.priceCurr)
+                                    ? Math.round(((product.priceOrigin - product.priceCurr) / product.priceOrigin) *
+                                    100)
+                                    : 0;
+                                    %>
+                                    <div class="col-12 col-sm-6 col-xl-4">
+                                        <div class="product-card">
+                                            <a href="/detail-product/<%= product.id %>" class="product-img-wrap">
+                                                <% if (discount> 0) { %>
+                                                    <span class="product-badge-discount">-<%= discount %>%</span>
+                                                    <% } %>
+                                                        <% if (product.hot===1) { %>
+                                                            <span class="product-badge-hot"><i
+                                                                    class="fas fa-fire me-1"></i>HOT</span>
+                                                            <% } %>
+                                                                <img src="/images/product/<%= product.thumbnail %>"
+                                                                    alt="<%= product.name %>">
+                                            </a>
+
+                                            <div class="product-body">
+                                                <h3 class="product-title">
+                                                    <a href="/detail-product/<%= product.id %>"
+                                                        title="<%= product.name %>">
+                                                        <%= product.name %>
+                                                    </a>
+                                                </h3>
+
+                                                <div class="product-specs">
+                                                    <% if (product.cpuType) { %>
+                                                        <span class="spec-tag"><i
+                                                                class="fas fa-microchip me-1 text-primary"></i>
+                                                            <%= product.cpuType %>
+                                                        </span>
+                                                        <% } %>
+                                                            <% if (product.ram) { %>
+                                                                <span class="spec-tag">
+                                                                    <%= product.ram %>GB RAM
+                                                                </span>
+                                                                <% } %>
+                                                                    <% if (product.storage) { %>
+                                                                        <span class="spec-tag">
+                                                                            <%= product.storage>= 1024 ?
+                                                                                (product.storage / 1024) + 'TB' :
+                                                                                product.storage + 'GB' %> SSD
+                                                                        </span>
+                                                                        <% } %>
+                                                                            <% if (product.screenSize) { %>
+                                                                                <span class="spec-tag">
+                                                                                    <%= product.screenSize %>"
+                                                                                </span>
+                                                                                <% } %>
+                                                </div>
+
+                                                <div class="product-price-box">
+                                                    <div class="d-flex align-items-baseline flex-wrap">
+                                                        <p class="price-curr">
+                                                            <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                                currency: "VND" }).format(product.priceCurr) %>
+                                                        </p>
+                                                        <% if (discount> 0) { %>
+                                                            <span class="price-origin">
+                                                                <%= new Intl.NumberFormat('vi-VN', { style: "currency" ,
+                                                                    currency: "VND" }).format(product.priceOrigin) %>
+                                                            </span>
+                                                            <% } %>
+                                                    </div>
+
+                                                    <form method="post" action="/add-product-to-cart/<%= product.id %>"
+                                                        class="ajax-cart-form">
+                                                        <button type="submit"
+                                                            class="btn border border-secondary text-primary btn-add-cart">
+                                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Thêm
+                                                            vào giỏ hàng
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                            </div>
+
+                            <!-- PHÂN TRANG -->
+                            <% if (totalPages> 1) { %>
+                                <nav aria-label="Phân trang sản phẩm" class="mt-5">
+                                    <ul class="pagination shop-pagination justify-content-center mb-0">
+                                        <!-- Nút Trang trước -->
+                                        <li class="page-item <%= currentPage <= 1 ? 'disabled' : '' %>">
+                                            <a class="page-link" href="<%= buildQueryUrl({ page: currentPage - 1 }) %>"
+                                                aria-label="Trang trước">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+
+                                        <% for (let i=1; i <=totalPages; i++) { %>
+                                            <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <= currentPage +
+                                                    2)) { %>
+                                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                        <a class="page-link" href="<%= buildQueryUrl({ page: i }) %>">
+                                                            <%= i %>
+                                                        </a>
+                                                    </li>
+                                        <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                                            <li class="page-item disabled"><span
+                                            class="page-link">...</span></li>
+                                        <% } %>
+                                        <% } %>
+
+                                        <!-- Nút Trang sau -->
+                                        <li
+                                            class="page-item <%= currentPage >= totalPages ? 'disabled' : '' %>">
+                                            <a class="page-link"
+                                                href="<%= buildQueryUrl({ page: currentPage + 1 }) %>"
+                                                aria-label="Trang sau">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <% } %>
+
+                                    <% } else { %>
+                                        <!-- Trạng thái không tìm thấy sản phẩm -->
+                                        <div class="bg-white rounded-4 border p-5 text-center shadow-sm">
+                                            <i class="fas fa-search fa-3x text-muted mb-3 opacity-50"></i>
+                                            <h5 class="fw-bold text-dark">Không tìm thấy sản phẩm phù hợp</h5>
+                                            <p class="text-muted small mb-4">Hãy thử bỏ bớt điều kiện lọc hoặc tìm kiếm
+                                                với từ khóa khác.</p>
+                                            <a href="/products"
+                                                class="btn btn-primary text-white rounded-pill px-4 py-2 fw-semibold">
+                                                <i class="fas fa-redo me-1"></i> Xem tất cả sản phẩm
+                                            </a>
+                                        </div>
+                                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Start -->
+            <%- include('../layout/footer') %>
+                <!-- Footer End -->
+
+                <!-- Back to Top -->
+                <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+                    <i class="fa fa-arrow-up"></i>
+                </a>
+
+                <!-- Toast Thông báo thêm vào giỏ hàng -->
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+                    <div id="cartToast" class="toast align-items-center text-white bg-success border-0 shadow"
+                        role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body fw-semibold">
+                                <i class="fas fa-check-circle me-2"></i> Đã thêm sản phẩm vào giỏ hàng!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript Libraries -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="/client/lib/easing/easing.min.js"></script>
+                <script src="/client/lib/waypoints/waypoints.min.js"></script>
+                <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+                <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+                <!-- Template Javascript -->
+                <script src="/client/js/main.js"></script>
+</body>
+
+</html>

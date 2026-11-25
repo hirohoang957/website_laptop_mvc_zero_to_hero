@@ -3,8 +3,8 @@ import { getProductById, } from "services/admin/admin.product.service";
 import { getAllBrands, getAllCategories } from "services/admin/admin.service";
 import { registerNewUser } from "services/user/auth.service";
 import { 
-    addProductToCart, deleteProductInCart, getAllOrderById, getBestSellingProducts, 
-    getCartDetailByUserId, getHotProducts, getProducts, getRelatedProducts, 
+    addProductToCart, countTotalProductClientPages, countTotalProducts, deleteProductInCart, getAllOrderById, getBestSellingProducts, 
+    getCartDetailByUserId, getHotProducts, getLimitProducts, getProducts, getRelatedProducts, 
     getTopDiscountedProducts, handlePlaceOrder, updateCartDetailBeforeCheckout 
 } from "services/user/user.service";
 import { AdminUserSchema, TAdminUserSchema } from "src/validation/admin.user.schema";
@@ -195,6 +195,35 @@ const getOrderHistoryPage = async (req: Request, res: Response) => {
     });
 }
 
+const getProductPage = async (req: Request, res: Response) => {
+    const { page } = req.query;
+    const pageSize = 9;
+
+    let currentPage = page ? +page : 1;
+    if (currentPage <= 0 || isNaN(currentPage)) currentPage = 1;
+
+    const [totalItems, totalPages, brands, categories] = await Promise.all([
+        countTotalProducts(req.query),
+        countTotalProductClientPages(pageSize, req.query),
+        getAllBrands(),
+        getAllCategories(),
+    ]);
+
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const products = await getLimitProducts(currentPage, pageSize, req.query);
+
+    return res.render("user/product/filter.ejs", {
+        products,
+        totalPages: +totalPages,
+        currentPage: +currentPage,
+        brands,
+        categories,
+        totalItems,
+        query: req.query,
+    });
+};
+
 export {
     getHomePage,
     getDetailProductPage,
@@ -210,5 +239,6 @@ export {
     postHandleCartToCheckOut,
     postPlaceOrder,
     getThanksPage,
-    getOrderHistoryPage
+    getOrderHistoryPage,
+    getProductPage
 }
